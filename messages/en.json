@@ -1,0 +1,65 @@
+{
+    "navigation": {
+        "sidebar": {
+            "access": {
+                "title": "Access control",
+                "users": "User management",
+                "roles": "Role management"
+            },
+            "definitions": {
+                "title": "Definitions",
+                "org": "Organization",
+                "forms": "Forms",
+                "units": "Units (weight, count)",
+                "banks": "Bank accounts"
+            },
+            "settings": {
+                "title": "Settings",
+                "price_board": "Price board",
+                "invoice_prefs": "Invoice",
+                "accounting": "Accounting (fiscal year, basis, VAT)"
+            },
+            "reports": {
+                "title": "Reports",
+                "contacts": "Contacts",
+                "products": "Products"
+            },
+            "invoice": {
+                "title": "Invoice",
+                "create": "New invoice",
+                "list": "Invoices"
+            }
+        }
+    },
+    "organization": {
+        "type": {
+            "holding": "Holding",
+            "brand": "Brand",
+            "region": "Region",
+            "city": "City",
+            "branch": "Branch",
+            "unit": "Unit"
+        }
+    },
+    "auth": {
+        "login": {
+            "title": "Sign in",
+            "description": "Enter your credentials to sign in.",
+            "username": "Username",
+            "password": "Password",
+            "submit": "Sign in",
+            "forget password": "Forgot password?"
+        }
+    },
+    "deals": {
+        "factors": {
+            "gold_weight": "Gold weight",
+            "purity": "Purity"
+        }
+    },
+    "validation": {
+        "required": "This field is required",
+        "invalid_email": "Invalid email address",
+        "min_length": "Must be at least {count} characters"
+    }
+}

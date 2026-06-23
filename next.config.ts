@@ -1,7 +1,22 @@
+import { BACKEND_URL } from "@/config/api-routes";
 import type { NextConfig } from "next";
+import createNextIntlPlugin from 'next-intl/plugin';
+
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  async rewrites() {
+    return [
+      {
+        source: "/sanctum/:path*",
+        destination: `${BACKEND_URL}/sanctum/:path*`,
+      },
+      {
+        source: "/api/:path*",
+        destination: `${BACKEND_URL}/api/:path*`,
+      },
+    ];
+  },
 };
 
-export default nextConfig;
+const withNextIntl = createNextIntlPlugin();
+export default withNextIntl(nextConfig);

@@ -1,0 +1,66 @@
+{
+    "navigation": {
+        "sidebar": {
+            "access": {
+                "title": "سطح دسترسی",
+                "users": "مدیریت کاربران",
+                "roles": "مدیریت نقش‌ها"
+            },
+            "definitions": {
+                "title": "تعاریف",
+                "org": "اطلاعات سازمان",
+                "forms": "فرم‌ها",
+                "units": "واحدها (وزنی، عددی)",
+                "banks": "حساب‌های بانکی"
+            },
+            "settings": {
+                "title": "تنظیمات",
+                "price_board": "تابلو قیمت",
+                "invoice_prefs": "فاکتور",
+                "accounting": "حسابداری (سال مالی، مبنا، ارزش افزوده)"
+            },
+            "reports": {
+                "title": "گزارشات",
+                "contacts": "مخاطبین",
+                "products": "کالاها"
+            },
+            "invoice": {
+                "title": "فاکتور",
+                "create": "ثبت فاکتور",
+                "list": "فاکتورها"
+            }
+        }
+    },
+    "organization": {
+        "type": {
+            "holding": "هلدینگ",
+            "brand": "برند",
+            "region": "منطقه",
+            "city": "شهر",
+            "branch": "شعبه",
+            "unit": "واحد"
+        }
+    },
+    "auth": {
+        "login": {
+            "title": "ورود به سیستم",
+            "description": "برای ورود به سیستم اطلاعات کاربری خود را وارد نمایید.",
+            "username": "نام کاربری",
+            "mobile": "شماره همراه",
+            "password": "رمز عبور",
+            "submit": "ورود",
+            "forget password": "فراموشی رمز عبور؟"
+        }
+    },
+    "deals": {
+        "factors": {
+            "gold_weight": "وزن طلا",
+            "purity": "عیار"
+        }
+    },
+    "validation": {
+        "required": "این فیلد اجباری است",
+        "invalid_email": "ایمیل وارد شده معتبر نیست",
+        "min_length": "حداقل باید {count} کاراکتر باشد"
+    }
+}
