@@ -7,16 +7,13 @@ import {
   UserStarIcon,
 } from "@hugeicons/core-free-icons";
 import { IconSvgElement } from "@hugeicons/react";
-
-import type { OrganizationType } from "../schemas/organization-schema";
-
-export type OrganizationLevel = OrganizationType;
+import { OrganizationType } from "../schemas/organization-type.schema";
 
 export type OrganizationLevelMeta = {
   label: string;
   icon: IconSvgElement;
   color: string;
-  child: OrganizationLevel | null;
+  child: OrganizationType | null;
 };
 
 export const ORGANIZATION_LEVELS = {
@@ -56,4 +53,4 @@ export const ORGANIZATION_LEVELS = {
     color: "var(--level-unit)",
     child: null,
   },
-} as const satisfies Record<OrganizationLevel, OrganizationLevelMeta>;
+} as const satisfies Record<OrganizationType, OrganizationLevelMeta>;

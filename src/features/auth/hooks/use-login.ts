@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { useAuthStore } from "../store/auth-store";
 import { API_ROUTES } from "@/config/api-routes";
 import { postToApi } from "@/lib/api";
-import { loginResponseSchema, LoginResponseType, LoginType } from "../schemas/login-schema";
+import { LoginRequest, LoginResponse, loginResponseSchema } from "../schemas";
 
 function getSafeRedirectPath(next: string | null): string {
     if (!next || !next.startsWith("/") || next.startsWith("//")) {
@@ -21,7 +21,7 @@ export const useLogin = () => {
     const { setAuthData } = useAuthStore();
 
     return useMutation({
-        mutationFn: async (data: LoginType) => {
+        mutationFn: async (data: LoginRequest) => {
             try {
                 await api.get("/sanctum/csrf-cookie", { baseURL: "" });
             } catch (e) {
@@ -34,7 +34,7 @@ export const useLogin = () => {
                 loginResponseSchema
             );
         },
-        onSuccess: (data: LoginResponseType) => {
+        onSuccess: (data: LoginResponse) => {
             if (data.requires_otp) {
                 toast.info(data.message || "لطفاً کد تایید ارسال شده را وارد کنید.");
                 router.push(`/auth/verify?mobile=${encodeURIComponent(data.mobile)}`);

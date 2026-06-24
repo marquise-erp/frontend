@@ -25,10 +25,8 @@ import {
 } from "@/components/ui/select";
 import {
   ORGANIZATION_LEVELS,
-  type OrganizationLevel,
   type OrganizationLevelMeta,
 } from "../config/organization-levels";
-import type { OrganizationTreeNode } from "../schemas/organization-entities";
 import { findPath, findNode } from "../lib/org-tree-utils";
 import {
   useCreateOrganization,
@@ -37,6 +35,8 @@ import {
 import { useRbac, rbacStore } from "../store/rbac-store";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowLeft01Icon, Delete02Icon, PlusSignIcon, Settings01Icon, UserStarIcon } from "@hugeicons/core-free-icons";
+import { OrganizationTreeNode } from "../types/organization-tree";
+import { OrganizationType } from "../schemas/organization-type.schema";
 
 interface Props {
   open: boolean;
@@ -44,7 +44,7 @@ interface Props {
   mode: "create" | "edit";
   roots: OrganizationTreeNode[];
   parentId?: string;
-  parentType?: OrganizationLevel;
+  parentType?: OrganizationType;
   node?: OrganizationTreeNode;
 }
 
@@ -255,7 +255,7 @@ function GeneralForm({
   );
 }
 
-function PersonnelTab({ levelId, levelType }: { levelId: string; levelType: OrganizationLevel }) {
+function PersonnelTab({ levelId, levelType }: { levelId: string; levelType: OrganizationType }) {
   const { users, roles } = useRbac();
   const levelUsers = users.filter((u) => u.levelId === levelId);
   const [adding, setAdding] = useState(false);

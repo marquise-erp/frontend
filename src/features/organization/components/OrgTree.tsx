@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { ORGANIZATION_LEVELS, type OrganizationLevel } from "../config/organization-levels";
-import type { OrganizationTreeNode } from "../schemas/organization-entities";
+import { ORGANIZATION_LEVELS} from "../config/organization-levels";
 import { NodeFormDialog } from "./NodeFormDialog";
 import { Button } from "@/components/ui/button";
 import { useUsersForLevel } from "../store/rbac-store";
@@ -18,6 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ArrowLeft01Icon, Delete02Icon, MoreVerticalIcon, PencilEdit01Icon, PlusSignIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import { OrganizationTreeNode } from "../types/organization-tree";
 
 function Row({
   node,

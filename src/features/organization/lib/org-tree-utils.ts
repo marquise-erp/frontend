@@ -1,4 +1,4 @@
-import type { OrganizationTreeNode } from "../schemas/organization-entities";
+import type { OrganizationTreeNode } from "../types/organization-tree";
 
 function walkNodes(
   roots: OrganizationTreeNode[],

@@ -24,7 +24,6 @@ import {
 } from "@/components/ui/sidebar"
 import { UnfoldMoreIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import type { UserType } from "@/features/auth/schemas/auth-entities"
 import { useAuthStore } from "@/features/auth/store/auth-store"
 import {
   navUserLogoutItem,
@@ -32,8 +31,9 @@ import {
 } from "@/features/navigation/config/nav-user-items"
 import { filterNavUserMenuGroups } from "@/features/navigation/lib/filter-nav-user-items"
 import { useLogout } from "@/features/auth/hooks/use-logout"
+import { User } from "@/features/auth/schemas"
 
-const mockDevUser: UserType = {
+const mockDevUser: User = {
   id: 0,
   name: "دمو کاربر",
   mobile: "09120000000",
@@ -51,7 +51,7 @@ function getUserInitials(name: string): string {
   return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
 }
 
-function getUserSubtitle(user: UserType): string {
+function getUserSubtitle(user: User): string {
   return user.email ?? user.mobile
 }
 

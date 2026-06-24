@@ -1,14 +1,14 @@
 import { create } from "zustand"
-import { PermissionType, ScopeType, UserType } from "../schemas/auth-entities"
 import { api } from "@/lib/axios";
 import { postToApi } from "@/lib/api";
 import { API_ROUTES } from "@/config/api-routes";
+import { Permission, Scope, User } from "../schemas";
 
 interface AuthState {
-  user: UserType | null
+  user: User | null
 
-  scopes: ScopeType[];
-  permissions: PermissionType[];
+  scopes: Scope[];
+  permissions: Permission[];
 
   activeScopeId: number | null;
 
@@ -16,7 +16,7 @@ interface AuthState {
 
   logout: () => Promise<void>;
 
-  setAuthData: (user: UserType, scopes: ScopeType[], permissions: PermissionType[]) => void;
+  setAuthData: (user: User, scopes: Scope[], permissions: Permission[]) => void;
   switchContextNode: (organizationNodeId: number) => void;
   purgeAuth: () => void;
 }

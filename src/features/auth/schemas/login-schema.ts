@@ -1,14 +1,17 @@
 import { z } from "zod";
-import { permissionSchema, scopeSchema, userSchema } from "./auth-entities";
+import { userSchema } from "./user.schema";
+import { permissionSchema } from "./rbac.schema";
+import { scopeSchema } from "./scope.schema";
 
-export const loginSchema = z.object({
+
+export const loginRequestSchema = z.object({
   mobile: z.string()
     .min(1, "شماره موبایل الزامی است")
     .regex(/^09\d{9}$/, "فرمت شماره موبایل معتبر نیست"),
   password: z.string().min(1, "رمز عبور الزامی است"),
   remember: z.boolean().default(false),
 });
-export type LoginType = z.infer<typeof loginSchema>;
+export type LoginRequest = z.infer<typeof loginRequestSchema>;
 
 export const verifyOtpSchema = z.object({
   mobile: z.string().min(1, "شماره موبایل الزامی است"),
@@ -33,4 +36,4 @@ export const meResponseSchema = z.object({
 export type MeResponse = z.infer<typeof meResponseSchema>;
 
 export const loginResponseSchema = z.union([meResponseSchema, loginChallengeResponseSchema]);
-export type LoginResponseType = z.infer<typeof loginResponseSchema>;
+export type LoginResponse = z.infer<typeof loginResponseSchema>;
