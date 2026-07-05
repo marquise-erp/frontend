@@ -1,10 +1,11 @@
-import type { OrganizationNode, OrganizationTreeNode } from "../schemas/organization-entities";
+import { OrganizationListItemResponse } from "../schemas/responses";
+import type { OrganizationTreeNode } from "../types/organization-tree";
 
 /**
  * Converts the flat list returned by the API into the nested
  * {@link OrganizationTreeNode} shape consumed by `OrgTree`.
  */
-export function buildOrgForest(nodes: OrganizationNode[]): OrganizationTreeNode[] {
+export function buildOrgForest(nodes: OrganizationListItemResponse[]): OrganizationTreeNode[] {
   const byId = new Map<number, OrganizationTreeNode>(
     nodes.map((n) => [
       n.id,
@@ -12,7 +13,7 @@ export function buildOrgForest(nodes: OrganizationNode[]): OrganizationTreeNode[
         id: String(n.id),
         name: n.name,
         type: n.type,
-        code: n.code ?? undefined,
+        description: n.description ?? undefined,
         children: [],
       },
     ]),

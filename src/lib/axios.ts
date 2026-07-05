@@ -1,6 +1,7 @@
 import { CLIENT_API_BASE } from '@/config/api-routes';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { useAuthStore } from '@/features/auth/store/auth-store';
 
 export const api = axios.create({
   baseURL: CLIENT_API_BASE,
@@ -17,6 +18,15 @@ api.interceptors.request.use((config) => {
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
+
+    // Inject current scope/tenant context header for all authenticated requests.
+    // The backend uses X-Tenant-Scope-ID to know which scope (organization context)
+    // the request should be executed under.
+    const { isAuthenticated, activeScopeId } = useAuthStore.getState();
+    if (isAuthenticated && activeScopeId != null) {
+        config.headers['X-Tenant-Scope-ID'] = activeScopeId;
+    }
+
     return config;
 });
 

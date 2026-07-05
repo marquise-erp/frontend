@@ -8,3 +8,5 @@ export const userSchema = baseEntitySchema.extend({
 }).strict();
 
 export type User = z.infer<typeof userSchema>;
+
+export const userListSchema = z.array(userSchema);

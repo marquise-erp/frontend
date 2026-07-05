@@ -1,24 +1,25 @@
 import { z } from 'zod';
-import { baseEntitySchema } from '@/features/shared/schemas/primitives';
+import { baseEntitySchema, idSchema, nameSchema } from '@/features/shared/schemas/primitives';
 import { roleSchema, positionSchema } from './rbac.schema';
-import { organizationSchema } from '@/features/organization/schemas/organization.schema';
-import { organizationRefSchema } from '@/features/organization/schemas/organization-ref.schema';
+import { organizationTypeSchema } from '@/features/organization/schemas/types';
+import { organizationRefSchema } from '@/features/organization/schemas/responses';
 
-export const scopeOrganizationSchema = organizationSchema
-  .pick({
-    id: true,
-    name: true,
-    type: true,
-    path: true,
+// ScopeOrganization - tolerant of extra keys returned by backend for the organization context object.
+export const scopeOrganizationSchema = z
+  .object({
+    id: idSchema,
+    name: nameSchema,
+    type: organizationTypeSchema.optional(),
   })
+  .passthrough()
   .extend({
     holding: organizationRefSchema.nullable(),
     brand: organizationRefSchema.nullable(),
-  })
-  .strict();
+  });
 
 export type ScopeOrganization = z.infer<typeof scopeOrganizationSchema>;
 
+//Scope
 export const scopeSchema = baseEntitySchema.extend({
   organization: scopeOrganizationSchema,
   role: roleSchema.nullable(),

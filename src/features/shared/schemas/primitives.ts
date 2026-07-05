@@ -3,6 +3,9 @@ import { z } from 'zod';
 export const idSchema = z.coerce.number().int().positive();
 export const slugSchema = z.string().min(1).max(100).regex(/^[a-z0-9-]+$/);
 export const nameSchema = z.string().min(1).max(255);
+export const descriptionSchema = z.string().nullable().optional();
+export const mobileSchema = z.string().regex(/^09\d{9}$/, 'شماره موبایل معتبر نیست');
+
 
 export const moneySchema = z.string().regex(/^\d+(\.\d{1,4})?$/);
 

@@ -17,8 +17,9 @@ import {
     FieldError,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { Checkbox } from "@/components/ui/checkbox"
 import { useForm } from "@tanstack/react-form"
-import { loginSchema, LoginType } from "../schemas/login-schema"
+import { loginRequestSchema, LoginRequest } from "../schemas/login-schema"
 import { useLogin } from "../hooks/use-login"
 import { useTranslations } from "next-intl"
 
@@ -33,10 +34,18 @@ export function LoginForm({
         defaultValues: {
             mobile: "",
             password: "",
-        } as LoginType,
+            remember: false,
+        } as LoginRequest,
 
         validators: {
-            onChange: loginSchema,
+            onChange: ({ value }) => {
+                const result = loginRequestSchema.safeParse(value)
+                if (result.success) {
+                    return undefined
+                }
+
+                return result.error.issues
+            },
         },
         onSubmit: async ({ value }) => {
             console.log("Submitting:", value)
@@ -112,6 +121,27 @@ export function LoginForm({
                             </Field>
                         )
                     }}
+                />
+
+                {/* REMEMBER ME */}
+                <form.Field
+                    name="remember"
+                    children={(field) => (
+                        <div className="flex items-center gap-2">
+                            <Checkbox
+                                id={field.name}
+                                checked={!!field.state.value}
+                                onCheckedChange={(checked) => field.handleChange(checked === true)}
+                                onBlur={field.handleBlur}
+                            />
+                            <label
+                                htmlFor={field.name}
+                                className="text-sm text-muted-foreground cursor-pointer select-none"
+                            >
+                                {t("login.remember")}
+                            </label>
+                        </div>
+                    )}
                 />
 
                 {/* ACTION BUTTONS */}

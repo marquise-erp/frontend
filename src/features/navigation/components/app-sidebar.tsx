@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/sidebar"
 import { appSidebarItems } from "@/features/navigation/config/sidebar-items"
 import {
-  mockAvailableScopes,
   mockDevSidebarAccess,
 } from "@/features/navigation/config/mock-dev-session"
 import {
@@ -21,22 +20,28 @@ import {
   sortSidebarItems,
 } from "@/features/navigation/lib/filter-sidebar"
 import { useAuthStore } from "@/features/auth/store/auth-store"
+import { useAuthMe } from "@/features/auth/hooks/use-auth"
+import { useSwitchScope } from "@/features/auth/hooks/use-switch-scope"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  // Hydrate auth data from server on mount / reload using React Query + store sync.
+  // This fixes missing user/scopes/permissions in scope-switcher and nav-user after refresh.
+  useAuthMe();
+
   const scopes = useAuthStore((s) => s.scopes)
   const activeScopeId = useAuthStore((s) => s.activeScopeId)
   const permissions = useAuthStore((s) => s.permissions)
-  const switchContextNode = useAuthStore((s) => s.switchContextNode)
 
-  const resolvedScopes = React.useMemo(() => {
-    return scopes.length ? scopes : mockAvailableScopes
-  }, [scopes])
+  // useSwitchScope performs the server call (POST /auth/switch-scope)
+  // and updates the local activeScopeId on success. The header
+  // X-Tenant-Scope-ID will be sent on all future requests automatically.
+  const switchScopeMutation = useSwitchScope()
 
   const access = React.useMemo(() => {
     const activeScope =
-      resolvedScopes.find((scope) => scope.id === activeScopeId) ??
-      resolvedScopes.find((scope) => scope.is_current_context) ??
-      resolvedScopes[0]
+      scopes.find((scope) => scope.id === activeScopeId) ??
+      scopes.find((scope) => scope.is_current_context) ??
+      scopes[0]
 
     if (!activeScope || !permissions.length) {
       return mockDevSidebarAccess
@@ -46,7 +51,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       permissions: new Set(permissions.map((permission) => permission.slug)),
       orgNodeType: activeScope.organization.type,
     }
-  }, [resolvedScopes, activeScopeId, permissions])
+  }, [scopes, activeScopeId, permissions])
 
   const navItems = React.useMemo(() => {
     const filtered = filterSidebarItems(appSidebarItems, access)
@@ -54,21 +59,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   }, [access])
 
   const resolvedActiveScopeId = React.useMemo(() => {
-    if (activeScopeId && resolvedScopes.some((scope) => scope.id === activeScopeId)) {
+    if (activeScopeId && scopes.some((scope) => scope.id === activeScopeId)) {
       return activeScopeId
     }
     const defaultScope =
-      resolvedScopes.find((scope) => scope.is_current_context) ?? resolvedScopes[0]
+      scopes.find((scope) => scope.is_current_context) ?? scopes[0]
     return defaultScope?.id ?? null
-  }, [resolvedScopes, activeScopeId])
+  }, [scopes, activeScopeId])
 
   return (
     <Sidebar collapsible="icon" {...props} className="sidebar-gradient">
       <SidebarHeader>
         <ScopeSwitcher
-          scopes={resolvedScopes}
+          scopes={scopes}
           activeScopeId={resolvedActiveScopeId}
-          onScopeChange={switchContextNode}
+          onScopeChange={switchScopeMutation.mutate}
+          disabled={switchScopeMutation.isPending}
         />
       </SidebarHeader>
       <SidebarContent>

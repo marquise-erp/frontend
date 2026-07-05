@@ -24,6 +24,7 @@ export async function fetchFromApi<T>(
     if (schema) {
         const validation = schema.safeParse(json.data);
         if (!validation.success) {
+            console.error("Validation errors:", validation.error);
             throw new Error("Data validation failed from backend.");
         }
         return validation.data;
@@ -88,4 +89,28 @@ export async function deleteFromApi(
     if (response.data.status === 'error') {
         throw new Error(response.data.message || "Delete failed");
     }
+}
+
+export async function patchToApi<TResponse, TBody>(
+    url: string,
+    body: TBody,
+    schema?: z.ZodType<TResponse>,
+    config?: AxiosRequestConfig
+): Promise<TResponse> {
+    const response = await api.patch<ApiResponse<TResponse>>(url, body, config);
+
+    if (response.data.status === 'error') {
+        throw new Error(response.data.message || "Update failed");
+    }
+
+    if (schema) {
+        const validation = schema.safeParse(response.data.data);
+        if (!validation.success) {
+            console.error("Validation errors:", validation.error);
+            throw new Error("Data validation failed from backend.");
+        }
+        return validation.data;
+    }
+
+    return response.data.data;
 }

@@ -1,11 +1,11 @@
-import type { OrgNodeType } from "@/features/organization/types/organization"
+import type { OrganizationType as OrgNodeType } from "@/features/organization/schemas/types"
 import type { SidebarItem } from "@/features/navigation/types/sidebar"
 
 export interface SidebarAccessContext {
   /** Effective permission strings from `scope.role.permissions`. */
   permissions: ReadonlySet<string>
   /** Organization node type from `scope.type`. */
-  orgNodeType: OrgNodeType
+  orgNodeType: OrgNodeType | undefined
 }
 
 function isOrgNodeTypeAllowed(
@@ -43,7 +43,7 @@ export function filterSidebarItems(
   const { permissions, orgNodeType } = access
 
   function visit(item: SidebarItem): SidebarItem | null {
-    const levelOk = isOrgNodeTypeAllowed(item.allowedLevels, orgNodeType)
+    const levelOk = orgNodeType ? isOrgNodeTypeAllowed(item.allowedLevels, orgNodeType) : true
     const permOk = hasPermission(item.permission, permissions)
 
     if (item.children?.length) {

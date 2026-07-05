@@ -39,6 +39,82 @@
             "city": "شهر",
             "branch": "شعبه",
             "unit": "واحد"
+        },
+        "sheet": {
+            "tabs": {
+                "general": "عمومی",
+                "roles": "نقش‌ها",
+                "members": "اعضا"
+            },
+            "titlePlaceholder": "نام سازمان",
+            "descriptionPlaceholder": "توضیحات را وارد کنید...",
+            "general": {
+                "subOrgs": "زیرمجموعه‌ها",
+                "teams": "تیم‌ها",
+                "info": "اطلاعات",
+                "type": "نوع سازمان",
+                "parent": "سازمان والد",
+                "region": "منطقه",
+                "totalMembers": "تعداد اعضا",
+                "created": "ایجاد شده",
+                "createdBy": "ایجاد شده توسط",
+                "regionSettings": "تنظیمات منطقه",
+                "citySettings": "تنظیمات شهر",
+                "taxRate": "نرخ مالیات",
+                "taxName": "نام مالیات",
+                "currencyCode": "واحد پول",
+                "cityName": "نام شهر"
+            },
+            "members": {
+                "title": "اعضا",
+                "invite": "دعوت عضو",
+                "search": "جستجو",
+                "status": "وضعیت:",
+                "permissions": "دسترسی‌ها:",
+                "all": "همه",
+                "active": "فعال",
+                "inviteSent": "دعوت ارسال شده",
+                "inactive": "غیرفعال",
+                "name": "نام",
+                "rolePosition": "نقش و سمت",
+                "noMembers": "هیچ عضوی به این سطح اختصاص نیافته است."
+            },
+            "roles": {
+                "title": "نقش‌ها",
+                "add": "افزودن نقش",
+                "search": "جستجوی نقش‌ها",
+                "status": "وضعیت:",
+                "role": "نقش",
+                "members": "اعضا",
+                "noRoles": "هیچ نقشی تعریف نشده است.",
+            "statusLabel": "وضعیت"
+            },
+            "invite": {
+                "user": "کاربر",
+                "mobile": "موبایل",
+                "role": "نقش",
+                "position": "سمت (اختیاری)",
+                "notInList": "در لیست نیست؟ از + برای دعوت با شماره موبایل استفاده کنید.",
+                "selectUser": "یک کاربر انتخاب کنید",
+                "selectRole": "یک نقش انتخاب کنید",
+                "enterMobile": "شماره موبایل را وارد کنید",
+                "cancel": "انصراف",
+                "submit": "ارسال",
+                "sendInvite": "ارسال دعوت",
+                "memberAdded": "عضو اضافه شد"
+            },
+            "actions": {
+                "resend": "ارسال مجدد دعوت",
+                "cancelInvite": "لغو دعوت",
+                "setActive": "فعال کردن",
+                "setInactive": "غیرفعال کردن",
+                "remove": "حذف"
+            },
+            "status": {
+                "active": "فعال",
+                "inviteSent": "دعوت ارسال شده",
+                "inactive": "غیرفعال"
+            }
         }
     },
     "auth": {
@@ -48,6 +124,7 @@
             "username": "نام کاربری",
             "mobile": "شماره همراه",
             "password": "رمز عبور",
+            "remember": "مرا به خاطر بسپار",
             "submit": "ورود",
             "forget password": "فراموشی رمز عبور؟"
         }

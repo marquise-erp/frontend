@@ -1,34 +1,73 @@
-import { OrganizationType } from "../schemas/organization-type.schema";
+import { OrganizationType } from "../schemas/types";
+import { BriefcaseIcon, Building02Icon, Globe02Icon, MapPinIcon, StoreIcon, UserStarIcon } from "@hugeicons/core-free-icons";
+import { IconSvgElement } from "@hugeicons/react";
+import { CityProfile, RegionProfile } from "../schemas/responses";
 
 export interface OrganizationTreeNode {
     id: string;
     name: string;
     type: OrganizationType;
     code?: string;
+    description?: string;
+    profile?: RegionProfile | CityProfile | null;
     children?: OrganizationTreeNode[];
 }
 
-// export interface OrgNode {
-//     id: number;
-//     holding_id: number;             // The root multi-tenant link
-//     parent_id: number | null;        // Null only for the root 'holding' node
-    
-//     name: string;                    // e.g., "شعبه پاسداران" or "کیا گلد"
-//     code?: string;                   // Optional code for finance mapping (e.g., "PAS-01")
-//     type: OrganizationType;             
-//     path: string;                    // Materialized path for fast lookups, e.g., "1/5/12"
-    
-//     // Recursive UI structure
-//     children?: OrgNode[];            // Note: properly spelled 'children' instead of 'childrens'
-    
-//     // Depth-specific metadata (Optional context fields)
-//     metadata?: {
-//       currency?: 'IRR' | 'AED';       // Useful if node is a branch/unit in Dubai vs Tehran
-//       address?: string;
-//       phone?: string;
-//     };
-    
-//     created_at?: string;
-//     updated_at?: string;
-//   }
+export type MemberStatus = "active" | "invite-sent" | "inactive";
 
+export interface OrgMember {
+    id: string;
+    fullName: string;
+    email: string;
+    phone?: string;
+    avatar?: string;
+    roleId?: string | number;
+    status: MemberStatus;
+}
+
+
+export type OrganizationLevelMeta = {
+    label: string;
+    icon: IconSvgElement;
+    color: string;
+    child: OrganizationType | null;
+  };
+  
+  export const ORGANIZATION_LEVELS = {
+    holding: {
+      label: "هلدینگ",
+      icon: Building02Icon,
+      color: "var(--level-holding)",
+      child: "brand",
+    },
+    brand: {
+      label: "برند",
+      icon: BriefcaseIcon,
+      color: "var(--level-brand)",
+      child: "region",
+    },
+    region: {
+      label: "منطقه",
+      icon: Globe02Icon,
+      color: "var(--level-region)",
+      child: "city",
+    },
+    city: {
+      label: "شهر",
+      icon: MapPinIcon,
+      color: "var(--level-city)",
+      child: "branch",
+    },
+    branch: {
+      label: "شعبه",
+      icon: StoreIcon,
+      color: "var(--level-branch)",
+      child: "unit",
+    },
+    unit: {
+      label: "واحد",
+      icon: UserStarIcon,
+      color: "var(--level-unit)",
+      child: null,
+    },
+  } as const satisfies Record<OrganizationType, OrganizationLevelMeta>;

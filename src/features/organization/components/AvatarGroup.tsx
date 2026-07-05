@@ -1,10 +1,10 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import type { AppUser } from "../config/rbac-data";
+import type { OrgMember } from "../types/organization-tree";
 
 interface Props {
-  users: AppUser[];
+  users: OrgMember[];
   max?: number;
   size?: "sm" | "md";
   className?: string;

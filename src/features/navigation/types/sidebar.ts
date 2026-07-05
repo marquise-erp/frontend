@@ -1,4 +1,4 @@
-import { OrgNodeType } from "@/features/organization/types/organization"
+import type { OrganizationType as OrgNodeType } from "@/features/organization/schemas/types"
 import type * as React from "react"
 
 

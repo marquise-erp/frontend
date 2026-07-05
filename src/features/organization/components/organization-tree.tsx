@@ -1,13 +1,9 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { ORGANIZATION_LEVELS} from "../config/organization-levels";
 import { NodeFormDialog } from "./NodeFormDialog";
 import { Button } from "@/components/ui/button";
-import { useUsersForLevel } from "../store/rbac-store";
 import { AvatarGroup } from "./AvatarGroup";
-import {
-  useDeleteOrganization,
-} from "../hooks/use-organizations";
+import { useDeleteOrganization } from "../api";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,16 +13,19 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ArrowLeft01Icon, Delete02Icon, MoreVerticalIcon, PencilEdit01Icon, PlusSignIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { OrganizationTreeNode } from "../types/organization-tree";
+import { ORGANIZATION_LEVELS, type OrganizationTreeNode, type OrgMember } from "../types/organization-tree";
+import { DeleteDialog } from "@/features/shared/components/delete-dialog";
 
 function Row({
   node,
   depth,
   roots,
+  onNodeClick,
 }: {
   node: OrganizationTreeNode;
   depth: number;
   roots: OrganizationTreeNode[];
+  onNodeClick?: (node: OrganizationTreeNode) => void;
 }) {
   const meta = ORGANIZATION_LEVELS[node.type];
   const Icon = meta.icon;
@@ -36,15 +35,16 @@ function Row({
   const [open, setOpen] = useState(depth < 2);
   const [editOpen, setEditOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const deleteOrganization = useDeleteOrganization();
 
-  const users = useUsersForLevel(node.id);
+  // No members API yet; show an empty avatar group for now.
+  const users: OrgMember[] = [];
   const isActive = false;
 
-  const handleDelete = () => {
-    if (confirm(`حذف «${node.name}»؟`)) {
-      deleteOrganization.mutate(node.id);
-    }
+  const handleConfirmDelete = () => {
+    deleteOrganization.mutate(node.id);
+    setDeleteOpen(false);
   };
 
   return (
@@ -87,9 +87,13 @@ function Row({
           <HugeiconsIcon icon={Icon} strokeWidth={2} className="h-4 w-4" />
         </span>
 
-        <div className="flex-1 min-w-0 leading-tight">
+        <button
+          type="button"
+          onClick={() => onNodeClick?.(node)}
+          className="group flex-1 min-w-0 text-start leading-tight rounded-md px-1 -mx-1 py-0.5 hover:bg-accent/30 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+        >
           <div className="flex min-w-0 items-center gap-2">
-            <span className="truncate text-sm font-semibold">{node.name}</span>
+            <span className="truncate text-sm font-semibold group-hover:underline">{node.name}</span>
             {node.code && (
               <span className="text-[10px] font-mono text-muted-foreground/70" dir="ltr">
                 {node.code}
@@ -106,7 +110,7 @@ function Row({
               </span>
             )}
           </div>
-        </div>
+        </button>
 
         <div className="hidden sm:flex items-center mr-2 flex-shrink-0">
           <AvatarGroup users={users} max={5} />
@@ -132,9 +136,15 @@ function Row({
               size="icon"
               variant="ghost"
               className="h-7 w-7"
-              onClick={() => setEditOpen(true)}
-              aria-label="ویرایش"
-              title="ویرایش"
+              onClick={() => {
+                if (onNodeClick) {
+                  onNodeClick(node);
+                } else {
+                  setEditOpen(true);
+                }
+              }}
+              aria-label="ویرایش / جزئیات"
+              title="ویرایش / جزئیات"
             >
               <HugeiconsIcon icon={PencilEdit01Icon} strokeWidth={2} className="h-3.5 w-3.5" />
             </Button>
@@ -145,7 +155,7 @@ function Row({
                 size="icon"
                 variant="ghost"
                 className="h-7 w-7 hover:text-destructive"
-                onClick={handleDelete}
+                onClick={() => setDeleteOpen(true)}
                 disabled={deleteOrganization.isPending}
                 aria-label="حذف"
                 title="حذف"
@@ -178,7 +188,7 @@ function Row({
                 <>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
-                    onClick={handleDelete}
+                    onClick={() => setDeleteOpen(true)}
                     disabled={deleteOrganization.isPending}
                     className="text-destructive focus:text-destructive"
                   >
@@ -195,11 +205,13 @@ function Row({
       {open && (
         <div>
           {node.children?.map((c) => (
-            <Row key={c.id} node={c} depth={depth + 1} roots={roots} />
+            <Row key={c.id} node={c} depth={depth + 1} roots={roots} onNodeClick={onNodeClick} />
           ))}
         </div>
       )}
 
+      {/* Edit via NodeFormDialog kept for simple name/code quick edit (legacy). 
+          Primary node interaction is now via NodeSheet triggered by onNodeClick (name area or external). */}
       {editOpen && (
         <NodeFormDialog
           open={editOpen}
@@ -219,6 +231,15 @@ function Row({
           roots={roots}
         />
       )}
+
+      <DeleteDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        entityLabel={meta.label}
+        entityName={node.name}
+        onConfirm={handleConfirmDelete}
+        isLoading={deleteOrganization.isPending}
+      />
     </div>
   );
 }
@@ -226,13 +247,15 @@ function Row({
 export function OrgTree({
   root,
   roots,
+  onNodeClick,
 }: {
   root: OrganizationTreeNode;
   roots: OrganizationTreeNode[];
+  onNodeClick?: (node: OrganizationTreeNode) => void;
 }) {
   return (
     <div className="w-full rounded-lg overflow-hidden border border-border/40">
-      <Row node={root} depth={0} roots={roots} />
+      <Row node={root} depth={0} roots={roots} onNodeClick={onNodeClick} />
     </div>
   );
 }

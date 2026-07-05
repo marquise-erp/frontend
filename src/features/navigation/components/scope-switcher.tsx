@@ -18,18 +18,18 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { LayoutBottomIcon, UnfoldMoreIcon } from "@hugeicons/core-free-icons"
 import { useTranslations } from "next-intl"
-import type { ScopeType } from "@/features/auth/schemas/auth-entities"
+import type { Scope  } from "@/features/auth/schemas"
 
 function scopeTitle(
-  scope: ScopeType,
-  tOrganizationType: (type: ScopeType["organization"]["type"]) => string
+  scope: Scope,
+  tOrganizationType: (type: Scope["organization"]["type"]) => string
 ): string {
   const roleOrPosition = scope.position?.name ?? scope.role?.name ?? ""
   const orgType = tOrganizationType(scope.organization.type)
   return `${roleOrPosition} ${orgType} ${scope.organization.name}`
 }
 
-function scopeSubTitle(scope: ScopeType): string {
+function scopeSubTitle(scope: Scope): string {
   const { holding, brand } = scope.organization
   return [holding?.name, brand?.name].filter(Boolean).join("/")
 }
@@ -38,10 +38,12 @@ export function ScopeSwitcher({
   scopes,
   activeScopeId,
   onScopeChange,
+  disabled = false,
 }: {
-  scopes: ScopeType[]
+  scopes: Scope[]
   activeScopeId: number | null
   onScopeChange: (scopeId: number) => void
+  disabled?: boolean
 }) {
   const { isMobile } = useSidebar()
   const tOrganizationType = useTranslations("organization.type")
@@ -65,6 +67,7 @@ export function ScopeSwitcher({
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
+              disabled={disabled}
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
@@ -72,7 +75,7 @@ export function ScopeSwitcher({
               </div>
               <div className="grid flex-1 text-start text-sm leading-tight">
                 <span className="truncate font-medium">
-                  {scopeTitle(activeScope, tOrganizationType)}
+                  {scopeTitle(activeScope, tOrganizationType as any)}
                 </span>
                 <span className="truncate text-xs">
                   {scopeSubTitle(activeScope)}
@@ -93,6 +96,7 @@ export function ScopeSwitcher({
             {scopes.map((scope, index) => (
               <DropdownMenuItem
                 key={scope.id}
+                disabled={disabled}
                 onClick={() => onScopeChange(scope.id)}
                 className="gap-2 p-2"
               >
@@ -101,7 +105,7 @@ export function ScopeSwitcher({
                 </div>
                 <div className="grid flex-1 text-start text-sm leading-tight">
                   <span className="truncate font-medium">
-                    {scopeTitle(scope, tOrganizationType)}
+                    {scopeTitle(scope, tOrganizationType as any)}
                   </span>
                   <span className="truncate text-xs text-muted-foreground">
                     {scopeSubTitle(scope)}

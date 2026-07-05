@@ -39,6 +39,82 @@
             "city": "City",
             "branch": "Branch",
             "unit": "Unit"
+        },
+        "sheet": {
+            "tabs": {
+                "general": "General",
+                "roles": "Roles",
+                "members": "Members"
+            },
+            "titlePlaceholder": "Organization name",
+            "descriptionPlaceholder": "Add description...",
+            "general": {
+                "subOrgs": "Sub-orgs",
+                "teams": "Teams",
+                "info": "Info",
+                "type": "Organization type",
+                "parent": "Parent organization",
+                "region": "Region",
+                "totalMembers": "Total members",
+                "created": "Created",
+                "createdBy": "Created by",
+                "regionSettings": "Region settings",
+                "citySettings": "City settings",
+                "taxRate": "Tax rate",
+                "taxName": "Tax name",
+                "currencyCode": "Currency",
+                "cityName": "City name"
+            },
+            "members": {
+                "title": "Members",
+                "invite": "Invite member",
+                "search": "Search",
+                "status": "Status:",
+                "permissions": "Permissions:",
+                "all": "All",
+                "active": "Active",
+                "inviteSent": "Invite sent",
+                "inactive": "Inactive",
+                "name": "Name",
+                "rolePosition": "Role & position",
+                "noMembers": "No members assigned yet."
+            },
+            "roles": {
+                "title": "Roles",
+                "add": "Add role",
+                "search": "Search roles",
+                "status": "Status:",
+                "role": "Role",
+                "members": "Members",
+                "noRoles": "No roles defined.",
+            "statusLabel": "Status"
+            },
+            "invite": {
+                "user": "User",
+                "mobile": "Mobile",
+                "role": "Role",
+                "position": "Position (optional)",
+                "notInList": "Not in the list? Use + to invite by mobile number.",
+                "selectUser": "Select a user",
+                "selectRole": "Select a role",
+                "enterMobile": "Enter mobile number",
+                "cancel": "Cancel",
+                "submit": "Submit",
+                "sendInvite": "Send invite",
+                "memberAdded": "Member added"
+            },
+            "actions": {
+                "resend": "Resend invite",
+                "cancelInvite": "Cancel invite",
+                "setActive": "Set active",
+                "setInactive": "Set inactive",
+                "remove": "Remove"
+            },
+            "status": {
+                "active": "Active",
+                "inviteSent": "Invite sent",
+                "inactive": "Inactive"
+            }
         }
     },
     "auth": {
@@ -47,6 +123,7 @@
             "description": "Enter your credentials to sign in.",
             "username": "Username",
             "password": "Password",
+            "remember": "Remember me",
             "submit": "Sign in",
             "forget password": "Forgot password?"
         }

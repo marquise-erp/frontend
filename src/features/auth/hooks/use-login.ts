@@ -5,7 +5,8 @@ import { toast } from "sonner";
 import { useAuthStore } from "../store/auth-store";
 import { API_ROUTES } from "@/config/api-routes";
 import { postToApi } from "@/lib/api";
-import { LoginRequest, LoginResponse, loginResponseSchema } from "../schemas";
+import { LoginRequest, LoginResponse, loginResponseSchema, MeResponse } from "../schemas";
+import { authKeys } from "./use-auth";
 
 function getSafeRedirectPath(next: string | null): string {
     if (!next || !next.startsWith("/") || next.startsWith("//")) {
@@ -46,7 +47,10 @@ export const useLogin = () => {
 
                 setAuthData(user, scopes, permissions);
 
-                queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
+                // Seed React Query cache from login response so useAuthMe hook
+                // has data immediately (prevents extra /me roundtrip and ensures
+                // consistency on initial navigation after login).
+                queryClient.setQueryData<MeResponse>(authKeys.me, { user, scopes, permissions });
 
                 toast.success(`${data.user.name} عزیز، ورود با موفقیت انجام شد.`);
                 router.push(getSafeRedirectPath(searchParams.get("next")));
