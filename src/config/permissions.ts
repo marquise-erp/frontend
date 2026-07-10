@@ -1,51 +1,49 @@
 export const PERMISSION_CODES = {
-  USER_READ: 'USER_READ',
-  USER_CREATE: 'USER_CREATE',
-  USER_UPDATE: 'USER_UPDATE',
-  USER_DELETE: 'USER_DELETE',
-  ROLE_READ: 'ROLE_READ',
-  ROLE_CREATE: 'ROLE_CREATE',
-  ROLE_UPDATE: 'ROLE_UPDATE',
-  ROLE_DELETE: 'ROLE_DELETE',
-  PERMISSION_READ: 'PERMISSION_READ',
-  PERMISSION_CREATE: 'PERMISSION_CREATE',
-  PERMISSION_UPDATE: 'PERMISSION_UPDATE',
-  PERMISSION_DELETE: 'PERMISSION_DELETE',
-  BRAND_READ: 'BRAND_READ',
-  BRAND_CREATE: 'BRAND_CREATE',
-  BRAND_UPDATE: 'BRAND_UPDATE',
-  BRAND_DELETE: 'BRAND_DELETE',
-  HISTORY_READ: 'HISTORY_READ',
-  HISTORY_CREATE: 'HISTORY_CREATE',
-  HISTORY_UPDATE: 'HISTORY_UPDATE',
-  HISTORY_DELETE: 'HISTORY_DELETE',
-  LEADERSHIP_READ: 'LEADERSHIP_READ',
-  LEADERSHIP_CREATE: 'LEADERSHIP_CREATE',
-  LEADERSHIP_UPDATE: 'LEADERSHIP_UPDATE',
-  LEADERSHIP_DELETE: 'LEADERSHIP_DELETE',
-  TEAM_READ: 'TEAM_READ',
-  TEAM_CREATE: 'TEAM_CREATE',
-  TEAM_UPDATE: 'TEAM_UPDATE',
-  TEAM_DELETE: 'TEAM_DELETE',
-  SITE_SETTING_READ: 'SITE_SETTING_READ',
-  SITE_SETTING_UPDATE: 'SITE_SETTING_UPDATE',
-  CONTACT_READ: 'CONTACT_READ',
-  CONTACT_UPDATE: 'CONTACT_UPDATE',
-  CONTACT_DELETE: 'CONTACT_DELETE',
-  BLOG_READ: 'BLOG_READ',
-  BLOG_CREATE: 'BLOG_CREATE',
-  BLOG_UPDATE: 'BLOG_UPDATE',
-  BLOG_DELETE: 'BLOG_DELETE',
-  NAV_READ: 'NAV_READ',
-  NAV_CREATE: 'NAV_CREATE',
-  NAV_UPDATE: 'NAV_UPDATE',
-  NAV_DELETE: 'NAV_DELETE',
-  DASHBOARD_READ: 'DASHBOARD_READ',
-  AUDIT_READ: 'AUDIT_READ',
+  // User
+  AUTH_USER_VIEW: 'auth.user.view',
+  AUTH_USER_CREATE: 'auth.user.create',
+  AUTH_USER_EDIT: 'auth.user.edit',
+  AUTH_USER_DELETE: 'auth.user.delete',
+
+  // Role
+  AUTH_ROLE_VIEW: 'auth.role.view',
+  AUTH_ROLE_CREATE: 'auth.role.create',
+  AUTH_ROLE_EDIT: 'auth.role.edit',
+  AUTH_ROLE_DELETE: 'auth.role.delete',
+
+  // Scope
+  AUTH_SCOPE_VIEW: 'auth.scope.view',
+  AUTH_SCOPE_CREATE: 'auth.scope.create',
+  AUTH_SCOPE_EDIT: 'auth.scope.edit',
+  AUTH_SCOPE_DELETE: 'auth.scope.delete',
+
+  // Position
+  AUTH_POSITION_VIEW: 'auth.position.view',
+  AUTH_POSITION_CREATE: 'auth.position.create',
+  AUTH_POSITION_EDIT: 'auth.position.edit',
+  AUTH_POSITION_DELETE: 'auth.position.delete',
+
+  // Organization
+  ORGANIZATION_VIEW: 'organization.view',
+  ORGANIZATION_CREATE: 'organization.create',
+  ORGANIZATION_EDIT: 'organization.edit',
+  ORGANIZATION_DELETE: 'organization.delete',
+
+  // Customer group
+  CUSTOMER_GROUP_VIEW: 'customer.customer_group.view',
+  CUSTOMER_GROUP_CREATE: 'customer.customer_group.create',
+  CUSTOMER_GROUP_EDIT: 'customer.customer_group.edit',
+  CUSTOMER_GROUP_DELETE: 'customer.customer_group.delete',
+
+  // Permission access rule
+  AUTH_PERMISSION_ACCESS_RULE_VIEW: 'auth.permission_access_rule.view',
+  AUTH_PERMISSION_ACCESS_RULE_CREATE: 'auth.permission_access_rule.create',
+  AUTH_PERMISSION_ACCESS_RULE_EDIT: 'auth.permission_access_rule.edit',
+  AUTH_PERMISSION_ACCESS_RULE_DELETE: 'auth.permission_access_rule.delete',
 } as const;
 
 export type PermissionCode =
   (typeof PERMISSION_CODES)[keyof typeof PERMISSION_CODES];
 
 export const SUPER_ADMIN_ROLE = 'SUPER_ADMIN';
-export const CONTENT_MANAGER_ROLE = 'CONTENT_MANAGER';
+

@@ -1,261 +1,116 @@
+"use client";
+
 import { useState } from "react";
-import { cn } from "@/lib/utils";
-import { NodeFormDialog } from "./NodeFormDialog";
 import { Button } from "@/components/ui/button";
-import { AvatarGroup } from "./AvatarGroup";
-import { useDeleteOrganization } from "../api";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ArrowLeft01Icon, Delete02Icon, MoreVerticalIcon, PencilEdit01Icon, PlusSignIcon } from "@hugeicons/core-free-icons";
+import { Card, CardTitle, CardHeader, CardContent } from "@/components/ui/card";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { Skeleton } from "@/components/ui/skeleton";
+import { TreeTable } from "@/components/ui/tree-table";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { ORGANIZATION_LEVELS, type OrganizationTreeNode, type OrgMember } from "../types/organization-tree";
-import { DeleteDialog } from "@/features/shared/components/delete-dialog";
+import {
+  NeuralNetworkIcon,
+  PlusSignIcon,
+} from "@hugeicons/core-free-icons";
+import { OrganizationSheet, type OrganizationSheetMode } from "./organization-sheet";
+import {
+  ORGANIZATION_LEVELS,
+  type OrganizationTreeNode,
+} from "../types/organization-tree";
+import { useOrganizations } from "../api";
+import { OrganizationTreeRow } from "./organization-tree-ui/organization-tree-row";
 
-function Row({
-  node,
-  depth,
-  roots,
-  onNodeClick,
-}: {
-  node: OrganizationTreeNode;
-  depth: number;
-  roots: OrganizationTreeNode[];
-  onNodeClick?: (node: OrganizationTreeNode) => void;
-}) {
-  const meta = ORGANIZATION_LEVELS[node.type];
-  const Icon = meta.icon;
-  const hasChildren = (node.children?.length ?? 0) > 0;
-  const canAdd = meta.child !== null;
-  const canDelete = node.type !== "holding";
-  const [open, setOpen] = useState(depth < 2);
-  const [editOpen, setEditOpen] = useState(false);
-  const [addOpen, setAddOpen] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const deleteOrganization = useDeleteOrganization();
+export function OrganizationTree() {
+  const { data: roots, isPending, isError, error } = useOrganizations();
 
-  // No members API yet; show an empty avatar group for now.
-  const users: OrgMember[] = [];
-  const isActive = false;
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [target, setTarget] = useState<OrganizationSheetMode | null>(null);
 
-  const handleConfirmDelete = () => {
-    deleteOrganization.mutate(node.id);
-    setDeleteOpen(false);
+  const rootNode = roots?.[0];
+
+  const openEdit = (node: OrganizationTreeNode) => {
+    setTarget({ type: "edit", node });
+    setSheetOpen(true);
+  };
+
+  const openCreate = (parent: OrganizationTreeNode) => {
+    const childType = ORGANIZATION_LEVELS[parent.type].child;
+    if (!childType) return;
+    setTarget({ type: "create", parent, createType: childType });
+    setSheetOpen(true);
+  };
+
+  const handleSheetOpenChange = (open: boolean) => {
+    setSheetOpen(open);
+    if (!open) {
+      // Clear the target after the close animation finishes.
+      // OrganizationSheet renders open=true + target=null safely.
+      setTimeout(() => setTarget(null), 200);
+    }
   };
 
   return (
-    <div>
-      <div
-        className={cn(
-          "group/row relative flex items-center gap-2 px-2 py-2.5 transition-colors hover:bg-accent/40",
-          isActive && "bg-accent/60",
-        )}
-        style={{
-          paddingInlineStart: `${depth * 1.25 + 0.5}rem`,
-          borderBottom: `1px solid color-mix(in oklab, ${meta.color} 20%, transparent)`,
-          borderRadius: 0,
-        }}
-      >
-        <span
-          className="absolute inset-y-2 w-[3px] rounded-full"
-          style={{ insetInlineStart: `${depth * 1.25 + 0.1}rem`, background: meta.color, opacity: 0.5 }}
-        />
-
-        {hasChildren ? (
-          <button
-            onClick={() => setOpen((o) => !o)}
-            className="flex h-5 w-5 items-center justify-center rounded text-muted-foreground hover:text-foreground"
-            aria-label="toggle"
+    <div className="w-full">
+      <Card className="w-full border-border/60 shadow-[var(--shadow-soft)]">
+        <CardHeader className="flex flex-row items-center justify-between gap-4">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <HugeiconsIcon icon={NeuralNetworkIcon} strokeWidth={2} className="h-4 w-4 text-primary" />
+            ساختار سازمانی
+          </CardTitle>
+          <Button
+            size="sm"
+            className="gap-2"
+            onClick={() => rootNode && openCreate(rootNode)}
+            disabled={!rootNode}
           >
-            <HugeiconsIcon icon={ArrowLeft01Icon} strokeWidth={2} className={cn("h-4 w-4 transition-transform", open && "-rotate-90")} />
-          </button>
-        ) : (
-          <span className="w-5" />
-        )}
+            <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} className="h-4 w-4" />
+            افزودن برند
+          </Button>
+        </CardHeader>
+        <CardContent>
+          <p className="mb-4 max-w-full text-xs text-muted-foreground break-words">
+            روی نام هر گره کلیک کنید تا شیت جزئیات و مدیریت اعضا/نقش‌ها باز شود.
+          </p>
 
-        <span
-          className="flex h-9 w-9 items-center justify-center rounded-lg shrink-0"
-          style={{
-            background: `color-mix(in oklab, ${meta.color} 14%, transparent)`,
-            color: meta.color,
-          }}
-        >
-          <HugeiconsIcon icon={Icon} strokeWidth={2} className="h-4 w-4" />
-        </span>
-
-        <button
-          type="button"
-          onClick={() => onNodeClick?.(node)}
-          className="group flex-1 min-w-0 text-start leading-tight rounded-md px-1 -mx-1 py-0.5 hover:bg-accent/30 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-        >
-          <div className="flex min-w-0 items-center gap-2">
-            <span className="truncate text-sm font-semibold group-hover:underline">{node.name}</span>
-            {node.code && (
-              <span className="text-[10px] font-mono text-muted-foreground/70" dir="ltr">
-                {node.code}
-              </span>
-            )}
-          </div>
-          <div className="flex items-center gap-2 mt-0.5">
-            <span className="text-[10px] uppercase tracking-wider text-muted-foreground/60">
-              {meta.label}
-            </span>
-            {node.type === "branch" && (node.children?.length ?? 0) > 0 && (
-              <span className="text-[10px] text-muted-foreground/70">
-                · {(node.children?.length ?? 0).toLocaleString("fa-IR")} واحد
-              </span>
-            )}
-          </div>
-        </button>
-
-        <div className="hidden sm:flex items-center mr-2 flex-shrink-0">
-          <AvatarGroup users={users} max={5} />
-        </div>
-
-        <div className="hidden md:flex items-center gap-0.5 ml-auto min-w-[88px] justify-end opacity-0 group-hover/row:opacity-100 transition-opacity flex-shrink-0">
-          <div className="w-7">
-            {canAdd && (
-              <Button
-                size="icon"
-                variant="ghost"
-                className="h-7 w-7"
-                onClick={() => setAddOpen(true)}
-                aria-label="افزودن زیرمجموعه"
-                title={`افزودن ${ORGANIZATION_LEVELS[meta.child!].label}`}
-              >
-                <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} className="h-3.5 w-3.5" style={{ color: meta.color }} />
-              </Button>
-            )}
-          </div>
-          <div className="w-7">
-            <Button
-              size="icon"
-              variant="ghost"
-              className="h-7 w-7"
-              onClick={() => {
-                if (onNodeClick) {
-                  onNodeClick(node);
-                } else {
-                  setEditOpen(true);
-                }
-              }}
-              aria-label="ویرایش / جزئیات"
-              title="ویرایش / جزئیات"
-            >
-              <HugeiconsIcon icon={PencilEdit01Icon} strokeWidth={2} className="h-3.5 w-3.5" />
-            </Button>
-          </div>
-          <div className="w-7">
-            {canDelete && (
-              <Button
-                size="icon"
-                variant="ghost"
-                className="h-7 w-7 hover:text-destructive"
-                onClick={() => setDeleteOpen(true)}
-                disabled={deleteOrganization.isPending}
-                aria-label="حذف"
-                title="حذف"
-              >
-                <HugeiconsIcon icon={Delete02Icon} strokeWidth={2} className="h-3.5 w-3.5" />
-              </Button>
-            )}
-          </div>
-        </div>
-
-        <div className="md:hidden flex-shrink-0">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button size="icon" variant="ghost" className="h-8 w-8" aria-label="گزینه‌ها">
-                <HugeiconsIcon icon={MoreVerticalIcon} strokeWidth={2} className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-44">
-              {canAdd && (
-                <DropdownMenuItem onClick={() => setAddOpen(true)}>
-                  <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} className="h-4 w-4" style={{ color: meta.color }} />
-                  افزودن {ORGANIZATION_LEVELS[meta.child!].label}
-                </DropdownMenuItem>
+          {isPending ? (
+            <OrgTreeSkeleton />
+          ) : isError ? (
+            <Alert variant="destructive">
+              <AlertTitle>خطا در بارگذاری ساختار سازمانی</AlertTitle>
+              <AlertDescription>
+                {error instanceof Error ? error.message : "ارتباط با سرور برقرار نشد."}
+              </AlertDescription>
+            </Alert>
+          ) : !roots?.length ? (
+            <p className="py-8 text-center text-sm text-muted-foreground">
+              هنوز ساختار سازمانی ثبت نشده است.
+            </p>
+          ) : (
+            <TreeTable<OrganizationTreeNode>
+              data={roots}
+              defaultExpandedDepth={2}
+              renderRow={(node, ctx) => (
+                <OrganizationTreeRow node={node} ctx={ctx} onEdit={openEdit} onAddChild={openCreate} />
               )}
-              <DropdownMenuItem onClick={() => setEditOpen(true)}>
-                <HugeiconsIcon icon={PencilEdit01Icon} strokeWidth={2} className="h-4 w-4" />
-                ویرایش
-              </DropdownMenuItem>
-              {canDelete && (
-                <>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={() => setDeleteOpen(true)}
-                    disabled={deleteOrganization.isPending}
-                    className="text-destructive focus:text-destructive"
-                  >
-                    <HugeiconsIcon icon={Delete02Icon} strokeWidth={2} className="h-4 w-4" />
-                    حذف
-                  </DropdownMenuItem>
-                </>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </div>
+            />
+          )}
+        </CardContent>
+      </Card>
 
-      {open && (
-        <div>
-          {node.children?.map((c) => (
-            <Row key={c.id} node={c} depth={depth + 1} roots={roots} onNodeClick={onNodeClick} />
-          ))}
-        </div>
-      )}
-
-      {/* Edit via NodeFormDialog kept for simple name/code quick edit (legacy). 
-          Primary node interaction is now via NodeSheet triggered by onNodeClick (name area or external). */}
-      {editOpen && (
-        <NodeFormDialog
-          open={editOpen}
-          onOpenChange={setEditOpen}
-          mode="edit"
-          node={node}
-          roots={roots}
-        />
-      )}
-      {addOpen && canAdd && (
-        <NodeFormDialog
-          open={addOpen}
-          onOpenChange={setAddOpen}
-          mode="create"
-          parentId={node.id}
-          parentType={node.type}
-          roots={roots}
-        />
-      )}
-
-      <DeleteDialog
-        open={deleteOpen}
-        onOpenChange={setDeleteOpen}
-        entityLabel={meta.label}
-        entityName={node.name}
-        onConfirm={handleConfirmDelete}
-        isLoading={deleteOrganization.isPending}
+      <OrganizationSheet
+        open={sheetOpen}
+        onOpenChange={handleSheetOpenChange}
+        target={target}
       />
     </div>
   );
 }
 
-export function OrgTree({
-  root,
-  roots,
-  onNodeClick,
-}: {
-  root: OrganizationTreeNode;
-  roots: OrganizationTreeNode[];
-  onNodeClick?: (node: OrganizationTreeNode) => void;
-}) {
+function OrgTreeSkeleton() {
   return (
-    <div className="w-full rounded-lg overflow-hidden border border-border/40">
-      <Row node={root} depth={0} roots={roots} onNodeClick={onNodeClick} />
+    <div className="space-y-2">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <Skeleton key={i} className="h-12 w-full rounded-lg" style={{ marginInlineStart: `${i * 0.75}rem` }} />
+      ))}
     </div>
   );
 }

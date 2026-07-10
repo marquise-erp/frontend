@@ -2,6 +2,7 @@ import { CLIENT_API_BASE } from '@/config/api-routes';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useAuthStore } from '@/features/auth/store/auth-store';
+import { toApiError } from '@/lib/api-error';
 
 export const api = axios.create({
   baseURL: CLIENT_API_BASE,
@@ -30,7 +31,8 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-// Optional: Handle 401 Unauthorized globally
+// Handle 401 globally, and normalize every failure into a typed ApiError
+// so callers get a consistent error shape (message + machine-readable code).
 api.interceptors.response.use(
     (response) => response,
     (error) => {
@@ -38,6 +40,6 @@ api.interceptors.response.use(
             Cookies.remove('auth_token');
             window.location.href = '/auth/login';
         }
-        return Promise.reject(error);
+        return Promise.reject(toApiError(error));
     }
 );

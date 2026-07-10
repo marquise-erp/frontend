@@ -4,11 +4,26 @@ import { useTenantMutation } from "@/lib/tenant-query";
 import { ORGANIZATION_LEVELS } from "../types/organization-tree";
 import { OrganizationResponse, organizationResponseSchema } from "../schemas/responses";
 import {
+  assignMemberRequestSchema,
   createOrganizationRequestSchema,
   updateOrganizationRequestSchema,
   type UpdateOrganizationRequest,
   type CreateOrganizationRequest,
 } from "../schemas/requests";
+import {
+  assignMemberInputSchema,
+  type AssignMemberInput,
+} from "../schemas/member-input.schema";
+import {
+  createInviteRequestSchema,
+  invitationSchema,
+  type CreateInviteRequest,
+  type Invitation,
+} from "../schemas/invite.schema";
+import {
+  inviteMemberInputSchema,
+  type InviteMemberInput,
+} from "../schemas/invite-input.schema";
 
 export function useCreateOrganization() {
   return useTenantMutation({
@@ -42,5 +57,52 @@ export function useDeleteOrganization() {
   return useTenantMutation({
     mutationFn: async (id: number) =>
       deleteFromApi(API_ROUTES.ADMIN.ORGANIZATION.ORGANIZATIONS.delete(id)),
+  });
+}
+
+export function useAssignUserToLevel() {
+  return useTenantMutation({
+    mutationFn: async (input: AssignMemberInput) => {
+      const parsed = assignMemberInputSchema.parse(input);
+      const body = assignMemberRequestSchema.parse({
+        userId: parsed.userId || undefined,
+        mobile: parsed.mobile || undefined,
+        roleId: parsed.roleId,
+        position: parsed.position || undefined,
+        organizationId: parsed.levelId,
+      });
+
+      return postToApi(
+        API_ROUTES.ADMIN.ORGANIZATION.MEMBERS.ASSIGN,
+        body,
+      );
+    },
+  });
+}
+
+export function useInviteMember() {
+  return useTenantMutation({
+    mutationFn: async (input: InviteMemberInput) => {
+      const parsed = inviteMemberInputSchema.parse(input);
+      const organizationId = Number(parsed.organizationId);
+      const body = createInviteRequestSchema.parse({
+        mobile: parsed.mobile,
+        role_id: Number(parsed.roleId),
+        position_id: parsed.positionId ? Number(parsed.positionId) : undefined,
+      } satisfies CreateInviteRequest);
+
+      return postToApi<Invitation, CreateInviteRequest>(
+        API_ROUTES.ADMIN.ORGANIZATION.INVITES.create(organizationId),
+        body,
+        invitationSchema,
+      );
+    },
+  });
+}
+
+export function useCancelInvite() {
+  return useTenantMutation({
+    mutationFn: async (invitationId: number) =>
+      deleteFromApi(API_ROUTES.ADMIN.ORGANIZATION.INVITES.cancel(invitationId)),
   });
 }

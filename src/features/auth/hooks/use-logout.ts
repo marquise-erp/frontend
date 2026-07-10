@@ -2,7 +2,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "../store/auth-store";
-import { authKeys } from "./use-auth";
+import { authKeys } from "../api/auth/queries";
 
 export const useLogout = () => {
   const router = useRouter();

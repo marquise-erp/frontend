@@ -27,22 +27,24 @@ export function PermissionGuard({
 
   if (!can(permission)) {
     return (
-      <Card className="max-w-lg">
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <HugeiconsIcon icon={ShieldIcon} className="size-5 text-muted-foreground" />
-            <CardTitle>{t('accessDeniedTitle')}</CardTitle>
-          </div>
-          <CardDescription>
-            {t('accessDeniedDescription', { permission })}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">
-            {t('accessDeniedContact')}
-          </p>
-        </CardContent>
-      </Card>
+      <div className="flex min-h-[50vh] w-full items-center justify-center p-4">
+        <Card className="w-full max-w-lg">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <HugeiconsIcon icon={ShieldIcon} className="size-5 text-muted-foreground" />
+              <CardTitle>{t('accessDeniedTitle')}</CardTitle>
+            </div>
+            <CardDescription>
+              {t('accessDeniedDescription', { permission })}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              {t('accessDeniedContact')}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 

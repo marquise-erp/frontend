@@ -23,7 +23,8 @@ export const assignMemberRequestSchema = z.object({
   mobile: mobileSchema.optional(),
 
   roleId: idSchema.min(1, 'انتخاب نقش الزامی است'),
-  positionId: idSchema.min(1, 'انتخاب موقعیت الزامی است'),
+  positionId: idSchema.optional(),
+  position: z.string().optional(),
   organizationId: idSchema.min(1, 'انتخاب سازمان الزامی است'),
 }).refine((data) => data.userId || data.mobile, {
   message: 'کاربر یا شماره موبایل الزامی است',

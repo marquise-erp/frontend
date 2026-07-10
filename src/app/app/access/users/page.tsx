@@ -5,8 +5,8 @@ import { toast } from 'sonner';
 import { PlusSignIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 
-import { useUsers, useDeleteUser } from '@/features/auth/hooks/use-users';
-import { useRoles } from '@/features/auth/hooks/use-roles';
+import { useUsers, useDeleteUser } from '@/features/auth/api/user';
+import { useRoles } from '@/features/auth/api/role';
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import type { User } from '@/features/auth/schemas';
 import { UserDialog } from '@/features/auth/components/user/user-dialog';

@@ -9,11 +9,21 @@ import {
   organizationResponseSchema,
 } from "../schemas/responses";
 import type {  OrganizationListResponse } from "../schemas/responses";
+import {
+  invitationListSchema,
+  type InvitationList,
+} from "../schemas/invite.schema";
 
 export const organizationKeys = {
   all: ["organizations"] as const,
   list: () => [...organizationKeys.all, "list"] as const,
   detail: (id: number) => [...organizationKeys.all, "detail", id] as const,
+};
+
+export const inviteKeys = {
+  all: ["invites"] as const,
+  list: (organizationId: number | string) =>
+    [...inviteKeys.all, "list", organizationId] as const,
 };
 
 export const brandKeys = {
@@ -51,5 +61,19 @@ export function useBrands() {
     queryKey: brandKeys.list(),
     queryFn: () =>
       fetchFromApi(API_ROUTES.ADMIN.ORGANIZATION.BRANDS, organizationRefListSchema),
+  });
+}
+
+export function useOrganizationInvites(organizationId: number | string, enabled = true) {
+  const id = Number(organizationId);
+
+  return useTenantQuery({
+    queryKey: inviteKeys.list(id),
+    queryFn: () =>
+      fetchFromApi<InvitationList>(
+        API_ROUTES.ADMIN.ORGANIZATION.INVITES.list(id),
+        invitationListSchema,
+      ),
+    enabled: enabled && id > 0,
   });
 }

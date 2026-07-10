@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { RoleForm } from './role-form';
-import type { Permission, Role } from '@/features/auth/schemas/rbac.schema';
+import type { Permission, Role } from '@/features/auth/schemas/role/responses';
 
 interface Brand {
   id: number;
@@ -20,6 +20,7 @@ interface RoleDialogProps {
   editingRole: Role | null;
   brands: Brand[];
   availablePermissions: Permission[];
+  lockedOrganizationId?: number;
 }
 
 export function RoleDialog({
@@ -28,6 +29,7 @@ export function RoleDialog({
   editingRole,
   brands,
   availablePermissions,
+  lockedOrganizationId,
 }: RoleDialogProps) {
   const handleSuccess = () => {
     onOpenChange(false);
@@ -51,6 +53,7 @@ export function RoleDialog({
             editingRole={editingRole}
             brands={brands}
             availablePermissions={availablePermissions}
+            lockedOrganizationId={lockedOrganizationId}
             onSuccess={handleSuccess}
             onCancel={handleCancel}
           />

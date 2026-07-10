@@ -4,70 +4,161 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { cn } from "@/lib/utils";
-import { useRoles } from "@/features/auth/hooks/use-roles";
-import { useUpdateOrganization } from "../api";
-
-import { InlineEdit } from "./node-sheet/InlineEdit";
-import { GeneralTab } from "./node-sheet/GeneralTab";
-import { MembersTab } from "./node-sheet/MembersTab";
-import { RolesTab } from "./node-sheet/RolesTab";
+import { useRoles } from "@/features/auth/api/role";
+import { useUsers } from "@/features/auth/api/user";
+import { useCreateOrganization, useOrganizationInvites, useUpdateOrganization } from "../api";
+import { InlineEdit } from "./organization-sheet-ui/InlineEdit";
+import { GeneralTab } from "./organization-sheet-ui/GeneralTab";
+import { MembersTab } from "./organization-sheet-ui/MembersTab";
+import { RolesTab } from "./organization-sheet-ui/RolesTab";
 import { ORGANIZATION_LEVELS, type OrganizationTreeNode, type OrgMember } from "../types/organization-tree";
+import type { OrganizationType } from "../schemas/types";
 
-const tabKeys = ["general", "roles", "members"] as const;
+const allTabKeys = ["general", "roles", "members"] as const;
+type TabKey = (typeof allTabKeys)[number];
 
-export interface NodeSheetProps {
+/** Describes what the sheet is doing: editing an existing node or creating a child. */
+export type OrganizationSheetMode =
+  | { type: "edit"; node: OrganizationTreeNode }
+  | { type: "create"; parent: OrganizationTreeNode; createType: OrganizationType };
+
+export interface OrganizationSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  node: OrganizationTreeNode | null;
+  target: OrganizationSheetMode | null;
 }
 
-export function OrganizationSheet({ open, onOpenChange, node }: NodeSheetProps) {
-  // IMPORTANT: All hooks must be called unconditionally (Rules of Hooks).
-  // Never put hooks after a conditional early return based on `node`.
-  const t = useTranslations('organization.sheet');
+const sheetContentClass = "w-full gap-0 overflow-y-auto p-0 data-[side=left]:md:max-w-md data-[side=left]:lg:max-w-lg";
 
-  const [activeTab, setActiveTab] = useState<"general" | "roles" | "members">("general");
+export function OrganizationSheet({ open, onOpenChange, target }: OrganizationSheetProps) {
+  const t = useTranslations("organization.sheet");
+
+  const [activeTab, setActiveTab] = useState<TabKey>("general");
 
   const { data: roles = [] } = useRoles();
-  // No members API yet; org members are shown as an empty list for now.
+  const { data: users = [] } = useUsers();
   const members: OrgMember[] = [];
 
-  // Local header state must be declared on every render
+  // Inline-edit header state (edit mode, auto-saved on change).
   const [localName, setLocalName] = useState("");
   const [localDesc, setLocalDesc] = useState("");
 
+  // Create-mode form state.
+  const [createName, setCreateName] = useState("");
+
+  // Once a node is created, we keep the sheet open and continue in edit mode
+  // for this freshly-created node (it now has a real id).
+  const [createdNode, setCreatedNode] = useState<OrganizationTreeNode | null>(null);
+
+  const organizationId =
+    createdNode?.id ?? (target?.type === "edit" ? target.node.id : null);
+  const invitesEnabled =
+    target != null &&
+    !(target.type === "create" && createdNode == null) &&
+    organizationId != null;
+
+  const { data: invites = [], refetch: refetchInvites } = useOrganizationInvites(
+    organizationId ?? 0,
+    invitesEnabled,
+  );
+
   const updateMutation = useUpdateOrganization();
+  const createMutation = useCreateOrganization();
 
-  // Keep local header fields in sync when the selected node changes.
-  // This effect always runs (hook order is stable).
+  const editNode = target?.type === "edit" ? target.node : null;
+
+  const targetKey =
+    target == null
+      ? "none"
+      : target.type === "edit"
+        ? `edit:${target.node.id}`
+        : `create:${target.parent.id}:${target.createType}`;
+
+  const effectiveNode =
+    createdNode ?? (target?.type === "edit" ? target.node : null);
+  const showRolesTab =
+    effectiveNode?.type === "brand" || effectiveNode?.type === "holding";
+
+  // Reset internal state whenever the sheet target changes (hook order stays stable).
   useEffect(() => {
-    if (node) {
-      setLocalName(node.name);
-      setLocalDesc(node.description ?? "");
+    setCreatedNode(null);
+    setActiveTab("general");
+    if (target?.type === "edit") {
+      setLocalName(target.node.name);
+      setLocalDesc(target.node.description ?? "");
+    } else if (target?.type === "create") {
+      setCreateName("");
     }
-  }, [node?.id, node?.name, node?.description]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [targetKey, editNode?.name, editNode?.description]);
 
-  // If we have no node, still render the Sheet shell so that open/close
+  useEffect(() => {
+    if (!showRolesTab && activeTab === "roles") {
+      setActiveTab("general");
+    }
+  }, [showRolesTab, activeTab]);
+
+  // If we have no target, still render the Sheet shell so that open/close
   // animations and controlled state continue to work correctly.
-  if (!node) {
+  if (!target) {
     return (
       <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent
-          side="left"
-          showCloseButton
-          className="w-full gap-0 overflow-y-auto p-0 sm:max-w-xl"
-        />
+        <SheetContent side="left" showCloseButton className={sheetContentClass} />
       </Sheet>
     );
   }
 
-  // From this point on, node is guaranteed to exist.
-  const meta = ORGANIZATION_LEVELS[node.type];
+  // While a "create" target has not yet produced a node, we're in create mode.
+  const isCreating = target.type === "create" && !createdNode;
+
+  // The node currently being edited: the just-created one, or the edit target.
+  const node = effectiveNode;
+
+  const tabKeys = showRolesTab
+    ? allTabKeys
+    : (["general", "members"] as const satisfies readonly TabKey[]);
+
+  const meta = isCreating
+    ? ORGANIZATION_LEVELS[target.createType]
+    : ORGANIZATION_LEVELS[node!.type];
   const Icon = meta.icon;
 
+  const handleCreate = async () => {
+    if (target.type !== "create") return;
+    const name = createName.trim();
+    if (!name) return;
+    try {
+      const res = await createMutation.mutateAsync({
+        parent_id: Number(target.parent.id),
+        name,
+        type: target.createType,
+      });
+      const newNode: OrganizationTreeNode = {
+        id: String(res.id),
+        name: res.name,
+        type: res.type,
+        description: res.description ?? undefined,
+        profile: res.profile ?? null,
+        children: [],
+      };
+      // Stay open and switch into edit mode for the new node.
+      setCreatedNode(newNode);
+      setLocalName(newNode.name);
+      setLocalDesc(newNode.description ?? "");
+      setActiveTab("general");
+      toast.success("Organization created");
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to create");
+    }
+  };
+
   const handleSaveHeader = async (name: string, description: string) => {
+    if (!node) return;
     try {
       await updateMutation.mutateAsync({
         id: Number(node.id),
@@ -96,12 +187,8 @@ export function OrganizationSheet({ open, onOpenChange, node }: NodeSheetProps) 
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent
-        side="left"
-        showCloseButton
-        className="w-full gap-0 overflow-y-auto p-0 sm:max-w-xl"
-      >
-        {/* Org header */}
+      <SheetContent side="left" showCloseButton className={sheetContentClass}>
+        {/* Header */}
         <div className="flex items-start justify-between gap-3 px-6 pt-6">
           <div className="flex items-center gap-3">
             <div
@@ -114,62 +201,123 @@ export function OrganizationSheet({ open, onOpenChange, node }: NodeSheetProps) 
               <HugeiconsIcon icon={Icon} strokeWidth={2} className="size-7" />
             </div>
             <div className="min-w-0">
-              <InlineEdit
-                ariaLabel={t('titlePlaceholder')}
-                value={localName}
-                onChange={handleNameChange}
-                className="text-xl font-semibold leading-tight text-foreground"
-                inputClassName="text-xl font-semibold"
-                disabled={updateMutation.isPending}
-              />
-              <InlineEdit
-                ariaLabel="Description"
-                value={localDesc || ""}
-                onChange={handleDescChange}
-                className="mt-0.5 text-sm text-muted-foreground"
-                inputClassName="text-sm"
-                disabled={updateMutation.isPending}
-                placeholder={t('descriptionPlaceholder')}
-              />
+              {isCreating ? (
+                <>
+                  <h2 className="text-xl font-semibold leading-tight text-foreground">
+                    {`افزودن ${meta.label} جدید`}
+                  </h2>
+                  <p className="mt-0.5 truncate text-sm text-muted-foreground">
+                    {`در «${target.parent.name}»`}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <InlineEdit
+                    ariaLabel={t("titlePlaceholder")}
+                    value={localName}
+                    onChange={handleNameChange}
+                    className="text-xl font-semibold leading-tight text-foreground"
+                    inputClassName="text-xl font-semibold"
+                    disabled={updateMutation.isPending}
+                  />
+                  <InlineEdit
+                    ariaLabel="Description"
+                    value={localDesc || ""}
+                    onChange={handleDescChange}
+                    className="mt-0.5 text-sm text-muted-foreground"
+                    inputClassName="text-sm"
+                    disabled={updateMutation.isPending}
+                    placeholder={t("descriptionPlaceholder")}
+                  />
+                </>
+              )}
             </div>
           </div>
         </div>
 
-        {/* Tabs */}
+        {/* Tabs (roles/members are disabled until the node is created) */}
         <div className="mt-6 border-t border-dashed px-6">
           <div className="-mb-px flex flex-wrap gap-1 pt-3">
-            {tabKeys.map((key) => (
-              <button
-                key={key}
-                type="button"
-                onClick={() => setActiveTab(key)}
-                className={cn(
-                  "rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
-                  activeTab === key
-                    ? "bg-secondary text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                {t(`tabs.${key}`)}
-              </button>
-            ))}
+            {tabKeys.map((key) => {
+              const disabled = isCreating && key !== "general";
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  disabled={disabled}
+                  onClick={() => !disabled && setActiveTab(key)}
+                  title={disabled ? t("createFirst") : undefined}
+                  className={cn(
+                    "rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
+                    activeTab === key && !disabled
+                      ? "bg-secondary text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground",
+                    disabled && "cursor-not-allowed opacity-40 hover:text-muted-foreground"
+                  )}
+                >
+                  {t(`tabs.${key}`)}
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        {/* Tab content */}
-        {activeTab === "general" && <GeneralTab node={node} memberCount={members.length} />}
-        {activeTab === "roles" && (
-          <RolesTab roles={roles} members={members} onAddRole={() => { /* TODO: open role assign dialog */ }} />
-        )}
-        {activeTab === "members" && (
-          <MembersTab
-            node={node}
-            members={members}
-            roles={roles}
-            onRefresh={() => {
-              // RBAC store updates are synchronous; parent tree will react via re-render
-            }}
-          />
+        {/* Content */}
+        {isCreating ? (
+          <div className="grid gap-4 px-6 py-6">
+            <div className="space-y-1.5">
+              <Label htmlFor="org-create-name">{`نام ${meta.label}`}</Label>
+              <Input
+                id="org-create-name"
+                value={createName}
+                onChange={(e) => setCreateName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.nativeEvent.isComposing || e.keyCode === 229) return;
+                  if (e.key === "Enter") handleCreate();
+                }}
+                placeholder={`نام ${meta.label} را وارد کنید`}
+                autoFocus
+              />
+            </div>
+
+            <p className="text-xs text-muted-foreground">{t("createHint")}</p>
+
+            <div className="flex justify-end gap-2 pt-2">
+              <Button variant="outline" onClick={() => onOpenChange(false)}>
+                انصراف
+              </Button>
+              <Button
+                onClick={handleCreate}
+                disabled={!createName.trim() || createMutation.isPending}
+                style={{ background: meta.color, color: "white" }}
+              >
+                {createMutation.isPending ? "در حال ایجاد..." : `افزودن ${meta.label}`}
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <>
+            {activeTab === "general" && <GeneralTab node={node!} memberCount={members.length} />}
+            {activeTab === "roles" && showRolesTab && node && (
+              <RolesTab
+                brand={{ id: Number(node.id), name: node.name }}
+                roles={roles}
+                members={members}
+              />
+            )}
+            {activeTab === "members" && (
+              <MembersTab
+                node={node!}
+                members={members}
+                invites={invites}
+                users={users}
+                roles={roles}
+                onRefresh={() => {
+                  void refetchInvites();
+                }}
+              />
+            )}
+          </>
         )}
       </SheetContent>
     </Sheet>

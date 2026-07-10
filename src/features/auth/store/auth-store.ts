@@ -45,14 +45,17 @@ export const useAuthStore = create<AuthState>()(
         const defaultContext =
           scopes.find((scope) => scope.is_current_context) ?? scopes[0] ?? null;
 
+        const persistedIsValid =
+          state.activeScopeId != null &&
+          scopes.some((scope) => scope.id === state.activeScopeId);
+
         return {
           user,
           scopes,
           permissions,
-          activeScopeId:
-            state.activeScopeId ??
-            defaultContext?.id ??
-            null,
+          activeScopeId: persistedIsValid
+            ? state.activeScopeId
+            : defaultContext?.id ?? null,
           isAuthenticated: true,
         };
       }),

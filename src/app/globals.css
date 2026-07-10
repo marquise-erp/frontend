@@ -109,6 +109,11 @@
   --level-city: oklch(0.68 0.16 145);
   --level-branch: oklch(0.7 0.17 70);
   --level-unit: oklch(0.65 0.2 25);
+
+  --level-demographic: oklch(0.65 0.13 119.78);
+  --level-financial:  oklch(0.67 0.1 185.81);
+  --level-behavioral: oklch(0.66 0.15 49.06);
+  --level-geographic: oklch(0.6 0.17 28.37);
 }
 
 .dark {
@@ -161,5 +166,9 @@
   }
   .sidebar-gradient {
     @apply bg-gradient-to-b from-[#e9faf2] via-[#eefff9] to-[#f8f9fb];
+  }
+  [data-sonner-toaster],
+  [data-sonner-toast] {
+    font-family: var(--font-iranyekan), system-ui, sans-serif;
   }
 }

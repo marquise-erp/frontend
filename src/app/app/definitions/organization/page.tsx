@@ -1,23 +1,12 @@
-import { Suspense } from 'react';
 import { PERMISSION_CODES } from '@/config/permissions';
-import { Skeleton } from '@/components/ui/skeleton';
 import { PermissionGuard } from '@/features/auth/components/permission-guard';
+import { OrganizationTree } from '@/features/organization/components/organization-tree';
 
-export default async function OrganizationsPage() {
-
+export default function OrganizationsPage() {
   return (
-    <PermissionGuard permission={PERMISSION_CODES.USER_READ}>
+    <PermissionGuard permission={PERMISSION_CODES.ORGANIZATION_VIEW}>
       <div className="space-y-6">
-        <Suspense
-          fallback={
-            <div className="space-y-4">
-              <Skeleton className="h-10 w-full max-w-sm" />
-              <Skeleton className="h-64 w-full" />
-            </div>
-          }
-        >
-          <OrganizationTree/>
-        </Suspense>
+        <OrganizationTree />
       </div>
     </PermissionGuard>
   );

@@ -9,9 +9,9 @@ import { Label } from '@/components/ui/label';
 import { Field, FieldLabel } from '@/components/ui/field';
 import { Checkbox } from '@/components/ui/checkbox';
 
-import { useCreateUser, useUpdateUser } from '@/features/auth/hooks/use-users';
-import { type User } from '@/features/auth/schemas/user.schema';
-import { CreateUserInput, createUserSchema } from '../../schemas/user-input.schema';
+import { useCreateUser, useUpdateUser } from '@/features/auth/api/user';
+import { type User } from '@/features/auth/schemas/user/responses';
+import { CreateUserInput, createUserSchema } from '@/features/auth/schemas/user/requests';
 
 interface RoleOption {
   id: number;

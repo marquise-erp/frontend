@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { UserForm } from './user-form';
-import type { User } from '@/features/auth/schemas/user.schema';
+import type { User } from '@/features/auth/schemas/user/responses';
 
 interface RoleOption {
   id: number;

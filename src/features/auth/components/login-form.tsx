@@ -19,8 +19,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useForm } from "@tanstack/react-form"
-import { loginRequestSchema, LoginRequest } from "../schemas/login-schema"
-import { useLogin } from "../hooks/use-login"
+import { loginRequestSchema, LoginRequest } from "../schemas/login/requests"
+import { useLogin } from "../api/auth"
 import { useTranslations } from "next-intl"
 
 

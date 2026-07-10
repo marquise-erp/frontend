@@ -1,6 +1,7 @@
 "use client"
 
 import {
+  BriefcaseIcon,
   ChartHistogramIcon,
   Invoice01Icon,
   Layers01Icon,
@@ -11,6 +12,7 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import type { SidebarItem } from "@/features/navigation/types/sidebar"
+import { PERMISSION_CODES } from "@/config/permissions"
 
 const icon = (Icon: typeof UserMultiple02Icon) => (
   <HugeiconsIcon icon={Icon} strokeWidth={2} />
@@ -26,15 +28,22 @@ export const appSidebarItems: SidebarItem[] = [
         key: "access.users",
         href: "/app/access/users",
         order: 1,
-        permission: "users.manage",
+        permission: PERMISSION_CODES.AUTH_USER_VIEW,
         icon: icon(UserMultiple02Icon),
       },
       {
         key: "access.roles",
         href: "/app/access/roles",
         order: 2,
-        permission: "roles.manage",
+        permission: PERMISSION_CODES.AUTH_ROLE_VIEW,
         icon: icon(UserShield01Icon),
+      },
+      {
+        key: "access.positions",
+        href: "/app/access/positions",
+        order: 3,
+        permission: PERMISSION_CODES.AUTH_POSITION_VIEW,
+        icon: icon(BriefcaseIcon),
       },
     ],
   },
@@ -47,26 +56,31 @@ export const appSidebarItems: SidebarItem[] = [
         key: "definitions.org",
         href: "/app/definitions/organization",
         order: 1,
-        permission: "org.view",
-        allowedLevels: ["holding", "brand"],
+        permission: PERMISSION_CODES.ORGANIZATION_VIEW,
+      },
+      {
+        key: "definitions.customer_groups",
+        href: "/app/definitions/customer-group",
+        order: 2,
+        permission: PERMISSION_CODES.CUSTOMER_GROUP_VIEW,
       },
       {
         key: "definitions.forms",
         href: "/app/definitions/forms",
-        order: 2,
-        permission: "forms.view",
+        order: 3,
+        permission: PERMISSION_CODES.AUTH_POSITION_CREATE,
       },
       {
         key: "definitions.units",
         href: "/app/definitions/units",
-        order: 3,
-        permission: "units.view",
+        order: 4,
+        permission: PERMISSION_CODES.AUTH_POSITION_VIEW,
       },
       {
         key: "definitions.banks",
         href: "/app/definitions/bank-accounts",
-        order: 4,
-        permission: "bank_accounts.view",
+        order: 5,
+        permission: PERMISSION_CODES.AUTH_POSITION_VIEW,
       },
     ],
   },
@@ -79,19 +93,19 @@ export const appSidebarItems: SidebarItem[] = [
         key: "settings.price_board",
         href: "/app/settings/price-board",
         order: 1,
-        permission: "price_board.manage",
+        permission: PERMISSION_CODES.AUTH_POSITION_CREATE,
       },
       {
         key: "settings.invoice_prefs",
         href: "/app/settings/invoice",
         order: 2,
-        permission: "invoice.settings",
+        permission: PERMISSION_CODES.AUTH_POSITION_VIEW,
       },
       {
         key: "settings.accounting",
         href: "/app/settings/accounting",
         order: 3,
-        permission: "accounting.settings",
+        permission: PERMISSION_CODES.AUTH_POSITION_VIEW,
       },
     ],
   },
@@ -104,13 +118,13 @@ export const appSidebarItems: SidebarItem[] = [
         key: "reports.contacts",
         href: "/app/reports/contacts",
         order: 1,
-        permission: "reports.contacts",
+        permission: PERMISSION_CODES.AUTH_POSITION_VIEW,
       },
       {
         key: "reports.products",
         href: "/app/reports/products",
         order: 2,
-        permission: "reports.products",
+        permission: PERMISSION_CODES.AUTH_POSITION_VIEW,
       },
     ],
   },
@@ -123,13 +137,13 @@ export const appSidebarItems: SidebarItem[] = [
         key: "invoice.create",
         href: "/app/invoice/new",
         order: 1,
-        permission: "deal.create",
+        permission: PERMISSION_CODES.AUTH_POSITION_CREATE,
       },
       {
         key: "invoice.list",
         href: "/app/invoice",
         order: 2,
-        permission: "finance.view",
+        permission: PERMISSION_CODES.AUTH_POSITION_VIEW,
       },
     ],
   },

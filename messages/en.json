@@ -4,11 +4,14 @@
             "access": {
                 "title": "Access control",
                 "users": "User management",
-                "roles": "Role management"
+                "roles": "Role management",
+                "positions": "Position management",
+                "access-rules": "Access rules"
             },
             "definitions": {
                 "title": "Definitions",
                 "org": "Organization",
+                "customer_groups": "Customer groups",
                 "forms": "Forms",
                 "units": "Units (weight, count)",
                 "banks": "Bank accounts"
@@ -48,6 +51,8 @@
             },
             "titlePlaceholder": "Organization name",
             "descriptionPlaceholder": "Add description...",
+            "createFirst": "Available after creation",
+            "createHint": "Description, roles, and members can be set after creation.",
             "general": {
                 "subOrgs": "Sub-orgs",
                 "teams": "Teams",
@@ -82,12 +87,14 @@
             "roles": {
                 "title": "Roles",
                 "add": "Add role",
+                "edit": "Edit role",
+                "actions": "Actions",
                 "search": "Search roles",
                 "status": "Status:",
                 "role": "Role",
                 "members": "Members",
                 "noRoles": "No roles defined.",
-            "statusLabel": "Status"
+                "statusLabel": "Status"
             },
             "invite": {
                 "user": "User",
@@ -97,11 +104,16 @@
                 "notInList": "Not in the list? Use + to invite by mobile number.",
                 "selectUser": "Select a user",
                 "selectRole": "Select a role",
+                "selectPosition": "Select a position",
+                "noPosition": "No position",
+                "noPositions": "No positions for this role",
                 "enterMobile": "Enter mobile number",
                 "cancel": "Cancel",
                 "submit": "Submit",
                 "sendInvite": "Send invite",
-                "memberAdded": "Member added"
+                "memberAdded": "Member added",
+                "sendFailed": "Failed to send invite",
+                "pendingExists": "A pending invitation already exists for this person in this organization."
             },
             "actions": {
                 "resend": "Resend invite",
@@ -117,6 +129,54 @@
             }
         }
     },
+    "customerGroup": {
+        "title": "Customer segmentation",
+        "hint": "Customer groups form a nested tree. Each root node has one of the four market segmentation types; child groups have no type and can nest freely underneath.",
+        "addRoot": "Add root group",
+        "empty": "No customer groups defined yet.",
+        "loadError": "Failed to load customer groups",
+        "loadErrorGeneric": "Could not reach the server.",
+        "type": {
+            "demographic": "Demographic",
+            "psychographic": "Psychographic",
+            "behavioral": "Behavioral",
+            "geographic": "Geographic"
+        },
+        "sheet": {
+            "titlePlaceholder": "Group name",
+            "descriptionPlaceholder": "Add description...",
+            "createHint": "Description can be set after creation.",
+            "addNewRoot": "Add new {type}",
+            "addNewChild": "Add new sub-group",
+            "underParent": "Under «{name}»",
+            "rootLevel": "Root group · {type}",
+            "nameLabel": "{type} name",
+            "namePlaceholder": "Enter {type} name",
+            "childNameLabel": "Sub-group name",
+            "childNamePlaceholder": "Enter sub-group name",
+            "cancel": "Cancel",
+            "creating": "Creating...",
+            "add": "Add {type}",
+            "addChild": "Add sub-group",
+            "created": "Customer group created",
+            "updated": "Customer group updated",
+            "createFailed": "Failed to create customer group",
+            "updateFailed": "Failed to update customer group",
+            "general": {
+                "subGroups": "Sub-groups",
+                "segmentation": "Segmentation type",
+                "info": "Info",
+                "type": "Segmentation type",
+                "created": "Created"
+            }
+        }
+    },
+    "treeView": {
+        "actions": {
+            "check": "Check",
+            "uncheck": "Uncheck"
+        }
+    },
     "auth": {
         "login": {
             "title": "Sign in",
@@ -126,6 +186,20 @@
             "remember": "Remember me",
             "submit": "Sign in",
             "forget password": "Forgot password?"
+        }
+    },
+    "errors": {
+        "accessDeniedTitle": "Access denied",
+        "accessDeniedDescription": "You don't have the required permission ({permission}) to view this page.",
+        "accessDeniedContact": "If you think this is a mistake, contact your administrator.",
+        "api": {
+            "unauthorized": "You don't have permission to perform this action.",
+            "notFound": "The requested item could not be found.",
+            "validation": "The submitted data is invalid. Please review the form.",
+            "conflict": "This action conflicts with existing data.",
+            "network": "Could not reach the server. Please check your connection.",
+            "server": "A server error occurred. Please try again later.",
+            "unknown": "Something went wrong. Please try again."
         }
     },
     "deals": {

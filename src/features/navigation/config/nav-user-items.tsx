@@ -9,6 +9,7 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import type { NavUserMenuGroup, NavUserMenuItem } from "@/features/navigation/types/nav-user"
+import { PERMISSION_CODES } from "@/config/permissions"
 
 const icon = (Icon: typeof SparklesIcon) => (
   <HugeiconsIcon icon={Icon} strokeWidth={2} />
@@ -24,7 +25,7 @@ export const navUserMenuGroups: NavUserMenuGroup[] = [
         title: "ارتقا حساب",
         icon: icon(SparklesIcon),
         href: "/app/billing/upgrade",
-        permission: "account.upgrade",
+        permission: PERMISSION_CODES.AUTH_USER_VIEW,
         order: 1,
       },
     ],
@@ -45,7 +46,7 @@ export const navUserMenuGroups: NavUserMenuGroup[] = [
         title: "پرداخت",
         icon: icon(CreditCardIcon),
         href: "/app/payment",
-        permission: "payment.licence",
+        permission: PERMISSION_CODES.AUTH_USER_VIEW,
         order: 2,
       },
       {
@@ -53,7 +54,7 @@ export const navUserMenuGroups: NavUserMenuGroup[] = [
         title: "اعلانات",
         icon: icon(NotificationIcon),
         href: "/app/notifications",
-        permission: "notifications.view",
+        permission: PERMISSION_CODES.AUTH_USER_VIEW,
         order: 3,
       },
     ],

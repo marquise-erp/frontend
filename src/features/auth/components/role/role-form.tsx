@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useForm } from '@tanstack/react-form';
 import { toast } from 'sonner';
 
@@ -11,12 +12,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Field, FieldContent, FieldLabel, FieldSeparator } from '@/components/ui/field';
 import { Checkbox } from '@/components/ui/checkbox';
 
-import { useCreateRole, useUpdateRole } from '@/features/auth/hooks/use-roles';
+import { useCreateRole, useDeleteRole, useUpdateRole } from '@/features/auth/api/role';
+import { useApiError } from '@/lib/use-api-error';
+import { DeleteDialog } from '@/features/shared/components/delete-dialog';
 import {
   type Permission,
   type Role,
-} from '@/features/auth/schemas/rbac.schema';
-import { CreateRoleInput, createRoleSchema } from '../../schemas/role-input.schema';
+} from '@/features/auth/schemas/role/responses';
+import { CreateRoleInput, createRoleSchema } from '@/features/auth/schemas/role/requests';
 
 interface Brand {
   id: number;
@@ -27,6 +30,7 @@ interface RoleFormProps {
   editingRole?: Role | null;
   brands: Brand[];
   availablePermissions: Permission[];
+  lockedOrganizationId?: number;
   onSuccess?: () => void;
   onCancel?: () => void;
 }
@@ -35,11 +39,15 @@ export function RoleForm({
   editingRole,
   brands,
   availablePermissions,
+  lockedOrganizationId,
   onSuccess,
   onCancel,
 }: RoleFormProps) {
   const createRole = useCreateRole();
   const updateRole = useUpdateRole();
+  const deleteRole = useDeleteRole();
+  const { getErrorMessage, toastError } = useApiError();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const isEditing = !!editingRole;
 
@@ -57,7 +65,7 @@ export function RoleForm({
   const defaultValues: CreateRoleInput = {
     name: editingRole?.name ?? '',
     description: editingRole?.description ?? '',
-    organization_id: editingRole?.organization_id ?? undefined,
+    organization_id: lockedOrganizationId ?? editingRole?.organization_id ?? undefined,
     permission_ids: (editingRole?.permissions ?? []).map((p) => p.id),
   };
 
@@ -83,13 +91,26 @@ export function RoleForm({
           toast.success('نقش جدید با موفقیت ایجاد شد');
         }
         onSuccess?.();
-      } catch (error: any) {
-        toast.error(error?.message || 'خطا در ذخیره نقش');
+      } catch (error) {
+        toastError(error);
       }
     },
   });
 
-  const isSubmitting = createRole.isPending || updateRole.isPending;
+  const isSubmitting = createRole.isPending || updateRole.isPending || deleteRole.isPending;
+
+  const handleDelete = async () => {
+    if (!editingRole) return;
+
+    try {
+      await deleteRole.mutateAsync(editingRole.id);
+      toast.success('نقش با موفقیت حذف شد');
+      setDeleteDialogOpen(false);
+      onSuccess?.();
+    } catch (error) {
+      toastError(error);
+    }
+  };
 
   const togglePermission = (permissionId: number, checked: boolean) => {
     form.setFieldValue('permission_ids', (current: number[] = []) => {
@@ -188,7 +209,7 @@ export function RoleForm({
                     const num = val ? Number(val) : undefined;
                     field.handleChange(num);
                   }}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || lockedOrganizationId != null}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="انتخاب برند" />
@@ -280,34 +301,58 @@ export function RoleForm({
       </div>
 
       {/* Actions */}
-      <div className="flex justify-end gap-2 pt-4 border-t">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onCancel}
-          disabled={isSubmitting}
-        >
-          انصراف
-        </Button>
-        <form.Subscribe
-          selector={(state) => [state.canSubmit, state.isSubmitting]}
-          children={([canSubmit]) => (
-            <Button type="submit" disabled={!canSubmit || isSubmitting}>
-              {isSubmitting
-                ? 'در حال ذخیره...'
-                : isEditing
-                  ? 'ذخیره تغییرات'
-                  : 'ایجاد نقش'}
-            </Button>
-          )}
-        />
+      <div className="flex items-center justify-between gap-2 border-t pt-4">
+        {isEditing ? (
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={() => setDeleteDialogOpen(true)}
+            disabled={isSubmitting}
+          >
+            حذف نقش
+          </Button>
+        ) : (
+          <div />
+        )}
+        <div className="flex gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onCancel}
+            disabled={isSubmitting}
+          >
+            انصراف
+          </Button>
+          <form.Subscribe
+            selector={(state) => [state.canSubmit, state.isSubmitting]}
+            children={([canSubmit]) => (
+              <Button type="submit" disabled={!canSubmit || isSubmitting}>
+                {isSubmitting
+                  ? 'در حال ذخیره...'
+                  : isEditing
+                    ? 'ذخیره تغییرات'
+                    : 'ایجاد نقش'}
+              </Button>
+            )}
+          />
+        </div>
       </div>
 
+      <DeleteDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        entityLabel="نقش"
+        entityName={editingRole?.name}
+        onConfirm={handleDelete}
+        isLoading={deleteRole.isPending}
+      />
+
       {/* Global error display */}
-      {(createRole.isError || updateRole.isError) && (
+      {(createRole.isError || updateRole.isError || deleteRole.isError) && (
         <div className="text-sm text-destructive text-center">
-          {((createRole.error || updateRole.error) as any)?.message ||
-            'عملیات با خطا مواجه شد'}
+          {getErrorMessage(
+            createRole.error || updateRole.error || deleteRole.error,
+          )}
         </div>
       )}
     </form>

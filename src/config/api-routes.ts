@@ -17,6 +17,23 @@ export const API_ROUTES = {
             update: (id: number | string) => `/auth/roles/${id}`,
             delete: (id: number | string) => `/auth/roles/${id}`,
         },
+        POSITIONS: {
+            LIST: `/auth/positions`,
+            CREATE: `/auth/positions`,
+            detail: (id: number | string) => `/auth/positions/${id}`,
+            update: (id: number | string) => `/auth/positions/${id}`,
+            delete: (id: number | string) => `/auth/positions/${id}`,
+            accessRules: (id: number | string) => `/auth/positions/${id}/permission-access-rules`,
+            syncAccessRules: (id: number | string) =>
+                `/auth/positions/${id}/permission-access-rules/sync`,
+        },
+        CUSTOMER_GROUPS: {
+            LIST: `/customer/customer-groups`,
+            CREATE: `/customer/customer-groups`,
+            detail: (id: number | string) => `/customer/customer-groups/${id}`,
+            update: (id: number | string) => `/customer/customer-groups/${id}`,
+            delete: (id: number | string) => `/customer/customer-groups/${id}`,
+        },
         USERS: {
             LIST: `/auth/users`,
             CREATE: `/auth/users`,
@@ -31,6 +48,17 @@ export const API_ROUTES = {
                 detail: (id: number | string) => `/organization/organizations/${id}`,
                 update: (id: number | string) => `/organization/organizations/${id}`,
                 delete: (id: number | string) => `/organization/organizations/${id}`,
+            },
+            MEMBERS: {
+                ASSIGN: `/organization/members/assign`,
+            },
+            INVITES: {
+                list: (organizationId: number | string) =>
+                    `/auth/organizations/${organizationId}/invites`,
+                create: (organizationId: number | string) =>
+                    `/auth/organizations/${organizationId}/invites`,
+                cancel: (invitationId: number | string) =>
+                    `/auth/invites/${invitationId}`,
             },
             BRANDS: `/organization/brands`,
             BRANCHES: `/branches`,
