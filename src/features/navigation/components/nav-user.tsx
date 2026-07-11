@@ -62,7 +62,7 @@ export function NavUser() {
 
   const user = storeUser ?? mockDevUser
   const permissionSlugs = React.useMemo(
-    () => new Set(permissions.map((permission) => permission.slug)),
+    () => new Set(permissions),
     [permissions]
   )
 
@@ -73,7 +73,8 @@ export function NavUser() {
 
   const handleLogout = useLogout();
 
-  const initials = getUserInitials(user.name)
+  const displayName = [user.first_name, user.last_name].filter(Boolean).join(" ") || user.name || "کاربر";
+  const initials = getUserInitials(displayName)
   const subtitle = getUserSubtitle(user)
 
   return (
@@ -86,11 +87,11 @@ export function NavUser() {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src="/placeholder.svg" alt={user.name} />
+                <AvatarImage src="/placeholder.svg" alt={displayName} />
                 <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-start text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
+                <span className="truncate font-medium">{displayName}</span>
                 <span className="truncate text-xs">{subtitle}</span>
               </div>
               <HugeiconsIcon
@@ -109,11 +110,11 @@ export function NavUser() {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src="/placeholder.svg" alt={user.name} />
+                  <AvatarImage src="/placeholder.svg" alt={displayName} />
                   <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-start text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
+                  <span className="truncate font-medium">{displayName}</span>
                   <span className="truncate text-xs">{subtitle}</span>
                 </div>
               </div>

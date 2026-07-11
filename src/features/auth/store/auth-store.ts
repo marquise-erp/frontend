@@ -2,7 +2,7 @@ import { create } from "zustand"
 import { persist, createJSONStorage } from "zustand/middleware";
 import { postToApi } from "@/lib/api";
 import { API_ROUTES } from "@/config/api-routes";
-import { Permission, Scope, User } from "../schemas";
+import { Scope, User } from "../schemas";
 import { PermissionCode } from "@/config/permissions";
 
 interface AuthState {
@@ -17,7 +17,7 @@ interface AuthState {
 
   logout: () => Promise<void>;
 
-  setAuthData: (user: User, scopes: Scope[], permissions: Permission[]) => void;
+  setAuthData: (user: User, scopes: Scope[], permissions: PermissionCode[]) => void;
   switchContextNode: (organizationNodeId: number) => void;
   purgeAuth: () => void;
 }

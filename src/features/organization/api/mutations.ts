@@ -106,3 +106,14 @@ export function useCancelInvite() {
       deleteFromApi(API_ROUTES.ADMIN.ORGANIZATION.INVITES.cancel(invitationId)),
   });
 }
+
+export function useResendInvite() {
+  return useTenantMutation({
+    mutationFn: async (invitationId: number) =>
+      postToApi<Invitation, null>(
+        API_ROUTES.ADMIN.ORGANIZATION.INVITES.resend(invitationId),
+        null,
+        invitationSchema,
+      ),
+  });
+}

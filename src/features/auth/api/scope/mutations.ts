@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { postToApi } from "@/lib/api";
 import { API_ROUTES } from "@/config/api-routes";
+import { PermissionCode } from "@/config/permissions";
 import { useAuthStore } from "../../store/auth-store";
 import { authKeys } from "../auth/queries";
 import { meResponseSchema, type MeResponse } from "../../schemas/login/responses";
@@ -43,7 +44,7 @@ export function useSwitchScope() {
     onSuccess: (data: MeResponse) => {
       const { user, scopes, permissions } = data;
 
-      setAuthData(user, scopes, permissions);
+      setAuthData(user, scopes, (permissions ?? []) as PermissionCode[]);
       queryClient.setQueryData(authKeys.me, data);
 
       const currentScopeId = getActiveScopeId();

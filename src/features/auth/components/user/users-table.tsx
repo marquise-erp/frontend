@@ -131,7 +131,7 @@ export function UsersTable({ users, isLoading, onEdit, deleteUser }: UsersTableP
           if (!open) setDeletingUser(null);
         }}
         entityLabel="کاربر"
-        entityName={deletingUser?.name}
+        entityName={deletingUser ? ([deletingUser.first_name, deletingUser.last_name].filter(Boolean).join(" ") || deletingUser.name || undefined) : undefined}
         onConfirm={handleConfirmDelete}
         isLoading={isDeleting}
       />

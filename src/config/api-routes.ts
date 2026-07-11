@@ -7,8 +7,13 @@ export const API_ROUTES = {
             LOGIN: `/auth/login`,
             LOGOUT: `/auth/logout`,
             ME: `/auth/me`,
+            REGISTER: `/auth/register`,
             VERIFY_2FA: `/auth/verify-2fa`,
             SWITCH_SCOPE: `/auth/scopes/switch`,
+        },
+        INVITES: {
+            detail: (token: string) => `/auth/invites/${token}`,
+            accept: (token: string) => `/auth/invites/${token}/accept`,
         },
         ROLES: {
             LIST: `/auth/roles`,
@@ -59,6 +64,8 @@ export const API_ROUTES = {
                     `/auth/organizations/${organizationId}/invites`,
                 cancel: (invitationId: number | string) =>
                     `/auth/invites/${invitationId}`,
+                resend: (invitationId: number | string) =>
+                    `/auth/invites/${invitationId}/resend`,
             },
             BRANDS: `/organization/brands`,
             BRANCHES: `/branches`,

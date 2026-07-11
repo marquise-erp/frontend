@@ -21,6 +21,7 @@ import {
     type OrganizationTreeNode,
     type OrgMember,
 } from "../../types/organization-tree";
+import type { User } from "@/features/auth/schemas/user/responses";
 import { TreeRowContext } from "@/components/ui/tree-table";
 import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -31,11 +32,13 @@ export function OrganizationTreeRow({
     ctx,
     onEdit,
     onAddChild,
+    allUsers = [],
 }: {
     node: OrganizationTreeNode;
     ctx: TreeRowContext;
     onEdit: (node: OrganizationTreeNode) => void;
     onAddChild: (node: OrganizationTreeNode) => void;
+    allUsers?: User[];
 }) {
     const { depth, expanded, hasChildren, toggle } = ctx;
     const meta = ORGANIZATION_LEVELS[node.type];
@@ -46,8 +49,26 @@ export function OrganizationTreeRow({
     const [deleteOpen, setDeleteOpen] = useState(false);
     const deleteOrganization = useDeleteOrganization();
 
-    // No members API yet; show an empty avatar group for now.
-    const users: OrgMember[] = [];
+    const users: OrgMember[] = allUsers
+        .filter((user) =>
+            user.scopes?.some(
+                (scope) => String(scope.organization?.id) === String(node.id)
+            )
+        )
+        .map((user) => {
+            const matchingScope = user.scopes?.find(
+                (scope) => String(scope.organization?.id) === String(node.id)
+            );
+            return {
+                id: String(user.id),
+                fullName: (user.name ?? `${user.first_name ?? ""} ${user.last_name ?? ""}`.trim()) || user.mobile,
+                email: user.email ?? "",
+                phone: user.mobile,
+                roleId: matchingScope?.role?.id,
+                positionName: matchingScope?.position?.name,
+                status: user.is_active ? "active" : "inactive",
+            };
+        });
 
     const handleConfirmDelete = () => {
         deleteOrganization.mutate(Number(node.id));

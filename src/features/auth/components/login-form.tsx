@@ -1,5 +1,7 @@
 "use client"
 
+import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -29,7 +31,12 @@ export function LoginForm({
     ...props
 }: React.ComponentProps<"form">) {
     const t = useTranslations('auth');
+    const searchParams = useSearchParams();
     const mutation = useLogin();
+    const next = searchParams.get("next");
+    const registerHref = next
+        ? `/auth/register?next=${encodeURIComponent(next)}`
+        : "/auth/register";
     const form = useForm({
         defaultValues: {
             mobile: "",
@@ -158,7 +165,10 @@ export function LoginForm({
                                 </div>
                             )}
                             <FieldDescription className="text-center">
-                                حسابی ندارید؟ <a href="#">ثبت نام</a>
+                                {t("login.noAccount")}{" "}
+                                <Link href={registerHref} className="underline underline-offset-4">
+                                    {t("login.registerLink")}
+                                </Link>
                             </FieldDescription>
                         </Field>
                     )}

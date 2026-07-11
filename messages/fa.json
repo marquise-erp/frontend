@@ -117,6 +117,7 @@
             },
             "actions": {
                 "resend": "ارسال مجدد دعوت",
+                "resendSuccess": "دعوت‌نامه مجدداً ارسال شد.",
                 "cancelInvite": "لغو دعوت",
                 "setActive": "فعال کردن",
                 "setInactive": "غیرفعال کردن",
@@ -186,8 +187,46 @@
             "password": "رمز عبور",
             "remember": "مرا به خاطر بسپار",
             "submit": "ورود",
-            "forget password": "فراموشی رمز عبور؟"
+            "forget password": "فراموشی رمز عبور؟",
+            "noAccount": "حسابی ندارید؟",
+            "registerLink": "ثبت‌نام"
+        },
+        "register": {
+            "title": "ثبت‌نام",
+            "description": "برای ایجاد حساب کاربری اطلاعات خود را وارد کنید.",
+            "descriptionInvite": "برای پذیرش دعوت‌نامه، ابتدا حساب کاربری خود را ایجاد کنید.",
+            "first_name": "نام",
+            "last_name": "نام خانوادگی",
+            "email": "ایمیل",
+            "mobile": "شماره موبایل",
+            "password": "رمز عبور",
+            "passwordConfirmation": "تکرار رمز عبور",
+            "submit": "ثبت‌نام",
+            "submitting": "در حال ثبت‌نام...",
+            "failed": "ثبت‌نام ناموفق بود",
+            "hasAccount": "حساب دارید؟",
+            "loginLink": "ورود"
         }
+    },
+    "invite": {
+        "title": "دعوت به سازمان",
+        "description": "شما برای عضویت در سازمان زیر دعوت شده‌اید.",
+        "descriptionWithInviter": "{name} شما را برای عضویت در سازمان دعوت کرده است.",
+        "organization": "سازمان",
+        "role": "نقش",
+        "position": "سمت",
+        "mobile": "موبایل",
+        "approve": "پذیرش دعوت",
+        "approving": "در حال پذیرش...",
+        "login": "ورود",
+        "register": "ثبت‌نام",
+        "authenticatedHint": "{name} عزیز، برای پیوستن به این سازمان دکمه زیر را بزنید.",
+        "unauthenticatedHint": "برای پذیرش دعوت‌نامه ابتدا وارد شوید یا ثبت‌نام کنید.",
+        "invalidTitle": "دعوت‌نامه نامعتبر",
+        "invalid": "این دعوت‌نامه یافت نشد یا دیگر معتبر نیست.",
+        "expiredTitle": "دعوت‌نامه منقضی شده",
+        "expiredDescription": "این دعوت‌نامه دیگر فعال نیست. لطفاً از مدیر سازمان دعوت جدید درخواست کنید.",
+        "goToLogin": "رفتن به صفحه ورود"
     },
     "errors": {
         "accessDeniedTitle": "دسترسی غیرمجاز",

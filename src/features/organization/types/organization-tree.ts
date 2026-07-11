@@ -22,6 +22,7 @@ export interface OrgMember {
     phone?: string;
     avatar?: string;
     roleId?: string | number;
+    positionName?: string;
     status: MemberStatus;
 }
 

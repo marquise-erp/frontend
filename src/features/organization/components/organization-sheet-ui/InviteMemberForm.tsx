@@ -176,11 +176,14 @@ export function InviteMemberForm({
                                 {t('members.noMembers')}
                               </div>
                             ) : (
-                              users.map((user) => (
-                                <SelectItem key={user.id} value={String(user.id)}>
-                                  {user.name} — {user.mobile}
-                                </SelectItem>
-                              ))
+                              users.map((user) => {
+                                const displayName = [user.first_name, user.last_name].filter(Boolean).join(" ") || user.name || "کاربر";
+                                return (
+                                  <SelectItem key={user.id} value={String(user.id)}>
+                                    {displayName} — {user.mobile}
+                                  </SelectItem>
+                                );
+                              })
                             )}
                           </SelectContent>
                         </Select>

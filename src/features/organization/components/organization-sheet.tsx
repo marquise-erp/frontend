@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
@@ -42,7 +42,6 @@ export function OrganizationSheet({ open, onOpenChange, target }: OrganizationSh
 
   const { data: roles = [] } = useRoles();
   const { data: users = [] } = useUsers();
-  const members: OrgMember[] = [];
 
   // Inline-edit header state (edit mode, auto-saved on change).
   const [localName, setLocalName] = useState("");
@@ -83,6 +82,31 @@ export function OrganizationSheet({ open, onOpenChange, target }: OrganizationSh
     createdNode ?? (target?.type === "edit" ? target.node : null);
   const showRolesTab =
     effectiveNode?.type === "brand" || effectiveNode?.type === "holding";
+
+  const members = useMemo<OrgMember[]>(() => {
+    const node = effectiveNode;
+    if (!node) return [];
+    return users
+      .filter((user) =>
+        user.scopes?.some(
+          (scope) => String(scope.organization?.id) === String(node.id)
+        )
+      )
+      .map((user) => {
+        const matchingScope = user.scopes?.find(
+          (scope) => String(scope.organization?.id) === String(node.id)
+        );
+        return {
+          id: String(user.id),
+          fullName: (user.name ?? `${user.first_name ?? ""} ${user.last_name ?? ""}`.trim()) || user.mobile,
+          email: user.email ?? "",
+          phone: user.mobile,
+          roleId: matchingScope?.role?.id,
+          positionName: matchingScope?.position?.name,
+          status: user.is_active ? "active" : "inactive",
+        };
+      });
+  }, [users, effectiveNode]);
 
   // Reset internal state whenever the sheet target changes (hook order stays stable).
   useEffect(() => {

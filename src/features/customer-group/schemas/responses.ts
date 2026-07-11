@@ -5,6 +5,7 @@ import { customerGroupTypeSchema } from "./types";
 export const customerGroupResponseSchema = baseEntitySchema.extend({
   parent_id: idSchema.nullable(),
   name: nameSchema,
+  description: descriptionSchema,
   path: z.string(),
   type: customerGroupTypeSchema.nullable().optional(),
 }).strict();

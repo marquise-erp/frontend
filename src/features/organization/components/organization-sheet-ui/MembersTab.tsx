@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 import { StatusBadge, type MemberStatus } from "./StatusBadge";
 import { MemberActions } from "./MemberActions";
 import { InviteMemberForm } from "./InviteMemberForm";
-import { useCancelInvite } from "../../api";
+import { useCancelInvite, useInviteMember, useResendInvite } from "../../api";
 import type { Invitation } from "../../schemas/invite.schema";
 import type { Role } from "@/features/auth/schemas/role/responses";
 import type { User } from "@/features/auth/schemas/user/responses";
@@ -54,7 +54,7 @@ export function MembersTab({ node, members, invites, users, roles, onRefresh }: 
       name: m.fullName,
       mobile: m.phone || m.email,
       role: roles.find((r) => String(r.id) === String(m.roleId))?.name ?? "—",
-      position: "",
+      position: m.positionName ?? "",
       status: m.status as MemberStatus,
       avatarClass: "bg-muted text-foreground",
       initials: m.fullName
@@ -64,6 +64,7 @@ export function MembersTab({ node, members, invites, users, roles, onRefresh }: 
         .slice(0, 2)
         .toUpperCase(),
       invitationId: null as number | null,
+      inviteObject: null as Invitation | null,
     })),
     ...pendingInvites.map((invite) => ({
       id: `invite-${invite.id}`,
@@ -80,8 +81,11 @@ export function MembersTab({ node, members, invites, users, roles, onRefresh }: 
         .slice(0, 2)
         .toUpperCase(),
       invitationId: invite.id,
+      inviteObject: invite,
     })),
   ];
+
+  const resendInviteMutation = useResendInvite();
 
   const handleCancelInvite = async (invitationId: number) => {
     try {
@@ -90,6 +94,16 @@ export function MembersTab({ node, members, invites, users, roles, onRefresh }: 
       onRefresh?.();
     } catch (err: any) {
       toast.error(err?.message || "Failed to cancel invite");
+    }
+  };
+
+  const handleResendInvite = async (invite: Invitation) => {
+    try {
+      await resendInviteMutation.mutateAsync(invite.id);
+      toast.success(t('actions.resendSuccess'));
+      onRefresh?.();
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to resend invite");
     }
   };
 
@@ -205,6 +219,11 @@ export function MembersTab({ node, members, invites, users, roles, onRefresh }: 
                   <div className="justify-self-end">
                     <MemberActions
                       status={member.status}
+                      onResendInvite={
+                        member.inviteObject != null
+                          ? () => handleResendInvite(member.inviteObject!)
+                          : undefined
+                      }
                       onCancelInvite={
                         member.invitationId != null
                           ? () => handleCancelInvite(member.invitationId!)

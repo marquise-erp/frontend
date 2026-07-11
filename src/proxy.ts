@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { API_ROUTES, BACKEND_URL, CLIENT_API_BASE } from './config/api-routes';
+import { getSafeRedirectPath } from './lib/safe-redirect';
 
 function getCookieValue(cookieHeader: string, name: string): string | undefined {
   const match = cookieHeader.match(new RegExp(`(?:^|;\\s*)${name}=([^;]*)`));
@@ -51,7 +52,8 @@ export async function proxy(request: NextRequest) {
   }
 
   if (isAuthRoute && authenticated) {
-    return NextResponse.redirect(new URL("/app/dashboard", request.url));
+    const next = request.nextUrl.searchParams.get("next");
+    return NextResponse.redirect(new URL(getSafeRedirectPath(next), request.url));
   }
 
   return NextResponse.next();

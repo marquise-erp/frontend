@@ -27,14 +27,19 @@ export function AvatarGroup({ users, max = 5, size = "sm", className }: Props) {
             <TooltipTrigger asChild>
               <Avatar className={cn(dim, "ring-2 ring-background hover:z-10 transition-transform hover:-translate-y-0.5")}>
                 <AvatarImage src={u.avatar} alt={u.fullName} />
-                <AvatarFallback className="bg-muted">
-                  <img src={u.avatar} alt={u.fullName} loading="lazy" />
+                <AvatarFallback className="bg-muted text-muted-foreground font-semibold">
+                  {u.fullName
+                    .split(" ")
+                    .map((p) => p[0])
+                    .join("")
+                    .slice(0, 2)
+                    .toUpperCase() || "؟"}
                 </AvatarFallback>
               </Avatar>
             </TooltipTrigger>
             <TooltipContent side="top" dir="rtl">
               <div className="text-xs font-medium">{u.fullName}</div>
-              <div className="text-[10px] text-muted-foreground">{u.email}</div>
+              <div className="text-[10px] text-muted-foreground">{u.phone || u.email}</div>
             </TooltipContent>
           </Tooltip>
         ))}

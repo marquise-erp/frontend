@@ -38,7 +38,13 @@ api.interceptors.response.use(
     (error) => {
         if (error.response?.status === 401) {
             Cookies.remove('auth_token');
-            window.location.href = '/auth/login';
+            const pathname = window.location.pathname;
+            const isPublicAuthPath =
+                pathname.startsWith('/auth/') || pathname.startsWith('/invite/');
+            if (!isPublicAuthPath) {
+                const next = encodeURIComponent(pathname + window.location.search);
+                window.location.href = `/auth/login?next=${next}`;
+            }
         }
         return Promise.reject(toApiError(error));
     }

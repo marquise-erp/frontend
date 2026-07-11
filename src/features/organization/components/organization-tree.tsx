@@ -18,9 +18,11 @@ import {
 } from "../types/organization-tree";
 import { useOrganizations } from "../api";
 import { OrganizationTreeRow } from "./organization-tree-ui/organization-tree-row";
+import { useUsers } from "@/features/auth/api/user";
 
 export function OrganizationTree() {
   const { data: roots, isPending, isError, error } = useOrganizations();
+  const { data: users = [] } = useUsers();
 
   const [sheetOpen, setSheetOpen] = useState(false);
   const [target, setTarget] = useState<OrganizationSheetMode | null>(null);
@@ -89,7 +91,13 @@ export function OrganizationTree() {
               data={roots}
               defaultExpandedDepth={2}
               renderRow={(node, ctx) => (
-                <OrganizationTreeRow node={node} ctx={ctx} onEdit={openEdit} onAddChild={openCreate} />
+                <OrganizationTreeRow
+                  node={node}
+                  ctx={ctx}
+                  onEdit={openEdit}
+                  onAddChild={openCreate}
+                  allUsers={users}
+                />
               )}
             />
           )}
