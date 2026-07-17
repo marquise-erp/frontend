@@ -37,7 +37,8 @@ export function UserForm({
   const isEditing = !!editingUser;
 
   const defaultValues: CreateUserInput = {
-    name: editingUser?.name ?? '',
+    first_name: editingUser?.first_name ?? '',
+    last_name: editingUser?.last_name ?? '',
     mobile: editingUser?.mobile ?? '',
     email: editingUser?.email ?? '',
     password: '',
@@ -95,15 +96,29 @@ export function UserForm({
       className="space-y-6"
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <form.Field name="name">
+        <form.Field name="first_name">
           {(field) => (
             <Field>
-              <FieldLabel htmlFor={field.name}>نام کامل</FieldLabel>
+              <FieldLabel htmlFor={field.name}>نام</FieldLabel>
               <Input
                 id={field.name}
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
-                placeholder="نام کاربر"
+                placeholder="نام"
+              />
+            </Field>
+          )}
+        </form.Field>
+
+        <form.Field name="last_name">
+          {(field) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>نام خانوادگی</FieldLabel>
+              <Input
+                id={field.name}
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder="نام خانوادگی"
               />
             </Field>
           )}

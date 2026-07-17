@@ -2,7 +2,8 @@ import { nameSchema } from "@/features/shared/schemas/primitives";
 import { z } from "zod";
 
 export const createUserSchema = z.object({
-  name: nameSchema,
+  first_name: z.string().max(255).optional().or(z.literal("")),
+  last_name: z.string().max(255).optional().or(z.literal("")),
   mobile: z.string()
     .min(1, "شماره موبایل الزامی است")
     .regex(/^09\d{9}$/, "فرمت شماره موبایل معتبر نیست"),

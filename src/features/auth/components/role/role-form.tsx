@@ -1,16 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useForm } from '@tanstack/react-form';
 import { toast } from 'sonner';
+import { TreeView, type TreeViewItem } from '@/components/ui/tree-view';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Folder01Icon, Shield01Icon } from '@hugeicons/core-free-icons';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Field, FieldContent, FieldLabel, FieldSeparator } from '@/components/ui/field';
-import { Checkbox } from '@/components/ui/checkbox';
 
 import { useCreateRole, useDeleteRole, useUpdateRole } from '@/features/auth/api/role';
 import { useApiError } from '@/lib/use-api-error';
@@ -20,6 +21,100 @@ import {
   type Role,
 } from '@/features/auth/schemas/role/responses';
 import { CreateRoleInput, createRoleSchema } from '@/features/auth/schemas/role/requests';
+
+interface GroupNode {
+  name: string;
+  key: string;
+  subgroups: GroupNode[];
+  permissions: Permission[];
+}
+
+
+function buildPermissionTree(permissions: Permission[]): GroupNode[] {
+  interface TempNode {
+    name: string;
+    key: string;
+    subgroups: Map<string, TempNode>;
+    permissions: Permission[];
+  }
+
+  const rootMap = new Map<string, TempNode>();
+
+  const getOrCreateNode = (path: string[]): TempNode => {
+    let currentMap = rootMap;
+    let currentNode: TempNode | undefined;
+    const currentPath: string[] = [];
+
+    for (const segment of path) {
+      currentPath.push(segment);
+      const nodeKey = currentPath.join('/');
+      if (!currentMap.has(segment)) {
+        currentMap.set(segment, {
+          name: segment,
+          key: nodeKey,
+          subgroups: new Map<string, TempNode>(),
+          permissions: [],
+        });
+      }
+      currentNode = currentMap.get(segment)!;
+      currentMap = currentNode.subgroups;
+    }
+    return currentNode!;
+  };
+
+  for (const perm of permissions) {
+    const path = perm.group && perm.group.length > 0 ? perm.group : ['سایر'];
+    const node = getOrCreateNode(path);
+    node.permissions.push(perm);
+  }
+
+  const convertNode = (temp: TempNode): GroupNode => {
+    return {
+      name: temp.name,
+      key: temp.key,
+      subgroups: Array.from(temp.subgroups.values()).map(convertNode),
+      permissions: temp.permissions,
+    };
+  };
+
+  return Array.from(rootMap.values()).map(convertNode);
+}
+
+function groupTreeToTreeViewItems(nodes: GroupNode[], selectedPermissionIds: number[]): TreeViewItem[] {
+  return nodes.map((node) => {
+    const children: TreeViewItem[] = [
+      ...groupTreeToTreeViewItems(node.subgroups, selectedPermissionIds),
+      ...node.permissions.map((perm) => ({
+        id: `perm-${perm.id}`,
+        name: perm.name,
+        type: 'file',
+        checked: selectedPermissionIds.includes(perm.id),
+      })),
+    ];
+
+    return {
+      id: `group-${node.key}`,
+      name: node.name,
+      type: 'folder',
+      children: children.length > 0 ? children : undefined,
+    };
+  });
+}
+
+function getLeafPermissionIds(item: TreeViewItem): number[] {
+  const ids: number[] = [];
+  const walk = (node: TreeViewItem) => {
+    if (node.id.startsWith('perm-')) {
+      const permId = Number(node.id.replace('perm-', ''));
+      if (!isNaN(permId)) {
+        ids.push(permId);
+      }
+    }
+    node.children?.forEach(walk);
+  };
+  walk(item);
+  return ids;
+}
 
 interface Brand {
   id: number;
@@ -52,15 +147,7 @@ export function RoleForm({
   const isEditing = !!editingRole;
 
   // Group permissions for UI
-  const groupedPermissions = availablePermissions.reduce<Record<string, Permission[]>>(
-    (acc, perm) => {
-      const group = perm.group || 'سایر';
-      if (!acc[group]) acc[group] = [];
-      acc[group].push(perm);
-      return acc;
-    },
-    {}
-  );
+  const permissionTree = buildPermissionTree(availablePermissions);
 
   const defaultValues: CreateRoleInput = {
     name: editingRole?.name ?? '',
@@ -112,26 +199,30 @@ export function RoleForm({
     }
   };
 
-  const togglePermission = (permissionId: number, checked: boolean) => {
+  const getIcon = useCallback((item: TreeViewItem) => {
+    if (item.type === 'folder') {
+      return (
+        <span className="flex h-5 w-5 items-center justify-center text-primary/80">
+          <HugeiconsIcon icon={Folder01Icon} className="h-4 w-4" />
+        </span>
+      );
+    }
+    return (
+      <span className="flex h-5 w-5 items-center justify-center text-teal-600">
+        <HugeiconsIcon icon={Shield01Icon} className="h-3.5 w-3.5" />
+      </span>
+    );
+  }, []);
+
+  const handleCheckChange = useCallback((item: TreeViewItem, checked: boolean) => {
+    const affectedIds = getLeafPermissionIds(item);
     form.setFieldValue('permission_ids', (current: number[] = []) => {
       const next = checked
-        ? [...current, permissionId]
-        : current.filter((id: number) => id !== permissionId);
-      return Array.from(new Set(next));
-    });
-  };
-
-  const toggleGroup = (group: string, checked: boolean) => {
-    const groupPerms = groupedPermissions[group] || [];
-    const groupIds = groupPerms.map((p) => p.id);
-
-    form.setFieldValue('permission_ids', (current: number[] = []) => {
-      const next = checked
-        ? Array.from(new Set([...current, ...groupIds]))
-        : current.filter((id: number) => !groupIds.includes(id));
+        ? Array.from(new Set([...current, ...affectedIds]))
+        : current.filter((id: number) => !affectedIds.includes(id));
       return next;
     });
-  };
+  }, [form]);
 
   // Note: We intentionally do NOT define isGroupSelected / isPermissionSelected here
   // using getFieldValue, because that would not trigger re-renders.
@@ -230,69 +321,29 @@ export function RoleForm({
 
       {/* Permissions */}
       <div className="space-y-3">
-        <Label className="mb-1">دسترسی‌های نقش</Label>
+        <Label className="mb-3">دسترسی‌های نقش</Label>
 
         <form.Subscribe selector={(state) => state.values.permission_ids ?? []}>
           {(permissionIds) => {
-            const isGroupSelected = (group: string) => {
-              const groupPerms = groupedPermissions[group] || [];
-              return (
-                groupPerms.length > 0 &&
-                groupPerms.every((p) => permissionIds.includes(p.id))
-              );
-            };
-
-            const isPermissionSelected = (id: number) => {
-              return permissionIds.includes(id);
-            };
-
+            const treeData = groupTreeToTreeViewItems(permissionTree, permissionIds);
             return (
               <>
-                {Object.keys(groupedPermissions).length === 0 ? (
+                {treeData.length === 0 ? (
                   <div className="text-sm text-muted-foreground">
                     هیچ دسترسی‌ای برای انتخاب موجود نیست.
                   </div>
                 ) : (
-                  Object.entries(groupedPermissions).map(([group, perms]) => (
-                    <div key={group} className="rounded-lg border p-4">
-                      <Field orientation="horizontal" className="mb-3 items-center">
-                        <Checkbox
-                          id={`group-${group.replace(/\s+/g, '-')}`}
-                          checked={isGroupSelected(group)}
-                          onCheckedChange={(checked) => toggleGroup(group, !!checked)}
-                          disabled={isSubmitting}
-                        />
-                        <FieldContent>
-                          <FieldLabel htmlFor={`group-${group.replace(/\s+/g, '-')}`}>
-                            {group}
-                          </FieldLabel>
-                        </FieldContent>
-                      </Field>
-
-                      <FieldSeparator className="mb-2" />
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
-                        {perms.map((perm) => (
-                          <Field key={perm.id} orientation="horizontal" className="items-center">
-                            <Checkbox
-                              id={`perm-${perm.id}`}
-                              checked={isPermissionSelected(perm.id)}
-                              onCheckedChange={(checked) => togglePermission(perm.id, !!checked)}
-                              disabled={isSubmitting}
-                            />
-                            <FieldContent className="ml-2">
-                              <FieldLabel
-                                htmlFor={`perm-${perm.id}`}
-                                className="text-sm font-normal cursor-pointer"
-                              >
-                                {perm.name}
-                              </FieldLabel>
-                            </FieldContent>
-                          </Field>
-                        ))}
-                      </div>
-                    </div>
-                  ))
+                  <TreeView
+                    data={treeData}
+                    getIcon={getIcon}
+                    showCheckboxes
+                    onCheckChange={handleCheckChange}
+                    selectionText="دسترسی انتخاب‌شده"
+                    showSearchBar={false}
+                    enableModifierMultiSelect={false}
+                    clearSelectionOnClickAway={false}
+                    className="max-h-76 overflow-y-auto p-4"
+                  />
                 )}
               </>
             );

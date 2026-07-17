@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useRegister } from "../api/auth";
 import { registerRequestSchema, type RegisterRequest } from "../schemas/register/requests";
+import { AvatarUpload } from "./avatar-upload";
 
 export function RegisterForm({
   className,
@@ -36,6 +37,7 @@ export function RegisterForm({
       password: "",
       password_confirmation: "",
       invite_token: inviteToken,
+      avatar: null,
     } as RegisterRequest,
 
     validators: {
@@ -74,6 +76,28 @@ export function RegisterForm({
             {inviteToken ? t("descriptionInvite") : t("description")}
           </p>
         </div>
+
+        <form.Field
+          name="avatar"
+          children={(field) => {
+            const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid} className="flex flex-col items-center justify-center">
+                <FieldLabel htmlFor={field.name} className="sr-only">
+                  {t("avatar")}
+                </FieldLabel>
+                <AvatarUpload
+                  value={field.state.value}
+                  onChange={(file) => {
+                    field.handleChange(file);
+                  }}
+                  error={isInvalid ? field.state.meta.errors?.[0] : undefined}
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        />
 
         <div className="grid grid-cols-2 gap-4">
           <form.Field

@@ -67,3 +67,63 @@ export function useSwitchScope() {
     },
   });
 }
+
+import { api } from "@/lib/axios";
+import { ApiEnvelope } from "@/lib/api-error";
+
+export function useSetDefaultScope() {
+  const queryClient = useQueryClient();
+  const setAuthData = useAuthStore((state) => state.setAuthData);
+
+  return useMutation<MeResponse, Error, number>({
+    mutationFn: async (scopeId: number) => {
+      return postToApi(
+        API_ROUTES.ADMIN.AUTH.SET_DEFAULT_SCOPE,
+        { scope_id: scopeId },
+        meResponseSchema,
+      );
+    },
+    onSuccess: (data: MeResponse) => {
+      const { user, scopes, permissions } = data;
+      setAuthData(user, scopes, (permissions ?? []) as PermissionCode[]);
+      queryClient.setQueryData(authKeys.me, data);
+    },
+    onError: (error: any) => {
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        "تعیین حوزه پیش‌فرض ناموفق بود.";
+      toast.error(message);
+    },
+  });
+}
+
+export function useRemoveScope() {
+  const queryClient = useQueryClient();
+  const setAuthData = useAuthStore((state) => state.setAuthData);
+
+  return useMutation<MeResponse, Error, number>({
+    mutationFn: async (scopeId: number) => {
+      const response = await api.delete<ApiEnvelope<MeResponse>>(
+        API_ROUTES.ADMIN.AUTH.removeScope(scopeId)
+      );
+      if (response.data.status === "error") {
+        throw new Error(response.data.message || "Failed to remove workspace.");
+      }
+      return response.data.data;
+    },
+    onSuccess: (data: MeResponse) => {
+      const { user, scopes, permissions } = data;
+      setAuthData(user, scopes, (permissions ?? []) as PermissionCode[]);
+      queryClient.setQueryData(authKeys.me, data);
+      toast.success("حوزه سازمانی با موفقیت حذف شد.");
+    },
+    onError: (error: any) => {
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        "حذف حوزه سازمانی ناموفق بود.";
+      toast.error(message);
+    },
+  });
+}

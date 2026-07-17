@@ -32,10 +32,12 @@ import {
 import { filterNavUserMenuGroups } from "@/features/navigation/lib/filter-nav-user-items"
 import { useLogout } from "@/features/auth/hooks/use-logout"
 import { User } from "@/features/auth/schemas"
+import { SettingsDialog } from "@/features/auth/components/settings-dialog"
 
 const mockDevUser: User = {
   id: 0,
-  name: "دمو کاربر",
+  first_name: "دمو",
+  last_name: "کاربر",
   mobile: "09120000000",
   email: "demo@example.com",
 }
@@ -57,6 +59,7 @@ function getUserSubtitle(user: User): string {
 
 export function NavUser() {
   const { isMobile } = useSidebar()
+  const [settingsOpen, setSettingsOpen] = React.useState(false)
   const storeUser = useAuthStore((state) => state.user)
   const permissions = useAuthStore((state) => state.permissions)
 
@@ -73,7 +76,7 @@ export function NavUser() {
 
   const handleLogout = useLogout();
 
-  const displayName = [user.first_name, user.last_name].filter(Boolean).join(" ") || user.name || "کاربر";
+  const displayName = [user.first_name, user.last_name].filter(Boolean).join(" ")  || "کاربر";
   const initials = getUserInitials(displayName)
   const subtitle = getUserSubtitle(user)
 
@@ -87,7 +90,7 @@ export function NavUser() {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src="/placeholder.svg" alt={displayName} />
+                <AvatarImage src={user.avatar_url || "/placeholder.svg"} alt={displayName} />
                 <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-start text-sm leading-tight">
@@ -110,7 +113,7 @@ export function NavUser() {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src="/placeholder.svg" alt={displayName} />
+                  <AvatarImage src={user.avatar_url || "/placeholder.svg"} alt={displayName} />
                   <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-start text-sm leading-tight">
@@ -123,14 +126,24 @@ export function NavUser() {
             {visibleGroups.map((group) => (
               <React.Fragment key={group.key}>
                 <DropdownMenuGroup>
-                  {group.items.map((item) => (
-                    <DropdownMenuItem key={item.key} asChild>
-                      <Link href={item.href!}>
-                        {item.icon}
-                        {item.title}
-                      </Link>
-                    </DropdownMenuItem>
-                  ))}
+                  {group.items.map((item) => {
+                    if (item.key === "setting") {
+                      return (
+                        <DropdownMenuItem key={item.key} onClick={() => setSettingsOpen(true)} className="cursor-pointer">
+                          {item.icon}
+                          {item.title}
+                        </DropdownMenuItem>
+                      );
+                    }
+                    return (
+                      <DropdownMenuItem key={item.key} asChild>
+                        <Link href={item.href!}>
+                          {item.icon}
+                          {item.title}
+                        </Link>
+                      </DropdownMenuItem>
+                    );
+                  })}
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
               </React.Fragment>
@@ -141,6 +154,7 @@ export function NavUser() {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
       </SidebarMenuItem>
     </SidebarMenu>
   )

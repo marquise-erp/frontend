@@ -10,6 +10,8 @@ export const API_ROUTES = {
             REGISTER: `/auth/register`,
             VERIFY_2FA: `/auth/verify-2fa`,
             SWITCH_SCOPE: `/auth/scopes/switch`,
+            SET_DEFAULT_SCOPE: `/auth/scopes/default`,
+            removeScope: (scopeId: number) => `/auth/scopes/${scopeId}`,
         },
         INVITES: {
             detail: (token: string) => `/auth/invites/${token}`,
@@ -18,6 +20,7 @@ export const API_ROUTES = {
         ROLES: {
             LIST: `/auth/roles`,
             CREATE: `/auth/roles`,
+            PERMISSIONS: `/auth/permissions`,
             detail: (id: number | string) => `/auth/roles/${id}`,
             update: (id: number | string) => `/auth/roles/${id}`,
             delete: (id: number | string) => `/auth/roles/${id}`,
@@ -47,6 +50,11 @@ export const API_ROUTES = {
             delete: (id: number | string) => `/auth/users/${id}`,
         },
         ORGANIZATION: {
+            COMMUNICATION: {
+                COUNTRIES: `/communication/countries`,
+                provinces: (countryId: string | number) => `/communication/countries/${countryId}/provinces`,
+                cities: (provinceId: string | number) => `/communication/provinces/${provinceId}/cities`,
+            },
             ORGANIZATIONS: {
                 LIST: `/organization/organizations`,
                 CREATE: `/organization/organizations`,

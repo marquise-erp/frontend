@@ -61,7 +61,7 @@ export function OrganizationTreeRow({
             );
             return {
                 id: String(user.id),
-                fullName: (user.name ?? `${user.first_name ?? ""} ${user.last_name ?? ""}`.trim()) || user.mobile,
+                fullName: `${user.first_name ?? ""} ${user.last_name ?? ""}`.trim() || user.mobile,
                 email: user.email ?? "",
                 phone: user.mobile,
                 roleId: matchingScope?.role?.id,

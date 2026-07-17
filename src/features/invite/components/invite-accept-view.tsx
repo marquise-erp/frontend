@@ -26,6 +26,7 @@ function invitePath(token: string) {
 
 export function InviteAcceptView({ token }: InviteAcceptViewProps) {
   const t = useTranslations("invite");
+  const tOrg = useTranslations("organization");
   const { data: invite, isLoading, isError, error } = useInvitePreview(token);
   const { data: authData, isLoading: authLoading } = useAuthMe();
   const acceptMutation = useAcceptInvite(token);
@@ -84,9 +85,27 @@ export function InviteAcceptView({ token }: InviteAcceptViewProps) {
       </CardHeader>
       <CardContent className="flex flex-col gap-6">
         <dl className="space-y-3 text-sm">
+          {invite.organization.type !== "holding" && invite.organization.holding ? (
+            <div className="flex justify-between gap-4">
+              <dt className="text-muted-foreground">{tOrg("type.holding")}</dt>
+              <dd className="font-medium">{invite.organization.holding.name}</dd>
+            </div>
+          ) : null}
+
+          {invite.organization.type !== "brand" && invite.organization.brand ? (
+            <div className="flex justify-between gap-4">
+              <dt className="text-muted-foreground">{tOrg("type.brand")}</dt>
+              <dd className="font-medium">{invite.organization.brand.name}</dd>
+            </div>
+          ) : null}
+
           <div className="flex justify-between gap-4">
-            <dt className="text-muted-foreground">{t("organization")}</dt>
-            <dd className="font-medium">{invite.organization_name}</dd>
+            <dt className="text-muted-foreground">
+              {invite.organization.type
+                ? tOrg(`type.${invite.organization.type}`)
+                : t("organization")}
+            </dt>
+            <dd className="font-medium">{invite.organization.name}</dd>
           </div>
           <div className="flex justify-between gap-4">
             <dt className="text-muted-foreground">{t("role")}</dt>
@@ -104,7 +123,7 @@ export function InviteAcceptView({ token }: InviteAcceptViewProps) {
           <div className="flex flex-col gap-3">
             <p className="text-center text-sm text-muted-foreground">
               {t("authenticatedHint", {
-                name: [authData!.user!.first_name, authData!.user!.last_name].filter(Boolean).join(" ") || authData!.user!.name || "کاربر"
+                name: [authData!.user!.first_name, authData!.user!.last_name].filter(Boolean).join(" ") || "کاربر"
               })}
             </p>
             <Button

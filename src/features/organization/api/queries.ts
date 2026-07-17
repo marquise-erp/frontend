@@ -7,6 +7,8 @@ import {
   organizationRefListSchema,
   OrganizationResponse,
   organizationResponseSchema,
+  locationItemListSchema,
+  type LocationItem,
 } from "../schemas/responses";
 import type {  OrganizationListResponse } from "../schemas/responses";
 import {
@@ -31,6 +33,12 @@ export const brandKeys = {
   list: () => [...brandKeys.all, "list"] as const,
 };
 
+export const locationKeys = {
+  all: ["locations"] as const,
+  countries: () => [...locationKeys.all, "countries"] as const,
+  provinces: (countryId: string | number) => [...locationKeys.all, "provinces", countryId] as const,
+  cities: (provinceId: string | number) => [...locationKeys.all, "cities", provinceId] as const,
+};
 
 export function useOrganizations() {
   return useTenantQuery({
@@ -75,5 +83,40 @@ export function useOrganizationInvites(organizationId: number | string, enabled 
         invitationListSchema,
       ),
     enabled: enabled && id > 0,
+  });
+}
+
+export function useCountries() {
+  return useTenantQuery({
+    queryKey: locationKeys.countries(),
+    queryFn: () =>
+      fetchFromApi<LocationItem[]>(
+        API_ROUTES.ADMIN.ORGANIZATION.COMMUNICATION.COUNTRIES,
+        locationItemListSchema,
+      ),
+  });
+}
+
+export function useProvinces(countryId: string | number | undefined, enabled = true) {
+  return useTenantQuery({
+    queryKey: locationKeys.provinces(countryId || ""),
+    queryFn: () =>
+      fetchFromApi<LocationItem[]>(
+        API_ROUTES.ADMIN.ORGANIZATION.COMMUNICATION.provinces(countryId || ""),
+        locationItemListSchema,
+      ),
+    enabled: enabled && !!countryId,
+  });
+}
+
+export function useCities(provinceId: string | number | undefined, enabled = true) {
+  return useTenantQuery({
+    queryKey: locationKeys.cities(provinceId || ""),
+    queryFn: () =>
+      fetchFromApi<LocationItem[]>(
+        API_ROUTES.ADMIN.ORGANIZATION.COMMUNICATION.cities(provinceId || ""),
+        locationItemListSchema,
+      ),
+    enabled: enabled && !!provinceId,
   });
 }

@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import { PlusSignIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 
-import { useRoles, useDeleteRole } from '@/features/auth/api/role';
+import { useRoles, useDeleteRole, usePermissions } from '@/features/auth/api/role';
 import { useApiError } from '@/lib/use-api-error';
 import { useBrands } from '@/features/organization/api';
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -20,20 +20,10 @@ export default function RolesPage() {
   const { toastError } = useApiError();
 
   const { data: brands = [] } = useBrands();
+  const { data: availablePermissions = [] } = usePermissions();
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingRole, setEditingRole] = useState<Role | null>(null);
-
-  // Aggregate all unique permissions from existing roles (for checkbox UI)
-  const availablePermissions = useMemo(() => {
-    const map = new Map<number, any>();
-    roles.forEach((r: any) => {
-      (r.permissions || []).forEach((p: any) => {
-        if (!map.has(p.id)) map.set(p.id, p);
-      });
-    });
-    return Array.from(map.values());
-  }, [roles]);
 
   const handleCreate = () => {
     setEditingRole(null);

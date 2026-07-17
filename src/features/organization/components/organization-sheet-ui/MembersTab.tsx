@@ -107,6 +107,14 @@ export function MembersTab({ node, members, invites, users, roles, onRefresh }: 
     }
   };
 
+  const handleShowInviteLink = (invite: Invitation) => {
+    const link = `${window.location.origin}/invite/${invite.token}`;
+    void navigator.clipboard.writeText(link);
+    toast.success(t('actions.inviteLinkCopied'), {
+      description: link,
+    });
+  };
+
   return (
     <>
       <div className="flex items-center justify-between px-6 pt-6">
@@ -227,6 +235,11 @@ export function MembersTab({ node, members, invites, users, roles, onRefresh }: 
                       onCancelInvite={
                         member.invitationId != null
                           ? () => handleCancelInvite(member.invitationId!)
+                          : undefined
+                      }
+                      onShowInviteLink={
+                        member.inviteObject != null
+                          ? () => handleShowInviteLink(member.inviteObject!)
                           : undefined
                       }
                       onToggleActive={() => {

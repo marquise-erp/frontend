@@ -1,256 +1,491 @@
 {
-    "navigation": {
-        "sidebar": {
-            "access": {
-                "title": "سطح دسترسی",
-                "users": "مدیریت کاربران",
-                "roles": "مدیریت نقش‌ها",
-                "positions": "مدیریت سمت‌ها",
-                "access-rules": "قوانین دسترسی"
-            },
-            "definitions": {
-                "title": "تعاریف",
-                "org": "اطلاعات سازمان",
-                "customer_groups": "گروه‌های مشتری",
-                "forms": "فرم‌ها",
-                "units": "واحدها (وزنی، عددی)",
-                "banks": "حساب‌های بانکی"
-            },
-            "settings": {
-                "title": "تنظیمات",
-                "price_board": "تابلو قیمت",
-                "invoice_prefs": "فاکتور",
-                "accounting": "حسابداری (سال مالی، مبنا، ارزش افزوده)"
-            },
-            "reports": {
-                "title": "گزارشات",
-                "contacts": "مخاطبین",
-                "products": "کالاها"
-            },
-            "invoice": {
-                "title": "فاکتور",
-                "create": "ثبت فاکتور",
-                "list": "فاکتورها"
-            }
-        }
-    },
-    "organization": {
-        "type": {
-            "holding": "هلدینگ",
-            "brand": "برند",
-            "region": "منطقه",
-            "city": "شهر",
-            "branch": "شعبه",
-            "unit": "واحد"
-        },
-        "sheet": {
-            "tabs": {
-                "general": "عمومی",
-                "roles": "نقش‌ها",
-                "members": "اعضا"
-            },
-            "titlePlaceholder": "نام سازمان",
-            "descriptionPlaceholder": "توضیحات را وارد کنید...",
-            "createFirst": "پس از ایجاد فعال می‌شود",
-            "createHint": "توضیحات، نقش‌ها و اعضا پس از ایجاد قابل تنظیم هستند.",
-            "general": {
-                "subOrgs": "زیرمجموعه‌ها",
-                "teams": "تیم‌ها",
-                "info": "اطلاعات",
-                "type": "نوع سازمان",
-                "parent": "سازمان والد",
-                "region": "منطقه",
-                "totalMembers": "تعداد اعضا",
-                "created": "ایجاد شده",
-                "createdBy": "ایجاد شده توسط",
-                "regionSettings": "تنظیمات منطقه",
-                "citySettings": "تنظیمات شهر",
-                "taxRate": "نرخ مالیات",
-                "taxName": "نام مالیات",
-                "currencyCode": "واحد پول",
-                "cityName": "نام شهر"
-            },
-            "members": {
-                "title": "اعضا",
-                "invite": "دعوت عضو",
-                "search": "جستجو",
-                "status": "وضعیت:",
-                "permissions": "دسترسی‌ها:",
-                "all": "همه",
-                "active": "فعال",
-                "inviteSent": "دعوت ارسال شده",
-                "inactive": "غیرفعال",
-                "name": "نام",
-                "rolePosition": "نقش و سمت",
-                "noMembers": "هیچ عضوی به این سطح اختصاص نیافته است."
-            },
-            "roles": {
-                "title": "نقش‌ها",
-                "add": "افزودن نقش",
-                "edit": "ویرایش نقش",
-                "actions": "عملیات",
-                "search": "جستجوی نقش‌ها",
-                "status": "وضعیت:",
-                "role": "نقش",
-                "members": "اعضا",
-                "noRoles": "هیچ نقشی تعریف نشده است.",
-                "statusLabel": "وضعیت"
-            },
-            "invite": {
-                "user": "کاربر",
-                "mobile": "موبایل",
-                "role": "نقش",
-                "position": "سمت (اختیاری)",
-                "notInList": "در لیست نیست؟ از + برای دعوت با شماره موبایل استفاده کنید.",
-                "selectUser": "یک کاربر انتخاب کنید",
-                "selectRole": "یک نقش انتخاب کنید",
-                "selectPosition": "یک سمت انتخاب کنید",
-                "noPosition": "بدون سمت",
-                "noPositions": "سمت‌ای برای این نقش تعریف نشده است",
-                "enterMobile": "شماره موبایل را وارد کنید",
-                "cancel": "انصراف",
-                "submit": "ارسال",
-                "sendInvite": "ارسال دعوت",
-                "memberAdded": "عضو اضافه شد",
-                "sendFailed": "ارسال دعوت‌نامه ناموفق بود",
-                "pendingExists": "یک دعوت‌نامه در انتظار برای این کاربر در این سازمان وجود دارد."
-            },
-            "actions": {
-                "resend": "ارسال مجدد دعوت",
-                "resendSuccess": "دعوت‌نامه مجدداً ارسال شد.",
-                "cancelInvite": "لغو دعوت",
-                "setActive": "فعال کردن",
-                "setInactive": "غیرفعال کردن",
-                "remove": "حذف"
-            },
-            "status": {
-                "active": "فعال",
-                "inviteSent": "دعوت ارسال شده",
-                "inactive": "غیرفعال"
-            }
-        }
-    },
-    "customerGroup": {
-        "title": "گروه‌بندی مشتریان",
-        "hint": "گروه‌های مشتری به‌صورت درخت تو در تو سازماندهی می‌شوند. هر گره ریشه یکی از چهار نوع بخش‌بندی بازار را دارد و زیرگروه‌ها بدون نوع، به‌صورت آزاد زیر آن قرار می‌گیرند.",
-        "addRoot": "افزودن گروه ریشه",
-        "empty": "هنوز گروه مشتری ثبت نشده است.",
-        "loadError": "خطا در بارگذاری گروه‌های مشتری",
-        "loadErrorGeneric": "ارتباط با سرور برقرار نشد.",
-        "type": {
-            "demographic": "جمعیت‌شناختی",
-            "psychographic": "روان‌شناختی",
-            "behavioral": "رفتاری",
-            "geographic": "جغرافیایی"
-        },
-        "sheet": {
-            "titlePlaceholder": "نام گروه",
-            "descriptionPlaceholder": "توضیحات را وارد کنید...",
-            "createHint": "توضیحات پس از ایجاد قابل تنظیم است.",
-            "addNewRoot": "افزودن {type} جدید",
-            "addNewChild": "افزودن زیرگروه جدید",
-            "underParent": "در «{name}»",
-            "rootLevel": "گروه ریشه · {type}",
-            "nameLabel": "نام {type}",
-            "namePlaceholder": "نام {type} را وارد کنید",
-            "childNameLabel": "نام زیرگروه",
-            "childNamePlaceholder": "نام زیرگروه را وارد کنید",
-            "cancel": "انصراف",
-            "creating": "در حال ایجاد...",
-            "add": "افزودن {type}",
-            "addChild": "افزودن زیرگروه",
-            "created": "گروه مشتری ایجاد شد",
-            "updated": "گروه مشتری به‌روزرسانی شد",
-            "createFailed": "ایجاد گروه مشتری ناموفق بود",
-            "updateFailed": "به‌روزرسانی گروه مشتری ناموفق بود",
-            "general": {
-                "subGroups": "زیرگروه‌ها",
-                "segmentation": "نوع بخش‌بندی",
-                "info": "اطلاعات",
-                "type": "نوع بخش‌بندی",
-                "created": "ایجاد شده"
-            }
-        }
-    },
-    "treeView": {
-        "actions": {
-            "check": "انتخاب",
-            "uncheck": "لغو انتخاب"
-        }
-    },
-    "auth": {
-        "login": {
-            "title": "ورود به سیستم",
-            "description": "برای ورود به سیستم اطلاعات کاربری خود را وارد نمایید.",
-            "username": "نام کاربری",
-            "mobile": "شماره همراه",
-            "password": "رمز عبور",
-            "remember": "مرا به خاطر بسپار",
-            "submit": "ورود",
-            "forget password": "فراموشی رمز عبور؟",
-            "noAccount": "حسابی ندارید؟",
-            "registerLink": "ثبت‌نام"
-        },
-        "register": {
-            "title": "ثبت‌نام",
-            "description": "برای ایجاد حساب کاربری اطلاعات خود را وارد کنید.",
-            "descriptionInvite": "برای پذیرش دعوت‌نامه، ابتدا حساب کاربری خود را ایجاد کنید.",
-            "first_name": "نام",
-            "last_name": "نام خانوادگی",
-            "email": "ایمیل",
-            "mobile": "شماره موبایل",
-            "password": "رمز عبور",
-            "passwordConfirmation": "تکرار رمز عبور",
-            "submit": "ثبت‌نام",
-            "submitting": "در حال ثبت‌نام...",
-            "failed": "ثبت‌نام ناموفق بود",
-            "hasAccount": "حساب دارید؟",
-            "loginLink": "ورود"
-        }
-    },
-    "invite": {
-        "title": "دعوت به سازمان",
-        "description": "شما برای عضویت در سازمان زیر دعوت شده‌اید.",
-        "descriptionWithInviter": "{name} شما را برای عضویت در سازمان دعوت کرده است.",
-        "organization": "سازمان",
-        "role": "نقش",
-        "position": "سمت",
-        "mobile": "موبایل",
-        "approve": "پذیرش دعوت",
-        "approving": "در حال پذیرش...",
-        "login": "ورود",
-        "register": "ثبت‌نام",
-        "authenticatedHint": "{name} عزیز، برای پیوستن به این سازمان دکمه زیر را بزنید.",
-        "unauthenticatedHint": "برای پذیرش دعوت‌نامه ابتدا وارد شوید یا ثبت‌نام کنید.",
-        "invalidTitle": "دعوت‌نامه نامعتبر",
-        "invalid": "این دعوت‌نامه یافت نشد یا دیگر معتبر نیست.",
-        "expiredTitle": "دعوت‌نامه منقضی شده",
-        "expiredDescription": "این دعوت‌نامه دیگر فعال نیست. لطفاً از مدیر سازمان دعوت جدید درخواست کنید.",
-        "goToLogin": "رفتن به صفحه ورود"
-    },
-    "errors": {
-        "accessDeniedTitle": "دسترسی غیرمجاز",
-        "accessDeniedDescription": "شما دسترسی لازم ({permission}) برای مشاهده این صفحه را ندارید.",
-        "accessDeniedContact": "اگر فکر می‌کنید این یک اشتباه است، با مدیر سیستم تماس بگیرید.",
-        "api": {
-            "unauthorized": "شما مجوز لازم برای انجام این عملیات را ندارید.",
-            "notFound": "مورد درخواستی یافت نشد.",
-            "validation": "اطلاعات ارسالی نامعتبر است. لطفاً فرم را بررسی کنید.",
-            "conflict": "این عملیات با داده‌های موجود تداخل دارد.",
-            "network": "ارتباط با سرور برقرار نشد. لطفاً اتصال اینترنت خود را بررسی کنید.",
-            "server": "خطایی در سرور رخ داد. لطفاً بعداً دوباره تلاش کنید.",
-            "unknown": "خطایی رخ داد. لطفاً دوباره تلاش کنید."
-        }
-    },
-    "deals": {
-        "factors": {
-            "gold_weight": "وزن طلا",
-            "purity": "عیار"
-        }
-    },
-    "validation": {
-        "required": "این فیلد اجباری است",
-        "invalid_email": "ایمیل وارد شده معتبر نیست",
-        "min_length": "حداقل باید {count} کاراکتر باشد"
+  "navigation": {
+    "sidebar": {
+      "access": {
+        "title": "سطح دسترسی",
+        "users": "مدیریت کاربران",
+        "roles": "مدیریت نقش‌ها",
+        "positions": "مدیریت موقعیت‌ها",
+        "access-rules": "قوانین دسترسی"
+      },
+      "definitions": {
+        "title": "تعاریف",
+        "org": "اطلاعات سازمان",
+        "customer_groups": "گروه‌های مشتری",
+        "forms": "فرم‌ها",
+        "units": "واحدها (وزنی، عددی)",
+        "banks": "حساب‌های بانکی"
+      },
+      "settings": {
+        "title": "تنظیمات",
+        "price_board": "تابلو قیمت",
+        "invoice_prefs": "فاکتور",
+        "accounting": "حسابداری (سال مالی، مبنا، ارزش افزوده)"
+      },
+      "reports": {
+        "title": "گزارشات",
+        "contacts": "مخاطبین",
+        "products": "کالاها"
+      },
+      "invoice": {
+        "title": "فاکتور",
+        "create": "ثبت فاکتور",
+        "list": "فاکتورها"
+      }
     }
+  },
+  "organization": {
+    "type": {
+      "holding": "هلدینگ",
+      "brand": "برند",
+      "region": "منطقه",
+      "city": "شهر",
+      "branch": "شعبه",
+      "unit": "واحد"
+    },
+    "sheet": {
+      "tabs": {
+        "general": "عمومی",
+        "roles": "نقش‌ها",
+        "members": "اعضا"
+      },
+      "titlePlaceholder": "نام سازمان",
+      "descriptionPlaceholder": "توضیحات را وارد کنید...",
+      "createFirst": "پس از ایجاد فعال می‌شود",
+      "createHint": "توضیحات، نقش‌ها و اعضا پس از ایجاد قابل تنظیم هستند.",
+      "general": {
+        "subOrgs": "زیرمجموعه‌ها",
+        "teams": "تیم‌ها",
+        "info": "اطلاعات",
+        "type": "نوع سازمان",
+        "parent": "سازمان والد",
+        "region": "منطقه",
+        "totalMembers": "تعداد اعضا",
+        "created": "ایجاد شده",
+        "createdBy": "ایجاد شده توسط",
+        "regionSettings": "تنظیمات منطقه",
+        "citySettings": "تنظیمات شهر",
+        "taxRate": "نرخ مالیات",
+        "taxName": "نام مالیات",
+        "currencyCode": "واحد پول",
+        "cityName": "نام شهر"
+      },
+      "members": {
+        "title": "اعضا",
+        "invite": "دعوت عضو",
+        "search": "جستجو",
+        "status": "وضعیت:",
+        "permissions": "دسترسی‌ها:",
+        "all": "همه",
+        "active": "فعال",
+        "inviteSent": "دعوت ارسال شده",
+        "inactive": "غیرفعال",
+        "name": "نام",
+        "rolePosition": "نقش و موقعیت",
+        "noMembers": "هیچ عضوی به این سطح اختصاص نیافته است."
+      },
+      "roles": {
+        "title": "نقش‌ها",
+        "add": "افزودن نقش",
+        "edit": "ویرایش نقش",
+        "actions": "عملیات",
+        "search": "جستجوی نقش‌ها",
+        "status": "وضعیت:",
+        "role": "نقش",
+        "members": "اعضا",
+        "noRoles": "هیچ نقشی تعریف نشده است.",
+        "statusLabel": "وضعیت"
+      },
+      "invite": {
+        "user": "کاربر",
+        "mobile": "موبایل",
+        "role": "نقش",
+        "position": "موقعیت (اختیاری)",
+        "notInList": "در لیست نیست؟ از + برای دعوت با شماره موبایل استفاده کنید.",
+        "selectUser": "یک کاربر انتخاب کنید",
+        "selectRole": "یک نقش انتخاب کنید",
+        "selectPosition": "یک موقعیت انتخاب کنید",
+        "noPosition": "بدون موقعیت",
+        "noPositions": "موقعیت‌ای برای این نقش تعریف نشده است",
+        "enterMobile": "شماره موبایل را وارد کنید",
+        "cancel": "انصراف",
+        "submit": "ارسال",
+        "sendInvite": "ارسال دعوت",
+        "memberAdded": "عضو اضافه شد",
+        "sendFailed": "ارسال دعوت‌نامه ناموفق بود",
+        "pendingExists": "یک دعوت‌نامه در انتظار برای این کاربر در این سازمان وجود دارد."
+      },
+      "actions": {
+        "resend": "ارسال مجدد دعوت",
+        "resendSuccess": "دعوت‌نامه مجدداً ارسال شد.",
+        "cancelInvite": "لغو دعوت",
+        "showInviteLink": "نمایش لینک دعوت",
+        "inviteLinkCopied": "لینک دعوت کپی شد.",
+        "setActive": "فعال کردن",
+        "setInactive": "غیرفعال کردن",
+        "remove": "حذف"
+      },
+      "status": {
+        "active": "فعال",
+        "inviteSent": "دعوت ارسال شده",
+        "inactive": "غیرفعال"
+      }
+    }
+  },
+  "customerGroup": {
+    "title": "گروه‌بندی مشتریان",
+    "hint": "گروه‌های مشتری به‌صورت درخت تو در تو سازماندهی می‌شوند. هر گره ریشه یکی از چهار نوع بخش‌بندی بازار را دارد و زیرگروه‌ها بدون نوع، به‌صورت آزاد زیر آن قرار می‌گیرند.",
+    "addRoot": "افزودن گروه ریشه",
+    "empty": "هنوز گروه مشتری ثبت نشده است.",
+    "loadError": "خطا در بارگذاری گروه‌های مشتری",
+    "loadErrorGeneric": "ارتباط با سرور برقرار نشد.",
+    "type": {
+      "demographic": "جمعیت‌شناختی",
+      "psychographic": "روان‌شناختی",
+      "behavioral": "رفتاری",
+      "geographic": "جغرافیایی"
+    },
+    "sheet": {
+      "titlePlaceholder": "نام گروه",
+      "descriptionPlaceholder": "توضیحات را وارد کنید...",
+      "createHint": "توضیحات پس از ایجاد قابل تنظیم است.",
+      "addNewRoot": "افزودن {type} جدید",
+      "addNewChild": "افزودن زیرگروه جدید",
+      "underParent": "در «{name}»",
+      "rootLevel": "گروه ریشه · {type}",
+      "nameLabel": "نام {type}",
+      "namePlaceholder": "نام {type} را وارد کنید",
+      "childNameLabel": "نام زیرگروه",
+      "childNamePlaceholder": "نام زیرگروه را وارد کنید",
+      "cancel": "انصراف",
+      "creating": "در حال ایجاد...",
+      "add": "افزودن {type}",
+      "addChild": "افزودن زیرگروه",
+      "created": "گروه مشتری ایجاد شد",
+      "updated": "گروه مشتری به‌روزرسانی شد",
+      "createFailed": "ایجاد گروه مشتری ناموفق بود",
+      "updateFailed": "به‌روزرسانی گروه مشتری ناموفق بود",
+      "general": {
+        "subGroups": "زیرگروه‌ها",
+        "segmentation": "نوع بخش‌بندی",
+        "info": "اطلاعات",
+        "type": "نوع بخش‌بندی",
+        "created": "ایجاد شده"
+      }
+    }
+  },
+  "treeView": {
+    "actions": {
+      "check": "انتخاب",
+      "uncheck": "لغو انتخاب"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "ورود به سیستم",
+      "description": "برای ورود به سیستم اطلاعات کاربری خود را وارد نمایید.",
+      "username": "نام کاربری",
+      "mobile": "شماره همراه",
+      "password": "رمز عبور",
+      "remember": "مرا به خاطر بسپار",
+      "submit": "ورود",
+      "forget password": "فراموشی رمز عبور؟",
+      "noAccount": "حسابی ندارید؟",
+      "registerLink": "ثبت‌نام"
+    },
+    "register": {
+      "title": "ثبت‌نام",
+      "description": "برای ایجاد حساب کاربری اطلاعات خود را وارد کنید.",
+      "descriptionInvite": "برای پذیرش دعوت‌نامه، ابتدا حساب کاربری خود را ایجاد کنید.",
+      "first_name": "نام",
+      "last_name": "نام خانوادگی",
+      "email": "ایمیل",
+      "mobile": "شماره موبایل",
+      "password": "رمز عبور",
+      "passwordConfirmation": "تکرار رمز عبور",
+      "submit": "ثبت‌نام",
+      "submitting": "در حال ثبت‌نام...",
+      "failed": "ثبت‌نام ناموفق بود",
+      "hasAccount": "حساب دارید؟",
+      "loginLink": "ورود",
+      "avatar": "تصویر پروفایل",
+      "avatarHint": "برای آپلود تصویر کلیک کنید یا فایل را به اینجا بکشید"
+    }
+  },
+  "invite": {
+    "title": "دعوت به سازمان",
+    "description": "شما برای عضویت در سازمان زیر دعوت شده‌اید.",
+    "descriptionWithInviter": "{name} شما را برای عضویت در سازمان دعوت کرده است.",
+    "organization": "سازمان",
+    "role": "نقش",
+    "position": "موقعیت",
+    "mobile": "موبایل",
+    "approve": "پذیرش دعوت",
+    "approving": "در حال پذیرش...",
+    "login": "ورود",
+    "register": "ثبت‌نام",
+    "authenticatedHint": "{name} عزیز، برای پیوستن به این سازمان دکمه زیر را بزنید.",
+    "unauthenticatedHint": "برای پذیرش دعوت‌نامه ابتدا وارد شوید یا ثبت‌نام کنید.",
+    "invalidTitle": "دعوت‌نامه نامعتبر",
+    "invalid": "این دعوت‌نامه یافت نشد یا دیگر معتبر نیست.",
+    "expiredTitle": "دعوت‌نامه منقضی شده",
+    "expiredDescription": "این دعوت‌نامه دیگر فعال نیست. لطفاً از مدیر سازمان دعوت جدید درخواست کنید.",
+    "goToLogin": "رفتن به صفحه ورود"
+  },
+  "errors": {
+    "accessDeniedTitle": "دسترسی غیرمجاز",
+    "accessDeniedDescription": "شما دسترسی لازم ({permission}) برای مشاهده این صفحه را ندارید.",
+    "accessDeniedContact": "اگر فکر می‌کنید این یک اشتباه است، با مدیر سیستم تماس بگیرید.",
+    "api": {
+      "unauthorized": "شما مجوز لازم برای انجام این عملیات را ندارید.",
+      "notFound": "مورد درخواستی یافت نشد.",
+      "validation": "اطلاعات ارسالی نامعتبر است. لطفاً فرم را بررسی کنید.",
+      "conflict": "این عملیات با داده‌های موجود تداخل دارد.",
+      "network": "ارتباط با سرور برقرار نشد. لطفاً اتصال اینترنت خود را بررسی کنید.",
+      "server": "خطایی در سرور رخ داد. لطفاً بعداً دوباره تلاش کنید.",
+      "unknown": "خطایی رخ داد. لطفاً دوباره تلاش کنید."
+    }
+  },
+  "deals": {
+    "factors": {
+      "gold_weight": "وزن طلا",
+      "purity": "عیار"
+    }
+  },
+  "validation": {
+    "required": "این فیلد اجباری است",
+    "invalid_email": "ایمیل وارد شده معتبر نیست",
+    "min_length": "حداقل باید {count} کاراکتر باشد"
+  },
+  "userSettings": {
+    "title": "تنظیمات کاربری",
+    "description": "پروفایل و تنظیمات کاربری خود را در اینجا ویرایش کنید.",
+    "profile": "پروفایل کاربری",
+    "appearance": "ظاهر برنامه",
+    "notifications": "اعلانات",
+    "security": "امنیت و گذرواژه",
+    "firstName": "نام",
+    "lastName": "نام خانوادگی",
+    "email": "ایمیل",
+    "mobile": "شماره موبایل",
+    "save": "ذخیره تغییرات",
+    "saving": "در حال ذخیره...",
+    "success": "تغییرات با موفقیت ذخیره شد.",
+    "failed": "ذخیره تغییرات ناموفق بود.",
+    "theme": "پوسته برنامه",
+    "themeLight": "روشن",
+    "themeDark": "تاریک",
+    "themeSystem": "سیستم",
+    "changePassword": "تغییر رمز عبور",
+    "currentPassword": "رمز عبور فعلی",
+    "newPassword": "رمز عبور جدید",
+    "confirmNewPassword": "تکرار رمز عبور جدید",
+    "scopes": "حوزه‌های کاری",
+    "scopesDescription": "انتخاب حوزه کاری پیش‌فرض برای ورود خودکار به سیستم",
+    "active": "حوزه پیش‌فرض",
+    "activate": "تنظیم به عنوان پیش‌فرض",
+    "switching": "در حال تنظیم...",
+    "noScopes": "هیچ حوزه کاری یافت نشد.",
+    "deleteWorkspaceTitle": "حذف حوزه کاری",
+    "deleteWorkspaceDescription": "آیا از حذف حوزه کاری «{name}» اطمینان دارید؟ این عمل قابل بازگشت نیست.",
+    "cancel": "انصراف",
+    "delete": "حذف"
+  },
+  "form_builder": {
+    "title": "فرم‌ساز",
+    "sidebar": {
+      "structure": "ساختار",
+      "responses": "پاسخ‌ها",
+      "activity": "فعالیت‌ها",
+      "settings": "تنظیمات",
+      "addElements": "افزودن عناصر"
+    },
+    "toolbox": {
+      "title": "افزودن عناصر",
+      "search": "جستجو...",
+      "noElements": "عنصری منطبق با «{query}» یافت نشد.",
+      "categories": {
+        "Inputs": "ورودی‌ها",
+        "Choices": "انتخاب‌ها",
+        "Advanced": "پیشرفته",
+        "Layout": "طرح‌بندی"
+      },
+      "items": {
+        "text": {
+          "label": "ورودی متن",
+          "description": "فیلد متنی تک‌خطی"
+        },
+        "textarea": {
+          "label": "متن طولانی",
+          "description": "فیلد متنی چندخطی"
+        },
+        "email": {
+          "label": "ایمیل",
+          "description": "فیلد ورودی آدرس ایمیل"
+        },
+        "number": {
+          "label": "عدد",
+          "description": "فیلد ورودی عددی"
+        },
+        "url": {
+          "label": "آدرس اینترنتی (URL)",
+          "description": "فیلد ورودی آدرس وب‌سایت"
+        },
+        "dropdown": {
+          "label": "لیست کشویی",
+          "description": "انتخاب از میان یک لیست"
+        },
+        "single-choice": {
+          "label": "تک‌انتخابی (رادیویی)",
+          "description": "انتخاب فقط یک گزینه"
+        },
+        "multiple-choice": {
+          "label": "چندانتخابی (چک‌باکس)",
+          "description": "انتخاب چندین گزینه"
+        },
+        "checkbox": {
+          "label": "چک‌باکس تک",
+          "description": "تغییر وضعیت بله/خیر"
+        },
+        "date": {
+          "label": "انتخابگر تاریخ",
+          "description": "انتخاب تاریخ مورد نظر"
+        },
+        "file": {
+          "label": "آپلودر فایل",
+          "description": "آپلود فایل یا سند"
+        },
+        "heading": {
+          "label": "عنوان",
+          "description": "عنوان بخش"
+        },
+        "paragraph": {
+          "label": "پاراگراف",
+          "description": "بلوک متنی توضیحی"
+        },
+        "divider": {
+          "label": "جداکننده",
+          "description": "جداکننده افقی"
+        }
+      }
+    },
+    "canvas": {
+      "dragElements": "عناصر را برای ساختن فرم به اینجا بکشید",
+      "hoverHint": "از منوی سمت راست عنصر مورد نظر را بکشید یا کلیک کنید.",
+      "dropHere": "اینجا رها کنید",
+      "moving": "در حال جابجایی عنصر...",
+      "placeholders": {
+        "text": "متن...",
+        "textarea": "پیام خود را بنویسید...",
+        "select": "انتخاب...",
+        "selectDate": "انتخاب تاریخ",
+        "upload": "برای آپلود کلیک کنید یا فایل را بکشید"
+      }
+    },
+    "properties": {
+      "title": "ویژگی‌های عنصر",
+      "tabs": {
+        "general": "عمومی",
+        "appearance": "ظاهر",
+        "style": "استایل",
+        "rules": "قوانین"
+      },
+      "fields": {
+        "label": "برچسب (Label)",
+        "content": "محتوا",
+        "dividerNoContent": "یک جداکننده محتوای قابل ویرایش ندارد.",
+        "placeholder": "متن پیش‌فرض (Placeholder)",
+        "description": "توضیحات",
+        "descriptionHint": "زیر برچسب نمایش داده می‌شود",
+        "helpText": "متن راهنما",
+        "helpTextHint": "به عنوان راهنما زیر فیلد نمایش داده می‌شود",
+        "options": "گزینه‌ها",
+        "addOption": "افزودن گزینه",
+        "option": "گزینه",
+        "labelPosition": "موقعیت برچسب",
+        "labelAlign": "تراز برچسب",
+        "width": "عرض فیلد",
+        "size": "اندازه کنترل",
+        "hideElement": "پنهان کردن عنصر",
+        "cornerRadius": "شعاع گوشه",
+        "showBorder": "نمایش حاشیه",
+        "borderWidth": "ضخامت حاشیه",
+        "background": "پس‌زمینه",
+        "accentColor": "رنگ شاخص (Accent)",
+        "accentColorHint": "توسط کنترل‌های انتخابی استفاده می‌شود",
+        "noRules": "این عنصر قانون اعتبارسنجی ندارد.",
+        "required": "اجباری",
+        "minLength": "حداقل طول",
+        "maxLength": "حداکثر طول",
+        "minValue": "حداقل مقدار",
+        "maxValue": "حداکثر مقدار",
+        "pattern": "الگو (Regex)",
+        "patternHint": "الگوی اعتبارسنجی دلخواه (عبارت منظم)",
+        "errorMessage": "پیغام خطا",
+        "errorMessageDefault": "مقدار این فیلد نامعتبر است"
+      },
+      "values": {
+        "position": {
+          "top": "بالا",
+          "left": "چپ",
+          "hidden": "مخفی"
+        },
+        "align": {
+          "left": "چپ",
+          "center": "وسط",
+          "right": "راست"
+        },
+        "width": {
+          "full": "کامل",
+          "half": "۱/۲",
+          "third": "۱/۳"
+        },
+        "size": {
+          "sm": "کوچک",
+          "default": "متوسط",
+          "lg": "بزرگ"
+        },
+        "background": {
+          "transparent": "بدون پس‌زمینه",
+          "muted": "کمرنگ (Muted)",
+          "card": "کارت"
+        }
+      },
+      "actions": {
+        "duplicate": "تکثیر",
+        "delete": "حذف"
+      }
+    },
+    "defaultProps": {
+      "labels": {
+        "text": "فیلد متنی",
+        "textarea": "پیام",
+        "email": "آدرس ایمیل",
+        "number": "مقدار",
+        "url": "وب‌سایت",
+        "dropdown": "یک گزینه را انتخاب کنید",
+        "single-choice": "یکی را انتخاب کنید",
+        "multiple-choice": "موارد لازم را انتخاب کنید",
+        "checkbox": "من شرایط را می‌پذیرم",
+        "date": "یک تاریخ را انتخاب کنید",
+        "file": "یک فایل بارگذاری کنید",
+        "heading": "عنوان بخش",
+        "paragraph": "یک توضیح کوتاه برای راهنمایی افرادی که این فرم را پر می‌کنند اضافه کنید.",
+        "divider": ""
+      },
+      "placeholders": {
+        "text": "متن را وارد کنید...",
+        "textarea": "پیام خود را تایپ کنید...",
+        "email": "you@example.com",
+        "number": "0",
+        "url": "https://example.com",
+        "dropdown": "انتخاب کنید..."
+      },
+      "options": {
+        "option1": "گزینه ۱",
+        "option2": "گزینه ۲",
+        "option3": "گزینه ۳"
+      }
+    }
+  }
 }

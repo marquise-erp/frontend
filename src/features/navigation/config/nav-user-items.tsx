@@ -35,10 +35,10 @@ export const navUserMenuGroups: NavUserMenuGroup[] = [
     order: 2,
     items: [
       {
-        key: "profile",
-        title: "حساب کاربری",
+        key: "setting",
+        title: "تنظیمات کاربری",
         icon: icon(CheckmarkBadgeIcon),
-        href: "/app/profile",
+        href: "/app/settings",
         order: 1,
       },
       {

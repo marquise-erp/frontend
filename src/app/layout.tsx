@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/sonner";
 import localFont from "next/font/local";
 import { NextIntlClientProvider } from 'next-intl';
 import { QueryProvider } from "@/providers/query-provider";
+import { ThemeProvider } from "@/providers/theme-provider";
 
 
 const iranyekan = localFont({
@@ -36,15 +37,23 @@ export default function RootLayout({
       lang="fa"
       dir="rtl"
       className={cn("h-full", "antialiased", iranyekan.variable)}
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col ">
         <QueryProvider>
           <DirectionProvider direction="rtl" dir="rtl">
             <NextIntlClientProvider>
-              <TooltipProvider>
-                {children}
-              </TooltipProvider>
-              <Toaster />
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                <TooltipProvider>
+                  {children}
+                </TooltipProvider>
+                <Toaster />
+              </ThemeProvider>
             </NextIntlClientProvider>
           </DirectionProvider>
         </QueryProvider>

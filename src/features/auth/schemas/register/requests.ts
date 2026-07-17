@@ -18,6 +18,7 @@ export const registerRequestSchema = z
     password: z.string().min(8, "رمز عبور باید حداقل ۸ کاراکتر باشد"),
     password_confirmation: z.string().min(8, "تکرار رمز عبور الزامی است"),
     invite_token: z.string().optional(),
+    avatar: z.any().optional().nullable(),
   })
   .refine((data) => data.password === data.password_confirmation, {
     message: "رمز عبور و تکرار آن یکسان نیستند",

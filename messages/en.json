@@ -1,256 +1,491 @@
 {
-    "navigation": {
-        "sidebar": {
-            "access": {
-                "title": "Access control",
-                "users": "User management",
-                "roles": "Role management",
-                "positions": "Position management",
-                "access-rules": "Access rules"
-            },
-            "definitions": {
-                "title": "Definitions",
-                "org": "Organization",
-                "customer_groups": "Customer groups",
-                "forms": "Forms",
-                "units": "Units (weight, count)",
-                "banks": "Bank accounts"
-            },
-            "settings": {
-                "title": "Settings",
-                "price_board": "Price board",
-                "invoice_prefs": "Invoice",
-                "accounting": "Accounting (fiscal year, basis, VAT)"
-            },
-            "reports": {
-                "title": "Reports",
-                "contacts": "Contacts",
-                "products": "Products"
-            },
-            "invoice": {
-                "title": "Invoice",
-                "create": "New invoice",
-                "list": "Invoices"
-            }
-        }
-    },
-    "organization": {
-        "type": {
-            "holding": "Holding",
-            "brand": "Brand",
-            "region": "Region",
-            "city": "City",
-            "branch": "Branch",
-            "unit": "Unit"
-        },
-        "sheet": {
-            "tabs": {
-                "general": "General",
-                "roles": "Roles",
-                "members": "Members"
-            },
-            "titlePlaceholder": "Organization name",
-            "descriptionPlaceholder": "Add description...",
-            "createFirst": "Available after creation",
-            "createHint": "Description, roles, and members can be set after creation.",
-            "general": {
-                "subOrgs": "Sub-orgs",
-                "teams": "Teams",
-                "info": "Info",
-                "type": "Organization type",
-                "parent": "Parent organization",
-                "region": "Region",
-                "totalMembers": "Total members",
-                "created": "Created",
-                "createdBy": "Created by",
-                "regionSettings": "Region settings",
-                "citySettings": "City settings",
-                "taxRate": "Tax rate",
-                "taxName": "Tax name",
-                "currencyCode": "Currency",
-                "cityName": "City name"
-            },
-            "members": {
-                "title": "Members",
-                "invite": "Invite member",
-                "search": "Search",
-                "status": "Status:",
-                "permissions": "Permissions:",
-                "all": "All",
-                "active": "Active",
-                "inviteSent": "Invite sent",
-                "inactive": "Inactive",
-                "name": "Name",
-                "rolePosition": "Role & position",
-                "noMembers": "No members assigned yet."
-            },
-            "roles": {
-                "title": "Roles",
-                "add": "Add role",
-                "edit": "Edit role",
-                "actions": "Actions",
-                "search": "Search roles",
-                "status": "Status:",
-                "role": "Role",
-                "members": "Members",
-                "noRoles": "No roles defined.",
-                "statusLabel": "Status"
-            },
-            "invite": {
-                "user": "User",
-                "mobile": "Mobile",
-                "role": "Role",
-                "position": "Position (optional)",
-                "notInList": "Not in the list? Use + to invite by mobile number.",
-                "selectUser": "Select a user",
-                "selectRole": "Select a role",
-                "selectPosition": "Select a position",
-                "noPosition": "No position",
-                "noPositions": "No positions for this role",
-                "enterMobile": "Enter mobile number",
-                "cancel": "Cancel",
-                "submit": "Submit",
-                "sendInvite": "Send invite",
-                "memberAdded": "Member added",
-                "sendFailed": "Failed to send invite",
-                "pendingExists": "A pending invitation already exists for this person in this organization."
-            },
-            "actions": {
-                "resend": "Resend invite",
-                "resendSuccess": "Invitation resent successfully.",
-                "cancelInvite": "Cancel invite",
-                "setActive": "Set active",
-                "setInactive": "Set inactive",
-                "remove": "Remove"
-            },
-            "status": {
-                "active": "Active",
-                "inviteSent": "Invite sent",
-                "inactive": "Inactive"
-            }
-        }
-    },
-    "customerGroup": {
-        "title": "Customer segmentation",
-        "hint": "Customer groups form a nested tree. Each root node has one of the four market segmentation types; child groups have no type and can nest freely underneath.",
-        "addRoot": "Add root group",
-        "empty": "No customer groups defined yet.",
-        "loadError": "Failed to load customer groups",
-        "loadErrorGeneric": "Could not reach the server.",
-        "type": {
-            "demographic": "Demographic",
-            "psychographic": "Psychographic",
-            "behavioral": "Behavioral",
-            "geographic": "Geographic"
-        },
-        "sheet": {
-            "titlePlaceholder": "Group name",
-            "descriptionPlaceholder": "Add description...",
-            "createHint": "Description can be set after creation.",
-            "addNewRoot": "Add new {type}",
-            "addNewChild": "Add new sub-group",
-            "underParent": "Under «{name}»",
-            "rootLevel": "Root group · {type}",
-            "nameLabel": "{type} name",
-            "namePlaceholder": "Enter {type} name",
-            "childNameLabel": "Sub-group name",
-            "childNamePlaceholder": "Enter sub-group name",
-            "cancel": "Cancel",
-            "creating": "Creating...",
-            "add": "Add {type}",
-            "addChild": "Add sub-group",
-            "created": "Customer group created",
-            "updated": "Customer group updated",
-            "createFailed": "Failed to create customer group",
-            "updateFailed": "Failed to update customer group",
-            "general": {
-                "subGroups": "Sub-groups",
-                "segmentation": "Segmentation type",
-                "info": "Info",
-                "type": "Segmentation type",
-                "created": "Created"
-            }
-        }
-    },
-    "treeView": {
-        "actions": {
-            "check": "Check",
-            "uncheck": "Uncheck"
-        }
-    },
-    "auth": {
-        "login": {
-            "title": "Sign in",
-            "description": "Enter your credentials to sign in.",
-            "username": "Username",
-            "mobile": "Mobile",
-            "password": "Password",
-            "remember": "Remember me",
-            "submit": "Sign in",
-            "forget password": "Forgot password?",
-            "noAccount": "Don't have an account?",
-            "registerLink": "Register"
-        },
-        "register": {
-            "title": "Register",
-            "description": "Create your account to get started.",
-            "descriptionInvite": "Create your account to accept the invitation.",
-            "first_name": "First Name",
-            "last_name": "Last Name",
-            "email": "Email",
-            "mobile": "Mobile",
-            "password": "Password",
-            "passwordConfirmation": "Confirm password",
-            "submit": "Register",
-            "submitting": "Registering...",
-            "failed": "Registration failed",
-            "hasAccount": "Already have an account?",
-            "loginLink": "Sign in"
-        }
-    },
-    "invite": {
-        "title": "Organization invitation",
-        "description": "You have been invited to join the organization below.",
-        "descriptionWithInviter": "{name} invited you to join this organization.",
-        "organization": "Organization",
-        "role": "Role",
-        "position": "Position",
-        "mobile": "Mobile",
-        "approve": "Accept invitation",
-        "approving": "Accepting...",
-        "login": "Sign in",
-        "register": "Register",
-        "authenticatedHint": "{name}, click below to join this organization.",
-        "unauthenticatedHint": "Sign in or register to accept this invitation.",
-        "invalidTitle": "Invalid invitation",
-        "invalid": "This invitation was not found or is no longer valid.",
-        "expiredTitle": "Invitation expired",
-        "expiredDescription": "This invitation is no longer active. Please ask your administrator for a new one.",
-        "goToLogin": "Go to sign in"
-    },
-    "errors": {
-        "accessDeniedTitle": "Access denied",
-        "accessDeniedDescription": "You don't have the required permission ({permission}) to view this page.",
-        "accessDeniedContact": "If you think this is a mistake, contact your administrator.",
-        "api": {
-            "unauthorized": "You don't have permission to perform this action.",
-            "notFound": "The requested item could not be found.",
-            "validation": "The submitted data is invalid. Please review the form.",
-            "conflict": "This action conflicts with existing data.",
-            "network": "Could not reach the server. Please check your connection.",
-            "server": "A server error occurred. Please try again later.",
-            "unknown": "Something went wrong. Please try again."
-        }
-    },
-    "deals": {
-        "factors": {
-            "gold_weight": "Gold weight",
-            "purity": "Purity"
-        }
-    },
-    "validation": {
-        "required": "This field is required",
-        "invalid_email": "Invalid email address",
-        "min_length": "Must be at least {count} characters"
+  "navigation": {
+    "sidebar": {
+      "access": {
+        "title": "Access control",
+        "users": "User management",
+        "roles": "Role management",
+        "positions": "Position management",
+        "access-rules": "Access rules"
+      },
+      "definitions": {
+        "title": "Definitions",
+        "org": "Organization",
+        "customer_groups": "Customer groups",
+        "forms": "Forms",
+        "units": "Units (weight, count)",
+        "banks": "Bank accounts"
+      },
+      "settings": {
+        "title": "Settings",
+        "price_board": "Price board",
+        "invoice_prefs": "Invoice",
+        "accounting": "Accounting (fiscal year, basis, VAT)"
+      },
+      "reports": {
+        "title": "Reports",
+        "contacts": "Contacts",
+        "products": "Products"
+      },
+      "invoice": {
+        "title": "Invoice",
+        "create": "New invoice",
+        "list": "Invoices"
+      }
     }
+  },
+  "organization": {
+    "type": {
+      "holding": "Holding",
+      "brand": "Brand",
+      "region": "Region",
+      "city": "City",
+      "branch": "Branch",
+      "unit": "Unit"
+    },
+    "sheet": {
+      "tabs": {
+        "general": "General",
+        "roles": "Roles",
+        "members": "Members"
+      },
+      "titlePlaceholder": "Organization name",
+      "descriptionPlaceholder": "Add description...",
+      "createFirst": "Available after creation",
+      "createHint": "Description, roles, and members can be set after creation.",
+      "general": {
+        "subOrgs": "Sub-orgs",
+        "teams": "Teams",
+        "info": "Info",
+        "type": "Organization type",
+        "parent": "Parent organization",
+        "region": "Region",
+        "totalMembers": "Total members",
+        "created": "Created",
+        "createdBy": "Created by",
+        "regionSettings": "Region settings",
+        "citySettings": "City settings",
+        "taxRate": "Tax rate",
+        "taxName": "Tax name",
+        "currencyCode": "Currency",
+        "cityName": "City name"
+      },
+      "members": {
+        "title": "Members",
+        "invite": "Invite member",
+        "search": "Search",
+        "status": "Status:",
+        "permissions": "Permissions:",
+        "all": "All",
+        "active": "Active",
+        "inviteSent": "Invite sent",
+        "inactive": "Inactive",
+        "name": "Name",
+        "rolePosition": "Role & position",
+        "noMembers": "No members assigned yet."
+      },
+      "roles": {
+        "title": "Roles",
+        "add": "Add role",
+        "edit": "Edit role",
+        "actions": "Actions",
+        "search": "Search roles",
+        "status": "Status:",
+        "role": "Role",
+        "members": "Members",
+        "noRoles": "No roles defined.",
+        "statusLabel": "Status"
+      },
+      "invite": {
+        "user": "User",
+        "mobile": "Mobile",
+        "role": "Role",
+        "position": "Position (optional)",
+        "notInList": "Not in the list? Use + to invite by mobile number.",
+        "selectUser": "Select a user",
+        "selectRole": "Select a role",
+        "selectPosition": "Select a position",
+        "noPosition": "No position",
+        "noPositions": "No positions for this role",
+        "enterMobile": "Enter mobile number",
+        "cancel": "Cancel",
+        "submit": "Submit",
+        "sendInvite": "Send invite",
+        "memberAdded": "Member added",
+        "sendFailed": "Failed to send invite",
+        "pendingExists": "A pending invitation already exists for this person in this organization."
+      },
+      "actions": {
+        "resend": "Resend invite",
+        "resendSuccess": "Invitation resent successfully.",
+        "cancelInvite": "Cancel invite",
+        "showInviteLink": "Show invite link",
+        "inviteLinkCopied": "Invite link copied to clipboard.",
+        "setActive": "Set active",
+        "setInactive": "Set inactive",
+        "remove": "Remove"
+      },
+      "status": {
+        "active": "Active",
+        "inviteSent": "Invite sent",
+        "inactive": "Inactive"
+      }
+    }
+  },
+  "customerGroup": {
+    "title": "Customer segmentation",
+    "hint": "Customer groups form a nested tree. Each root node has one of the four market segmentation types; child groups have no type and can nest freely underneath.",
+    "addRoot": "Add root group",
+    "empty": "No customer groups defined yet.",
+    "loadError": "Failed to load customer groups",
+    "loadErrorGeneric": "Could not reach the server.",
+    "type": {
+      "demographic": "Demographic",
+      "psychographic": "Psychographic",
+      "behavioral": "Behavioral",
+      "geographic": "Geographic"
+    },
+    "sheet": {
+      "titlePlaceholder": "Group name",
+      "descriptionPlaceholder": "Add description...",
+      "createHint": "Description can be set after creation.",
+      "addNewRoot": "Add new {type}",
+      "addNewChild": "Add new sub-group",
+      "underParent": "Under «{name}»",
+      "rootLevel": "Root group · {type}",
+      "nameLabel": "{type} name",
+      "namePlaceholder": "Enter {type} name",
+      "childNameLabel": "Sub-group name",
+      "childNamePlaceholder": "Enter sub-group name",
+      "cancel": "Cancel",
+      "creating": "Creating...",
+      "add": "Add {type}",
+      "addChild": "Add sub-group",
+      "created": "Customer group created",
+      "updated": "Customer group updated",
+      "createFailed": "Failed to create customer group",
+      "updateFailed": "Failed to update customer group",
+      "general": {
+        "subGroups": "Sub-groups",
+        "segmentation": "Segmentation type",
+        "info": "Info",
+        "type": "Segmentation type",
+        "created": "Created"
+      }
+    }
+  },
+  "treeView": {
+    "actions": {
+      "check": "Check",
+      "uncheck": "Uncheck"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "description": "Enter your credentials to sign in.",
+      "username": "Username",
+      "mobile": "Mobile",
+      "password": "Password",
+      "remember": "Remember me",
+      "submit": "Sign in",
+      "forget password": "Forgot password?",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Register"
+    },
+    "register": {
+      "title": "Register",
+      "description": "Create your account to get started.",
+      "descriptionInvite": "Create your account to accept the invitation.",
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "email": "Email",
+      "mobile": "Mobile",
+      "password": "Password",
+      "passwordConfirmation": "Confirm password",
+      "submit": "Register",
+      "submitting": "Registering...",
+      "failed": "Registration failed",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Sign in",
+      "avatar": "Profile Picture",
+      "avatarHint": "Click to upload or drag & drop image here"
+    }
+  },
+  "invite": {
+    "title": "Organization invitation",
+    "description": "You have been invited to join the organization below.",
+    "descriptionWithInviter": "{name} invited you to join this organization.",
+    "organization": "Organization",
+    "role": "Role",
+    "position": "Position",
+    "mobile": "Mobile",
+    "approve": "Accept invitation",
+    "approving": "Accepting...",
+    "login": "Sign in",
+    "register": "Register",
+    "authenticatedHint": "{name}, click below to join this organization.",
+    "unauthenticatedHint": "Sign in or register to accept this invitation.",
+    "invalidTitle": "Invalid invitation",
+    "invalid": "This invitation was not found or is no longer valid.",
+    "expiredTitle": "Invitation expired",
+    "expiredDescription": "This invitation is no longer active. Please ask your administrator for a new one.",
+    "goToLogin": "Go to sign in"
+  },
+  "errors": {
+    "accessDeniedTitle": "Access denied",
+    "accessDeniedDescription": "You don't have the required permission ({permission}) to view this page.",
+    "accessDeniedContact": "If you think this is a mistake, contact your administrator.",
+    "api": {
+      "unauthorized": "You don't have permission to perform this action.",
+      "notFound": "The requested item could not be found.",
+      "validation": "The submitted data is invalid. Please review the form.",
+      "conflict": "This action conflicts with existing data.",
+      "network": "Could not reach the server. Please check your connection.",
+      "server": "A server error occurred. Please try again later.",
+      "unknown": "Something went wrong. Please try again."
+    }
+  },
+  "deals": {
+    "factors": {
+      "gold_weight": "Gold weight",
+      "purity": "Purity"
+    }
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalid_email": "Invalid email address",
+    "min_length": "Must be at least {count} characters"
+  },
+  "userSettings": {
+    "title": "User Settings",
+    "description": "Edit your profile and application preferences here.",
+    "profile": "User Profile",
+    "appearance": "Appearance",
+    "notifications": "Notifications",
+    "security": "Security & Password",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "mobile": "Mobile Number",
+    "save": "Save Changes",
+    "saving": "Saving...",
+    "success": "Changes saved successfully.",
+    "failed": "Failed to save changes.",
+    "theme": "Application Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "scopes": "Workspaces",
+    "scopesDescription": "Select your default workspace to automatically activate upon login",
+    "active": "Default Workspace",
+    "activate": "Set as Default",
+    "switching": "Saving...",
+    "noScopes": "No workspaces assigned.",
+    "deleteWorkspaceTitle": "Delete Workspace",
+    "deleteWorkspaceDescription": "Are you sure you want to delete the workspace \"{name}\"? This action cannot be undone.",
+    "cancel": "Cancel",
+    "delete": "Delete"
+  },
+  "form_builder": {
+    "title": "Form Builder",
+    "sidebar": {
+      "structure": "Structure",
+      "responses": "Responses",
+      "activity": "Activity",
+      "settings": "Settings",
+      "addElements": "Add Elements"
+    },
+    "toolbox": {
+      "title": "Add Elements",
+      "search": "Search...",
+      "noElements": "No elements match \"{query}\".",
+      "categories": {
+        "Inputs": "Inputs",
+        "Choices": "Choices",
+        "Advanced": "Advanced",
+        "Layout": "Layout"
+      },
+      "items": {
+        "text": {
+          "label": "Text Input",
+          "description": "Single line text field"
+        },
+        "textarea": {
+          "label": "Long Text",
+          "description": "Multi-line text area"
+        },
+        "email": {
+          "label": "Email",
+          "description": "Email address input"
+        },
+        "number": {
+          "label": "Number",
+          "description": "Numeric input field"
+        },
+        "url": {
+          "label": "URL Input",
+          "description": "Web address input"
+        },
+        "dropdown": {
+          "label": "Dropdown",
+          "description": "Select from a list"
+        },
+        "single-choice": {
+          "label": "Single Choice",
+          "description": "Pick one option"
+        },
+        "multiple-choice": {
+          "label": "Multiple Choice",
+          "description": "Pick several options"
+        },
+        "checkbox": {
+          "label": "Checkbox",
+          "description": "Single yes/no toggle"
+        },
+        "date": {
+          "label": "Date Picker",
+          "description": "Select a date"
+        },
+        "file": {
+          "label": "File Uploader",
+          "description": "Upload a document"
+        },
+        "heading": {
+          "label": "Heading",
+          "description": "Section title"
+        },
+        "paragraph": {
+          "label": "Paragraph",
+          "description": "Descriptive text block"
+        },
+        "divider": {
+          "label": "Divider",
+          "description": "Horizontal separator"
+        }
+      }
+    },
+    "canvas": {
+      "dragElements": "Drag elements here to build your form",
+      "hoverHint": "Hover the + button on the left, then drag or click an element.",
+      "dropHere": "Drop here",
+      "moving": "Moving element...",
+      "placeholders": {
+        "text": "Text...",
+        "textarea": "Type your message...",
+        "select": "Select...",
+        "selectDate": "Select a date",
+        "upload": "Click or drag a file to upload"
+      }
+    },
+    "properties": {
+      "title": "Element Properties",
+      "tabs": {
+        "general": "General",
+        "appearance": "Appearance",
+        "style": "Style",
+        "rules": "Rules"
+      },
+      "fields": {
+        "label": "Label",
+        "content": "Content",
+        "dividerNoContent": "A divider has no editable content.",
+        "placeholder": "Placeholder",
+        "description": "Description",
+        "descriptionHint": "Shown under the label",
+        "helpText": "Help text",
+        "helpTextHint": "Hint shown below the field",
+        "options": "Options",
+        "addOption": "Add option",
+        "option": "Option",
+        "labelPosition": "Label position",
+        "labelAlign": "Label alignment",
+        "width": "Field width",
+        "size": "Control size",
+        "hideElement": "Hide element",
+        "cornerRadius": "Corner radius",
+        "showBorder": "Show border",
+        "borderWidth": "Border width",
+        "background": "Background",
+        "accentColor": "Accent color",
+        "accentColorHint": "Used by choice controls",
+        "noRules": "This element has no validation rules.",
+        "required": "Required",
+        "minLength": "Min length",
+        "maxLength": "Max length",
+        "minValue": "Min value",
+        "maxValue": "Max value",
+        "pattern": "Pattern (regex)",
+        "patternHint": "Optional custom validation pattern",
+        "errorMessage": "Error message",
+        "errorMessageDefault": "This field is invalid"
+      },
+      "values": {
+        "position": {
+          "top": "Top",
+          "left": "Left",
+          "hidden": "Hidden"
+        },
+        "align": {
+          "left": "Left",
+          "center": "Center",
+          "right": "Right"
+        },
+        "width": {
+          "full": "Full",
+          "half": "1/2",
+          "third": "1/3"
+        },
+        "size": {
+          "sm": "Small",
+          "default": "Medium",
+          "lg": "Large"
+        },
+        "background": {
+          "transparent": "None",
+          "muted": "Muted",
+          "card": "Card"
+        }
+      },
+      "actions": {
+        "duplicate": "Duplicate",
+        "delete": "Delete"
+      }
+    },
+    "defaultProps": {
+      "labels": {
+        "text": "Text field",
+        "textarea": "Message",
+        "email": "Email address",
+        "number": "Amount",
+        "url": "Website",
+        "dropdown": "Select an option",
+        "single-choice": "Choose one",
+        "multiple-choice": "Select all that apply",
+        "checkbox": "I agree to the terms",
+        "date": "Select a date",
+        "file": "Upload a file",
+        "heading": "Section heading",
+        "paragraph": "Add a short description to guide people filling out this form.",
+        "divider": ""
+      },
+      "placeholders": {
+        "text": "Enter text...",
+        "textarea": "Type your message...",
+        "email": "you@example.com",
+        "number": "0",
+        "url": "https://example.com",
+        "dropdown": "Select..."
+      },
+      "options": {
+        "option1": "Option 1",
+        "option2": "Option 2",
+        "option3": "Option 3"
+      }
+    }
+  }
 }

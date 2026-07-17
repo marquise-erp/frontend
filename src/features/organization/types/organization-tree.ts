@@ -1,7 +1,7 @@
 import { OrganizationType } from "../schemas/types";
 import { BriefcaseIcon, Building02Icon, Globe02Icon, MapPinIcon, StoreIcon, UserStarIcon } from "@hugeicons/core-free-icons";
 import { IconSvgElement } from "@hugeicons/react";
-import { CityProfile, RegionProfile } from "../schemas/responses";
+import type { OrganizationProfile } from "../schemas/responses";
 
 export interface OrganizationTreeNode {
     id: string;
@@ -9,7 +9,7 @@ export interface OrganizationTreeNode {
     type: OrganizationType;
     code?: string;
     description?: string;
-    profile?: RegionProfile | CityProfile | null;
+    profile?: OrganizationProfile;
     children?: OrganizationTreeNode[];
 }
 

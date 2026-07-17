@@ -12,12 +12,14 @@ interface AuthState {
   permissions: PermissionCode[];
 
   activeScopeId: number | null;
+  defaultScopeId: number | null;
 
   isAuthenticated: boolean;
 
   logout: () => Promise<void>;
 
   setAuthData: (user: User, scopes: Scope[], permissions: PermissionCode[]) => void;
+  setDefaultScopeId: (scopeId: number | null) => void;
   switchContextNode: (organizationNodeId: number) => void;
   purgeAuth: () => void;
 }
@@ -29,6 +31,7 @@ export const useAuthStore = create<AuthState>()(
       scopes: [],
       permissions: [],
       activeScopeId: null,
+      defaultScopeId: null,
       isAuthenticated: false,
 
       logout: async () => {
@@ -42,8 +45,13 @@ export const useAuthStore = create<AuthState>()(
       },
 
       setAuthData: (user, scopes, permissions) => set((state) => {
+        const defaultScope = scopes.find((s) => s.is_default);
+
         const defaultContext =
-          scopes.find((scope) => scope.is_current_context) ?? scopes[0] ?? null;
+          defaultScope ??
+          scopes.find((scope) => scope.is_current_context) ??
+          scopes[0] ??
+          null;
 
         const persistedIsValid =
           state.activeScopeId != null &&
@@ -59,6 +67,8 @@ export const useAuthStore = create<AuthState>()(
           isAuthenticated: true,
         };
       }),
+
+      setDefaultScopeId: (scopeId) => set({ defaultScopeId: scopeId }),
 
       switchContextNode: (scopeId) => set((state) => {
         const hasAccess = state.scopes.some((scope) => scope.id === scopeId);
@@ -77,6 +87,7 @@ export const useAuthStore = create<AuthState>()(
           scopes: [],
           permissions: [],
           activeScopeId: null,
+          defaultScopeId: null,
           isAuthenticated: false,
         });
       },
@@ -87,6 +98,7 @@ export const useAuthStore = create<AuthState>()(
 
       partialize: (state) => ({
         activeScopeId: state.activeScopeId,
+        defaultScopeId: state.defaultScopeId,
       }),
     }
   )

@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/dialog';
 import { RoleForm } from './role-form';
 import type { Permission, Role } from '@/features/auth/schemas/role/responses';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface Brand {
   id: number;
@@ -48,7 +49,7 @@ export function RoleDialog({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto px-6 py-2">
+        <ScrollArea type="hover" className="flex-1 px-6 py-2 min-h-0">
           <RoleForm
             editingRole={editingRole}
             brands={brands}
@@ -57,7 +58,7 @@ export function RoleDialog({
             onSuccess={handleSuccess}
             onCancel={handleCancel}
           />
-        </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

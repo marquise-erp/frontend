@@ -6,6 +6,7 @@ export const updateOrganizationRequestSchema = z.object({
   id: idSchema,
   name: nameSchema,
   description: descriptionSchema,
+  profile: z.any().optional(),
 });
 
 export type UpdateOrganizationRequest = z.infer<typeof updateOrganizationRequestSchema>;

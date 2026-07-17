@@ -4,7 +4,7 @@ import { baseEntitySchema, nameSchema, slugSchema } from "@/features/shared/sche
 export const permissionSchema = baseEntitySchema.extend({
   name: nameSchema,
   slug: z.string().min(1).max(100).regex(/^[a-z0-9._-]+$/),
-  group: z.string().optional(),
+  group: z.array(z.string()).optional(),
 });
 
 export type Permission = z.infer<typeof permissionSchema>;
@@ -19,3 +19,5 @@ export const roleSchema = baseEntitySchema.extend({
 export type Role = z.infer<typeof roleSchema>;
 
 export const roleListSchema = z.array(roleSchema);
+
+export const permissionListSchema = z.array(permissionSchema);

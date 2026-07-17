@@ -9,13 +9,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { MailSend01Icon, MoreVerticalIcon, Power, PowerOff, Delete02Icon, X } from "@hugeicons/core-free-icons";
+import { MailSend01Icon, MoreVerticalIcon, Power, PowerOff, Delete02Icon, X, Link01Icon } from "@hugeicons/core-free-icons";
 import { MemberStatus } from "./StatusBadge";
 
 interface MemberActionsProps {
   status: MemberStatus;
   onResendInvite?: () => void;
   onCancelInvite?: () => void;
+  onShowInviteLink?: () => void;
   onToggleActive?: () => void;
   onRemove?: () => void;
 }
@@ -24,6 +25,7 @@ export function MemberActions({
   status,
   onResendInvite,
   onCancelInvite,
+  onShowInviteLink,
   onToggleActive,
   onRemove,
 }: MemberActionsProps) {
@@ -44,6 +46,10 @@ export function MemberActions({
       <DropdownMenuContent align="end" className="w-44">
         {status === "invite-sent" ? (
           <>
+            <DropdownMenuItem onClick={onShowInviteLink}>
+              <HugeiconsIcon icon={Link01Icon} strokeWidth={2} className="size-4" />
+              {t('actions.showInviteLink')}
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={onResendInvite}>
               <HugeiconsIcon icon={MailSend01Icon} strokeWidth={2} className="size-4" />
               {t('actions.resend')}

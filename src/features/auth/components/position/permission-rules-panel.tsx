@@ -160,9 +160,73 @@ function PermissionRow({
   );
 }
 
-interface PermissionGroupProps {
-  group: string;
+interface GroupNode {
+  name: string;
+  key: string;
+  subgroups: GroupNode[];
   permissions: Permission[];
+}
+
+function getAllPermissions(node: GroupNode): Permission[] {
+  const list: Permission[] = [...node.permissions];
+  for (const sub of node.subgroups) {
+    list.push(...getAllPermissions(sub));
+  }
+  return list;
+}
+
+function buildPermissionTree(permissions: Permission[]): GroupNode[] {
+  interface TempNode {
+    name: string;
+    key: string;
+    subgroups: Map<string, TempNode>;
+    permissions: Permission[];
+  }
+
+  const rootMap = new Map<string, TempNode>();
+
+  const getOrCreateNode = (path: string[]): TempNode => {
+    let currentMap = rootMap;
+    let currentNode: TempNode | undefined;
+    const currentPath: string[] = [];
+
+    for (const segment of path) {
+      currentPath.push(segment);
+      const nodeKey = currentPath.join('/');
+      if (!currentMap.has(segment)) {
+        currentMap.set(segment, {
+          name: segment,
+          key: nodeKey,
+          subgroups: new Map<string, TempNode>(),
+          permissions: [],
+        });
+      }
+      currentNode = currentMap.get(segment)!;
+      currentMap = currentNode.subgroups;
+    }
+    return currentNode!;
+  };
+
+  for (const perm of permissions) {
+    const path = perm.group && perm.group.length > 0 ? perm.group : ['سایر'];
+    const node = getOrCreateNode(path);
+    node.permissions.push(perm);
+  }
+
+  const convertNode = (temp: TempNode): GroupNode => {
+    return {
+      name: temp.name,
+      key: temp.key,
+      subgroups: Array.from(temp.subgroups.values()).map(convertNode),
+      permissions: temp.permissions,
+    };
+  };
+
+  return Array.from(rootMap.values()).map(convertNode);
+}
+
+interface PermissionGroupProps {
+  node: GroupNode;
   rules: AccessRule[];
   onAddRule: (permission: Permission) => void;
   onEditRule: (rule: AccessRule) => void;
@@ -170,16 +234,17 @@ interface PermissionGroupProps {
 }
 
 function PermissionGroup({
-  group,
-  permissions,
+  node,
   rules,
   onAddRule,
   onEditRule,
   onDeleteRule,
 }: PermissionGroupProps) {
   const [expanded, setExpanded] = useState(true);
+  
+  const allGroupPermissions = getAllPermissions(node);
   const groupRuleCount = rules.filter((r) =>
-    permissions.some((p) => p.slug === r.permission),
+    allGroupPermissions.some((p) => p.slug === r.permission),
   ).length;
 
   return (
@@ -187,13 +252,13 @@ function PermissionGroup({
       <button
         type="button"
         onClick={() => setExpanded((p) => !p)}
-        className="flex w-full items-center gap-2 rounded-lg px-2 py-1 hover:bg-muted"
+        className="flex w-full items-center gap-2 rounded-lg px-2 py-1 hover:bg-muted text-right"
       >
         <HugeiconsIcon
           icon={expanded ? ArrowDown01Icon : ArrowRight01Icon}
-          className="h-3.5 w-3.5 text-muted-foreground"
+          className="h-3.5 w-3.5 text-muted-foreground shrink-0"
         />
-        <span className="text-sm font-semibold text-muted-foreground">{group}</span>
+        <span className="text-sm font-semibold text-muted-foreground">{node.name}</span>
         {groupRuleCount > 0 && (
           <Badge variant="secondary" className="mr-auto text-xs">
             {groupRuleCount}
@@ -202,8 +267,21 @@ function PermissionGroup({
       </button>
 
       {expanded && (
-        <div className="mr-4 space-y-1.5">
-          {permissions.map((perm) => (
+        <div className="mr-4 space-y-1.5 border-r border-dashed border-muted/50 pr-2">
+          {/* Subgroups */}
+          {node.subgroups.map((sub) => (
+            <PermissionGroup
+              key={sub.key}
+              node={sub}
+              rules={rules}
+              onAddRule={onAddRule}
+              onEditRule={onEditRule}
+              onDeleteRule={onDeleteRule}
+            />
+          ))}
+
+          {/* Direct Permissions */}
+          {node.permissions.map((perm) => (
             <PermissionRow
               key={perm.id}
               permission={perm}
@@ -231,12 +309,7 @@ export function PermissionRulesPanel({
   const [editingRule, setEditingRule] = useState<AccessRule | null>(null);
   const [deletingRule, setDeletingRule] = useState<AccessRule | null>(null);
 
-  const grouped = permissions.reduce<Record<string, Permission[]>>((acc, perm) => {
-    const g = perm.group ?? 'سایر';
-    if (!acc[g]) acc[g] = [];
-    acc[g].push(perm);
-    return acc;
-  }, {});
+  const tree = buildPermissionTree(permissions);
 
   const handleAddRule = (permission: Permission) => {
     setActivePermission(permission);
@@ -269,8 +342,9 @@ export function PermissionRulesPanel({
         },
       });
       toast.success('قانون دسترسی حذف شد');
-    } catch (err: any) {
-      toast.error(err?.message || 'خطا در حذف قانون');
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'خطا در حذف قانون';
+      toast.error(errorMsg);
     } finally {
       setDeletingRule(null);
     }
@@ -297,11 +371,10 @@ export function PermissionRulesPanel({
   return (
     <>
       <div className="space-y-4">
-        {Object.entries(grouped).map(([group, perms]) => (
+        {tree.map((node) => (
           <PermissionGroup
-            key={group}
-            group={group}
-            permissions={perms}
+            key={node.key}
+            node={node}
             rules={rules}
             onAddRule={handleAddRule}
             onEditRule={handleEditRule}

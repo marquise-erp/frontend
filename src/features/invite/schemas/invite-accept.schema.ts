@@ -1,8 +1,9 @@
 import { z } from "zod";
+import { organizationEntityReferenceSchema } from "@/features/organization/schemas/responses";
 
 export const invitePreviewSchema = z
   .object({
-    organization_name: z.string(),
+    organization: organizationEntityReferenceSchema,
     role_name: z.string(),
     position_name: z.string().nullable(),
     inviter_name: z.string().nullable(),

@@ -10,8 +10,17 @@ import { Label } from "@/components/ui/label";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { cn } from "@/lib/utils";
 import { useRoles } from "@/features/auth/api/role";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useUsers } from "@/features/auth/api/user";
-import { useCreateOrganization, useOrganizationInvites, useUpdateOrganization } from "../api";
+import {
+  useCreateOrganization,
+  useOrganizationInvites,
+  useUpdateOrganization,
+  useOrganization,
+  useCountries,
+  useProvinces,
+  useCities
+} from "../api";
 import { InlineEdit } from "./organization-sheet-ui/InlineEdit";
 import { GeneralTab } from "./organization-sheet-ui/GeneralTab";
 import { MembersTab } from "./organization-sheet-ui/MembersTab";
@@ -22,16 +31,15 @@ import type { OrganizationType } from "../schemas/types";
 const allTabKeys = ["general", "roles", "members"] as const;
 type TabKey = (typeof allTabKeys)[number];
 
-/** Describes what the sheet is doing: editing an existing node or creating a child. */
-export type OrganizationSheetMode =
-  | { type: "edit"; node: OrganizationTreeNode }
-  | { type: "create"; parent: OrganizationTreeNode; createType: OrganizationType };
-
 export interface OrganizationSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   target: OrganizationSheetMode | null;
 }
+
+export type OrganizationSheetMode =
+  | { type: "edit"; node: OrganizationTreeNode }
+  | { type: "create"; parent: OrganizationTreeNode; createType: OrganizationType };
 
 const sheetContentClass = "w-full gap-0 overflow-y-auto p-0 data-[side=left]:md:max-w-md data-[side=left]:lg:max-w-lg";
 
@@ -49,6 +57,36 @@ export function OrganizationSheet({ open, onOpenChange, target }: OrganizationSh
 
   // Create-mode form state.
   const [createName, setCreateName] = useState("");
+
+  // Geographic select states for city creation
+  const [selectedCountryId, setSelectedCountryId] = useState("");
+  const [selectedProvinceId, setSelectedProvinceId] = useState("");
+  const [selectedCityId, setSelectedCityId] = useState("");
+
+  const { data: countries = [], isLoading: isCountriesLoading } = useCountries();
+  const { data: provinces = [], isLoading: isProvincesLoading } = useProvinces(selectedCountryId, !!selectedCountryId);
+  const { data: cities = [], isLoading: isCitiesLoading } = useCities(selectedProvinceId, !!selectedProvinceId);
+
+  const handleCountryChange = (countryId: string) => {
+    setSelectedCountryId(countryId);
+    setSelectedProvinceId("");
+    setSelectedCityId("");
+    setCreateName("");
+  };
+
+  const handleProvinceChange = (provinceId: string) => {
+    setSelectedProvinceId(provinceId);
+    setSelectedCityId("");
+    setCreateName("");
+  };
+
+  const handleCityChange = (cityId: string) => {
+    setSelectedCityId(cityId);
+    const city = cities.find((c) => String(c.id) === String(cityId));
+    if (city) {
+      setCreateName(city.name);
+    }
+  };
 
   // Once a node is created, we keep the sheet open and continue in edit mode
   // for this freshly-created node (it now has a real id).
@@ -70,6 +108,10 @@ export function OrganizationSheet({ open, onOpenChange, target }: OrganizationSh
   const createMutation = useCreateOrganization();
 
   const editNode = target?.type === "edit" ? target.node : null;
+
+  // Fetch detail data (with profile) when editing
+  const editNodeId = editNode ? Number(editNode.id) : 0;
+  const { data: detailData, isLoading: isDetailLoading } = useOrganization(editNodeId, !!editNode);
 
   const targetKey =
     target == null
@@ -98,7 +140,7 @@ export function OrganizationSheet({ open, onOpenChange, target }: OrganizationSh
         );
         return {
           id: String(user.id),
-          fullName: (user.name ?? `${user.first_name ?? ""} ${user.last_name ?? ""}`.trim()) || user.mobile,
+          fullName: `${user.first_name ?? ""} ${user.last_name ?? ""}`.trim() || user.mobile,
           email: user.email ?? "",
           phone: user.mobile,
           roleId: matchingScope?.role?.id,
@@ -116,10 +158,51 @@ export function OrganizationSheet({ open, onOpenChange, target }: OrganizationSh
       setLocalName(target.node.name);
       setLocalDesc(target.node.description ?? "");
     } else if (target?.type === "create") {
-      setCreateName("");
+      if (target.createType === "city") {
+        setSelectedCountryId("");
+        setSelectedProvinceId("");
+        setSelectedCityId("");
+        setCreateName("");
+        if (countries.length > 0) {
+          setSelectedCountryId(String(countries[0].id));
+        }
+      } else {
+        setCreateName("");
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [targetKey, editNode?.name, editNode?.description]);
+
+  // Sync local name and description with detailData when loaded or refetched.
+  useEffect(() => {
+    if (detailData) {
+      setLocalName(detailData.name);
+      setLocalDesc(detailData.description ?? "");
+    }
+  }, [detailData]);
+
+  // Auto-set first country if loaded and not set
+  useEffect(() => {
+    if (target?.type === "create" && target.createType === "city" && countries.length > 0 && !selectedCountryId) {
+      setSelectedCountryId(String(countries[0].id));
+    }
+  }, [countries, selectedCountryId, target]);
+
+  // Auto-set first province if loaded and not set
+  useEffect(() => {
+    if (target?.type === "create" && target.createType === "city" && provinces.length > 0 && !selectedProvinceId) {
+      setSelectedProvinceId(String(provinces[0].id));
+    }
+  }, [provinces, selectedProvinceId, target]);
+
+  // Auto-set first city if loaded and not set
+  useEffect(() => {
+    if (target?.type === "create" && target.createType === "city" && cities.length > 0 && !selectedCityId) {
+      const firstCity = cities[0];
+      setSelectedCityId(String(firstCity.id));
+      setCreateName(firstCity.name);
+    }
+  }, [cities, selectedCityId, target]);
 
   useEffect(() => {
     if (!showRolesTab && activeTab === "roles") {
@@ -176,8 +259,9 @@ export function OrganizationSheet({ open, onOpenChange, target }: OrganizationSh
       setLocalDesc(newNode.description ?? "");
       setActiveTab("general");
       toast.success("Organization created");
-    } catch (err: any) {
-      toast.error(err?.message || "Failed to create");
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Failed to create";
+      toast.error(errorMsg);
     }
   };
 
@@ -193,8 +277,9 @@ export function OrganizationSheet({ open, onOpenChange, target }: OrganizationSh
         },
       });
       toast.success("Organization updated");
-    } catch (err: any) {
-      toast.error(err?.message || "Failed to update");
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Failed to update";
+      toast.error(errorMsg);
       // revert? for simplicity we keep the local optimistic value
     }
   };
@@ -242,7 +327,7 @@ export function OrganizationSheet({ open, onOpenChange, target }: OrganizationSh
                     onChange={handleNameChange}
                     className="text-xl font-semibold leading-tight text-foreground"
                     inputClassName="text-xl font-semibold"
-                    disabled={updateMutation.isPending}
+                    disabled={updateMutation.isPending || node?.type === "city"}
                   />
                   <InlineEdit
                     ariaLabel="Description"
@@ -289,20 +374,84 @@ export function OrganizationSheet({ open, onOpenChange, target }: OrganizationSh
         {/* Content */}
         {isCreating ? (
           <div className="grid gap-4 px-6 py-6">
-            <div className="space-y-1.5">
-              <Label htmlFor="org-create-name">{`نام ${meta.label}`}</Label>
-              <Input
-                id="org-create-name"
-                value={createName}
-                onChange={(e) => setCreateName(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.nativeEvent.isComposing || e.keyCode === 229) return;
-                  if (e.key === "Enter") handleCreate();
-                }}
-                placeholder={`نام ${meta.label} را وارد کنید`}
-                autoFocus
-              />
-            </div>
+            {target.createType === "city" ? (
+              <div className="space-y-4">
+                <div className="space-y-1.5">
+                  <Label>کشور</Label>
+                  <Select
+                    value={selectedCountryId}
+                    onValueChange={handleCountryChange}
+                    disabled={isCountriesLoading || countries.length === 0}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="انتخاب کشور" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {countries.map((country) => (
+                        <SelectItem key={country.id} value={String(country.id)}>
+                          {country.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label>استان</Label>
+                  <Select
+                    value={selectedProvinceId}
+                    onValueChange={handleProvinceChange}
+                    disabled={isProvincesLoading || provinces.length === 0 || !selectedCountryId}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="انتخاب استان" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {provinces.map((province) => (
+                        <SelectItem key={province.id} value={String(province.id)}>
+                          {province.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label>شهر</Label>
+                  <Select
+                    value={selectedCityId}
+                    onValueChange={handleCityChange}
+                    disabled={isCitiesLoading || cities.length === 0 || !selectedProvinceId}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="انتخاب شهر" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {cities.map((city) => (
+                        <SelectItem key={city.id} value={String(city.id)}>
+                          {city.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-1.5">
+                <Label htmlFor="org-create-name">{`نام ${meta.label}`}</Label>
+                <Input
+                  id="org-create-name"
+                  value={createName}
+                  onChange={(e) => setCreateName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.nativeEvent.isComposing || e.keyCode === 229) return;
+                    if (e.key === "Enter") handleCreate();
+                  }}
+                  placeholder={`نام ${meta.label} را وارد کنید`}
+                  autoFocus
+                />
+              </div>
+            )}
 
             <p className="text-xs text-muted-foreground">{t("createHint")}</p>
 
@@ -321,7 +470,14 @@ export function OrganizationSheet({ open, onOpenChange, target }: OrganizationSh
           </div>
         ) : (
           <>
-            {activeTab === "general" && <GeneralTab node={node!} memberCount={members.length} />}
+            {activeTab === "general" && (
+              <GeneralTab
+                node={node!}
+                detailData={detailData ?? undefined}
+                isDetailLoading={isDetailLoading}
+                memberCount={members.length}
+              />
+            )}
             {activeTab === "roles" && showRolesTab && node && (
               <RolesTab
                 brand={{ id: Number(node.id), name: node.name }}

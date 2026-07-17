@@ -26,11 +26,7 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
+
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
@@ -60,6 +56,7 @@ export interface TreeViewProps {
   data: TreeViewItem[];
   title?: string;
   showExpandAll?: boolean;
+  showSearchBar?: boolean;
   showCheckboxes?: boolean;
   checkboxPosition?: "left" | "right";
   searchPlaceholder?: string;
@@ -464,41 +461,7 @@ function TreeItem({
                       {selectedCount} selected
                     </Badge>
                   )}
-                  <HoverCard>
-                    <HoverCardTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-6 w-6 p-0 group-hover:opacity-100 opacity-0 items-center justify-center"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <HugeiconsIcon icon={InformationCircleIcon} className="h-4 w-4 text-muted-foreground" />
-                      </Button>
-                    </HoverCardTrigger>
-                    <HoverCardContent className="w-80">
-                      <div className="space-y-2">
-                        <h4 className="text-sm font-semibold">{item.name}</h4>
-                        <div className="text-sm text-muted-foreground space-y-1">
-                          <div>
-                            <span className="font-medium">Type:</span>{" "}
-                            {item.type.charAt(0).toUpperCase() +
-                              item.type.slice(1).replace("_", " ")}
-                          </div>
-                          <div>
-                            <span className="font-medium">ID:</span> {item.id}
-                          </div>
-                          <div>
-                            <span className="font-medium">Location:</span>{" "}
-                            {getItemPath(item, allItems)}
-                          </div>
-                          <div>
-                            <span className="font-medium">Items:</span>{" "}
-                            {item.children?.length || 0} direct items
-                          </div>
-                        </div>
-                      </div>
-                    </HoverCardContent>
-                  </HoverCard>
+                  
                 </div>
               ) : (
                 <div className="flex items-center gap-2 flex-1 group">
@@ -531,37 +494,7 @@ function TreeItem({
                   )}
                   {renderIcon()}
                   <span className="flex-1">{item.name}</span>
-                  <HoverCard>
-                    <HoverCardTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-6 w-6 p-0 group-hover:opacity-100 opacity-0 items-center justify-center"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <HugeiconsIcon icon={InformationCircleIcon} className="h-4 w-4 text-muted-foreground" />
-                      </Button>
-                    </HoverCardTrigger>
-                    <HoverCardContent className="w-80">
-                      <div className="space-y-2">
-                        <h4 className="text-sm font-semibold">{item.name}</h4>
-                        <div className="text-sm text-muted-foreground space-y-1">
-                          <div>
-                            <span className="font-medium">Type:</span>{" "}
-                            {item.type.charAt(0).toUpperCase() +
-                              item.type.slice(1).replace("_", " ")}
-                          </div>
-                          <div>
-                            <span className="font-medium">ID:</span> {item.id}
-                          </div>
-                          <div>
-                            <span className="font-medium">Location:</span>{" "}
-                            {getItemPath(item, allItems)}
-                          </div>
-                        </div>
-                      </div>
-                    </HoverCardContent>
-                  </HoverCard>
+                  
                 </div>
               )}
             </div>
@@ -641,7 +574,8 @@ export function TreeView({
   iconMap,
   searchPlaceholder = "Search...",
   selectionText = "selected",
-  showExpandAll = true,
+  showExpandAll = false,
+  showSearchBar = true,
   showCheckboxes = false,
   getIcon,
   onSelectionChange,
@@ -1022,7 +956,7 @@ export function TreeView({
                 </div>
               )}
             </motion.div>
-          ) : (
+          ) : showSearchBar ? (
             <motion.div
               key="search"
               initial={{ opacity: 0, y: 20 }}
@@ -1068,7 +1002,7 @@ export function TreeView({
                 </div>
               )}
             </motion.div>
-          )}
+          ) : null}
         </AnimatePresence>
 
         <div

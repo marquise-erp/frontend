@@ -43,16 +43,20 @@ export function UsersTable({ users, isLoading, onEdit, deleteUser }: UsersTableP
 
   const columns: ColumnDef<UserWithRoles>[] = [
     {
-      accessorKey: 'name',
+      id: 'name',
       header: 'نام کاربر',
-      cell: ({ row }) => (
-        <div
-          className="font-semibold cursor-pointer hover:text-primary"
-          onClick={() => onEdit(row.original)}
-        >
-          {row.getValue('name')}
-        </div>
-      ),
+      cell: ({ row }) => {
+        const user = row.original;
+        const displayName = [user.first_name, user.last_name].filter(Boolean).join(' ') || 'کاربر';
+        return (
+          <div
+            className="font-semibold cursor-pointer hover:text-primary"
+            onClick={() => onEdit(user)}
+          >
+            {displayName}
+          </div>
+        );
+      },
     },
     {
       accessorKey: 'mobile',
@@ -100,7 +104,7 @@ export function UsersTable({ users, isLoading, onEdit, deleteUser }: UsersTableP
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 hover:text-destructive"
+              className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
               onClick={(e) => {
                 e.stopPropagation();
                 handleDeleteClick(user);
@@ -131,7 +135,7 @@ export function UsersTable({ users, isLoading, onEdit, deleteUser }: UsersTableP
           if (!open) setDeletingUser(null);
         }}
         entityLabel="کاربر"
-        entityName={deletingUser ? ([deletingUser.first_name, deletingUser.last_name].filter(Boolean).join(" ") || deletingUser.name || undefined) : undefined}
+        entityName={deletingUser ? ([deletingUser.first_name, deletingUser.last_name].filter(Boolean).join(" ") || undefined) : undefined}
         onConfirm={handleConfirmDelete}
         isLoading={isDeleting}
       />

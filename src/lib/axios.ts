@@ -37,6 +37,7 @@ api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response?.status === 401) {
+            console.error("401 Unauthorized encountered on request:", error.config?.url, error.response?.data);
             Cookies.remove('auth_token');
             const pathname = window.location.pathname;
             const isPublicAuthPath =
