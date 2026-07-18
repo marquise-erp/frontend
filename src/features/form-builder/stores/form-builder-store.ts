@@ -57,9 +57,21 @@ export const useFormBuilderStore = create<FormBuilderState>((set, get) => ({
   formId: null,
   formTitle: "Untitled form",
   formDescription: "Build your form by dragging elements from the left panel.",
-  history: initializeHistory(),
+  history: {
+    snapshots: [
+      {
+        components: [],
+        formTitle: "Untitled form",
+        formDescription: "Build your form by dragging elements from the left panel.",
+        formId: null,
+        timestamp: Date.now(),
+      },
+    ],
+    currentIndex: 0,
+    maxHistorySize: 50,
+  },
 
-  addElement: (type, index, overrides) =>
+  addElement: (type, index, overrides) => {
     set((state) => {
       const element = makeElement(type)
       if (overrides) {
@@ -72,15 +84,19 @@ export const useFormBuilderStore = create<FormBuilderState>((set, get) => ({
         elements.splice(index, 0, element)
       }
       return { elements, selectedId: element.id }
-    }),
+    })
+    get().saveSnapshot()
+  },
 
-  removeElement: (id) =>
+  removeElement: (id) => {
     set((state) => ({
       elements: state.elements.filter((el) => el.id !== id),
       selectedId: state.selectedId === id ? null : state.selectedId,
-    })),
+    }))
+    get().saveSnapshot()
+  },
 
-  duplicateElement: (id) =>
+  duplicateElement: (id) => {
     set((state) => {
       const index = state.elements.findIndex((el) => el.id === id)
       if (index === -1) return state
@@ -99,32 +115,43 @@ export const useFormBuilderStore = create<FormBuilderState>((set, get) => ({
       const elements = [...state.elements]
       elements.splice(index + 1, 0, copy)
       return { elements, selectedId: copy.id }
-    }),
+    })
+    get().saveSnapshot()
+  },
 
   selectElement: (id) => set({ selectedId: id }),
 
-  moveElement: (fromIndex, toIndex) =>
+  moveElement: (fromIndex, toIndex) => {
     set((state) => {
       const elements = [...state.elements]
       const [moved] = elements.splice(fromIndex, 1)
       elements.splice(toIndex, 0, moved)
       return { elements }
-    }),
+    })
+    get().saveSnapshot()
+  },
 
-  updateProps: (id, patch) =>
+  updateProps: (id, patch) => {
     set((state) => ({
       elements: state.elements.map((el) =>
         el.id === id ? { ...el, props: { ...el.props, ...patch } } : el
       ),
-    })),
+    }))
+    get().saveSnapshot()
+  },
 
-  setFormMeta: (patch) =>
+  setFormMeta: (patch) => {
     set((state) => ({
       formTitle: patch.title ?? state.formTitle,
       formDescription: patch.description ?? state.formDescription,
-    })),
+    }))
+    get().saveSnapshot()
+  },
 
-  clearAll: () => set({ elements: [], selectedId: null }),
+  clearAll: () => {
+    set({ elements: [], selectedId: null })
+    get().saveSnapshot()
+  },
 
   saveSnapshot: () => {
     const state = get();
@@ -208,10 +235,16 @@ export const useFormBuilderStore = create<FormBuilderState>((set, get) => ({
     return history.currentIndex < history.snapshots.length - 1;
   },
 
-  clearHistory: () =>
+  clearHistory: () => {
+    const state = get();
     set({
-      history: initializeHistory(),
-    }),
+      history: {
+        snapshots: [createSnapshot(state)],
+        currentIndex: 0,
+        maxHistorySize: 50,
+      },
+    })
+  },
 
   jumpToSnapshot: (index) => {
     const state = get();

@@ -65,7 +65,7 @@ export function CanvasElement({
                     }
                 }}
                 className={cn(
-                    "group relative rounded-xl border bg-card p-4 transition-all",
+                    "group relative rounded-xl p-4 transition-all", //border bg-card
                     isSelected
                         ? "border-primary ring-2 ring-primary/20"
                         : "border-border hover:border-primary/40 hover:shadow-sm",
@@ -73,15 +73,16 @@ export function CanvasElement({
                 )}
             >
                 {/* Top bar: type label + actions */}
-                <div className="mb-2 flex items-center justify-between">
-                    <span className="text-[11px] font-medium tracking-wide text-muted-foreground uppercase">
+                <div className={cn("absolute left-0 pl-4 mb-2 flex items-center justify-between opacity-0 transition-opacity",
+                    "group-hover:opacity-100",
+                    isSelected && "opacity-100"
+                )}>
+                    {/* <span className="text-[11px] font-medium tracking-wide text-muted-foreground uppercase">
                         {t(`toolbox.items.${el.type}.label`)}
-                    </span>
+                    </span> */}
                     <div
                         className={cn(
-                            "flex items-center gap-0.5 opacity-0 transition-opacity",
-                            "group-hover:opacity-100",
-                            isSelected && "opacity-100"
+                            "flex items-center gap-0.5 ",
                         )}
                     >
                         <Button
