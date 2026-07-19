@@ -25,6 +25,18 @@ export interface ElementOption {
   value: string
 }
 
+/**
+ * The four appearance properties that can be overridden per viewport.
+ * All fields are optional — omitted fields fall through to the desktop baseline
+ * stored directly on ElementProps.
+ */
+export interface ViewportAppearance {
+  labelPosition?: LabelPosition
+  labelAlign?: LabelAlign
+  width?: FieldWidth
+  size?: ControlSize
+}
+
 export interface ElementProps {
     // General / content
     label: string
@@ -34,12 +46,22 @@ export interface ElementProps {
     defaultValue?: string
     options?: ElementOption[]
   
-    // Appearance
+    // Appearance (desktop baseline — also used when no viewport override exists)
     width: FieldWidth
     labelPosition: LabelPosition
     size: ControlSize
     labelAlign: LabelAlign
     hidden: boolean
+
+    /**
+     * Per-viewport appearance overrides.
+     * Only the properties explicitly set here differ from the desktop baseline.
+     * `desktop` is intentionally omitted — the baseline IS the desktop value.
+     */
+    viewportStyles: {
+      mobile: ViewportAppearance
+      tablet: ViewportAppearance
+    }
   
     // Style
     radius: number

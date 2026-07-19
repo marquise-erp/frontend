@@ -451,6 +451,13 @@
           "card": "Card"
         }
       },
+      "viewport": {
+        "label": "Viewport",
+        "desktop": "Desktop",
+        "tablet": "Tablet",
+        "mobile": "Mobile",
+        "overrideHint": "Changes here apply only to this viewport and override the desktop baseline."
+      },
       "actions": {
         "duplicate": "Duplicate",
         "delete": "Delete"

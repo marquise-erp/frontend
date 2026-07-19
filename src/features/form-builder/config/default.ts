@@ -64,6 +64,11 @@ export const initializeHistory = (): HistoryState => ({
       size: "default",
       labelAlign: "left",
       hidden: false,
+
+      viewportStyles: {
+        mobile: {},
+        tablet: {},
+      },
   
       radius: 10,
       borderWidth: 1,

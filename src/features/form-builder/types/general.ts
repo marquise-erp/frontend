@@ -1,6 +1,6 @@
 import { ElementType } from "./element";
 
-export type Viewports = 'sm' | 'md' | 'lg';
+export type Viewports = 'mobile' | 'tablet' | 'desktop';
 
 export type Modes = 'editor' | 'preview';
 
