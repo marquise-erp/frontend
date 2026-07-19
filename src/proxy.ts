@@ -40,7 +40,7 @@ export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isAuthRoute = pathname.startsWith("/auth");
   const isAppRoute = pathname.startsWith("/app");
-
+ return true;
   if (!isAuthRoute && !isAppRoute) {
     return NextResponse.next();
   }
