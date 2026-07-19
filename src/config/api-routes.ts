@@ -84,5 +84,12 @@ export const API_ROUTES = {
             AVAILABILITY: `/bookings/availability`,
             CREATE: `/bookings`,
         },
+        FORMS: {
+            LIST: `/forms`,
+            CREATE: `/forms`,
+            detail: (id: number | string) => `/forms/${id}`,
+            update: (id: number | string) => `/forms/${id}`,
+            delete: (id: number | string) => `/forms/${id}`,
+        },
     },
 } as const;

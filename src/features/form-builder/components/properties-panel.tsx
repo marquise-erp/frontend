@@ -17,6 +17,8 @@ import { useFormBuilderStore } from "../stores/form-builder-store"
 import { getToolboxItem, ICONS } from "../config/toolbox-items"
 import { InlineRow, PropRow, Segmented } from "./properties/property-controls"
 import { OptionsEditor } from "./properties/option-editor"
+import { ViewportSwitcher } from "./viewport-switcher"
+import { useViewportStyles } from "../hooks/use-viewport-styles"
 
 
 const CONTENT_TYPES: ElementType[] = ["heading", "paragraph", "divider"]
@@ -42,13 +44,19 @@ export function PropertiesPanel() {
     s.elements.find((el) => el.id === s.selectedId)
   )
   const updateProps = useFormBuilderStore((s) => s.updateProps)
+  const updateViewportProps = useFormBuilderStore((s) => s.updateViewportProps)
   const removeElement = useFormBuilderStore((s) => s.removeElement)
   const duplicateElement = useFormBuilderStore((s) => s.duplicateElement)
   const selectElement = useFormBuilderStore((s) => s.selectElement)
+  const activeViewport = useFormBuilderStore((s) => s.activeViewport)
   const t = useTranslations("form_builder.properties")
   const tToolbox = useTranslations("form_builder.toolbox.items")
 
   const open = Boolean(selectedId && element)
+
+  // Resolved appearance values for the active viewport (falls back to desktop baseline)
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const vpStyles = element ? useViewportStyles(element.props, activeViewport) : null
 
   return (
     <div
@@ -188,12 +196,26 @@ export function PropertiesPanel() {
                   value="appearance"
                   className="flex flex-col gap-4"
                 >
+                  {/* Viewport switcher */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium text-muted-foreground">
+                      {t("viewport.label")}
+                    </span>
+                    <ViewportSwitcher />
+                  </div>
+
+                  {activeViewport !== "desktop" && (
+                    <p className="rounded-md bg-muted px-3 py-2 text-xs text-muted-foreground">
+                      {t("viewport.overrideHint")}
+                    </p>
+                  )}
+
                   {!CONTENT_TYPES.includes(element.type) ? (
                     <PropRow label={t("fields.labelPosition")}>
                       <Segmented
-                        value={element.props.labelPosition}
+                        value={vpStyles!.labelPosition}
                         onChange={(v) =>
-                          updateProps(element.id, { labelPosition: v })
+                          updateViewportProps(element.id, { labelPosition: v })
                         }
                         options={[
                           { value: "top", label: t("values.position.top") },
@@ -206,9 +228,9 @@ export function PropertiesPanel() {
 
                   <PropRow label={t("fields.labelAlign")}>
                     <Segmented
-                      value={element.props.labelAlign}
+                      value={vpStyles!.labelAlign}
                       onChange={(v) =>
-                        updateProps(element.id, { labelAlign: v })
+                        updateViewportProps(element.id, { labelAlign: v })
                       }
                       options={[
                         { value: "left", label: t("values.align.left") },
@@ -220,8 +242,10 @@ export function PropertiesPanel() {
 
                   <PropRow label={t("fields.width")}>
                     <Segmented
-                      value={element.props.width}
-                      onChange={(v) => updateProps(element.id, { width: v })}
+                      value={vpStyles!.width}
+                      onChange={(v) =>
+                        updateViewportProps(element.id, { width: v })
+                      }
                       options={[
                         { value: "full", label: t("values.width.full") },
                         { value: "half", label: t("values.width.half") },
@@ -233,8 +257,10 @@ export function PropertiesPanel() {
                   {!CONTENT_TYPES.includes(element.type) ? (
                     <PropRow label={t("fields.size")}>
                       <Segmented
-                        value={element.props.size}
-                        onChange={(v) => updateProps(element.id, { size: v })}
+                        value={vpStyles!.size}
+                        onChange={(v) =>
+                          updateViewportProps(element.id, { size: v })
+                        }
                         options={[
                           { value: "sm", label: t("values.size.sm") },
                           { value: "default", label: t("values.size.default") },

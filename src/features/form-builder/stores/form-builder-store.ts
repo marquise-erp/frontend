@@ -1,16 +1,18 @@
 import { create } from "zustand"
 
 import { createDefaultProps, initializeHistory } from "../config/default"
-import { ElementProps, ElementType, FormElement } from "../types/element"
+import { ElementProps, ElementType, FormElement, ViewportAppearance } from "../types/element"
 import { HistorySnapshot, HistoryState } from "../types/history"
+import { Viewports } from "../types/general"
 
 
 interface FormBuilderState {
   elements: FormElement[]
   selectedId: string | null
-  formId: string | null,
+  formId: string | null
   formTitle: string
   formDescription: string
+  activeViewport: Viewports
   history: HistoryState;
 
 
@@ -20,7 +22,11 @@ interface FormBuilderState {
   selectElement: (id: string | null) => void
   moveElement: (fromIndex: number, toIndex: number) => void
   updateProps: (id: string, patch: Partial<ElementProps>) => void
+  /** Update only viewport-specific appearance fields for the currently active viewport (or an explicit one). */
+  updateViewportProps: (id: string, patch: ViewportAppearance, viewport?: Viewports) => void
   setFormMeta: (patch: { title?: string; description?: string }) => void
+  setFormId: (id: string | null) => void
+  setViewport: (viewport: Viewports) => void
   clearAll: () => void
 
   // History methods
@@ -57,6 +63,7 @@ export const useFormBuilderStore = create<FormBuilderState>((set, get) => ({
   formId: null,
   formTitle: "Untitled form",
   formDescription: "Build your form by dragging elements from the left panel.",
+  activeViewport: "desktop",
   history: {
     snapshots: [
       {
@@ -140,6 +147,34 @@ export const useFormBuilderStore = create<FormBuilderState>((set, get) => ({
     get().saveSnapshot()
   },
 
+  updateViewportProps: (id, patch, viewport) => {
+    const targetViewport = viewport ?? get().activeViewport
+    // Desktop is the baseline — write directly onto ElementProps
+    if (targetViewport === "desktop") {
+      get().updateProps(id, patch)
+      return
+    }
+    set((state) => ({
+      elements: state.elements.map((el) => {
+        if (el.id !== id) return el
+        return {
+          ...el,
+          props: {
+            ...el.props,
+            viewportStyles: {
+              ...el.props.viewportStyles,
+              [targetViewport]: {
+                ...el.props.viewportStyles[targetViewport],
+                ...patch,
+              },
+            },
+          },
+        }
+      }),
+    }))
+    get().saveSnapshot()
+  },
+
   setFormMeta: (patch) => {
     set((state) => ({
       formTitle: patch.title ?? state.formTitle,
@@ -147,6 +182,10 @@ export const useFormBuilderStore = create<FormBuilderState>((set, get) => ({
     }))
     get().saveSnapshot()
   },
+
+  setFormId: (id) => set({ formId: id }),
+
+  setViewport: (viewport) => set({ activeViewport: viewport }),
 
   clearAll: () => {
     set({ elements: [], selectedId: null })
