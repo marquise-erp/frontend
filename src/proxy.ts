@@ -12,7 +12,7 @@ async function hasValidSession(request: NextRequest): Promise<boolean> {
   try {
     const cookieHeader = request.headers.get("cookie") ?? "";
     const xsrfToken = getCookieValue(cookieHeader, "XSRF-TOKEN");
-
+    
     const response = await fetch(
       `${BACKEND_URL}${CLIENT_API_BASE}${API_ROUTES.ADMIN.AUTH.ME}`,
       {
@@ -28,6 +28,7 @@ async function hasValidSession(request: NextRequest): Promise<boolean> {
         cache: "no-store",
       }
     );
+    console.log('data',cookieHeader,xsrfToken,response);
     return response.ok;
   } catch {
     return false;
@@ -44,7 +45,7 @@ export async function proxy(request: NextRequest) {
   }
 
   const authenticated = await hasValidSession(request);
-
+ console.log(authenticated);
   if (isAppRoute && !authenticated) {
     const loginUrl = new URL("/auth/login", request.url);
     loginUrl.searchParams.set("next", pathname);
