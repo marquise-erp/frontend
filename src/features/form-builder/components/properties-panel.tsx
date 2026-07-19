@@ -19,6 +19,7 @@ import { InlineRow, PropRow, Segmented } from "./properties/property-controls"
 import { OptionsEditor } from "./properties/option-editor"
 import { ViewportSwitcher } from "./viewport-switcher"
 import { useViewportStyles } from "../hooks/use-viewport-styles"
+import { createDefaultProps } from "../config/default"
 
 
 const CONTENT_TYPES: ElementType[] = ["heading", "paragraph", "divider"]
@@ -54,9 +55,9 @@ export function PropertiesPanel() {
 
   const open = Boolean(selectedId && element)
 
-  // Resolved appearance values for the active viewport (falls back to desktop baseline)
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const vpStyles = element ? useViewportStyles(element.props, activeViewport) : null
+  const props = element?.props ?? createDefaultProps(element?.type)
+  const vpStyles = useViewportStyles(props, activeViewport);
+
 
   return (
     <div
