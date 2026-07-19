@@ -49,7 +49,6 @@ export function useViewportStyles(
 ): Required<ViewportAppearance> {
   return useMemo(
     () => resolveViewportAppearance(props, viewport),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       viewport,
       props.labelPosition,
