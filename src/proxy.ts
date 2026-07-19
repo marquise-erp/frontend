@@ -12,7 +12,7 @@ async function hasValidSession(request: NextRequest): Promise<boolean> {
   try {
     const cookieHeader = request.headers.get("cookie") ?? "";
     const xsrfToken = getCookieValue(cookieHeader, "XSRF-TOKEN");
-    
+    console.log(`${BACKEND_URL}${CLIENT_API_BASE}${API_ROUTES.ADMIN.AUTH.ME}`);
     const response = await fetch(
       `${BACKEND_URL}${CLIENT_API_BASE}${API_ROUTES.ADMIN.AUTH.ME}`,
       {
