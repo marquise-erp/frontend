@@ -10,12 +10,13 @@ import { useFormBuilderStore } from "../stores/form-builder-store"
 import { useSortable } from '@dnd-kit/react/sortable';
 import { getToolboxItem } from "../config/toolbox-items"
 import { ElementPreview } from "./element.preview"
+import { useViewportStyles } from "../hooks/use-viewport-styles"
 
 
 const widthClasses: Record<string, string> = {
     full: "w-full",
-    half: "w-full sm:w-[calc(50%-0.375rem)]",
-    third: "w-full sm:w-[calc(33.333%-0.5rem)]",
+    half: "w-[calc(50%-0.375rem)]",
+    third: "w-[calc(33.333%-0.5rem)]",
 }
 
 export function CanvasElement({
@@ -30,6 +31,8 @@ export function CanvasElement({
     const selectElement = useFormBuilderStore((s) => s.selectElement)
     const removeElement = useFormBuilderStore((s) => s.removeElement)
     const duplicateElement = useFormBuilderStore((s) => s.duplicateElement)
+    const activeViewport = useFormBuilderStore((s) => s.activeViewport)
+    const vpStyles = useViewportStyles(el.props, activeViewport)
 
     const isSelected = selectedId === el.id
 
@@ -49,7 +52,7 @@ export function CanvasElement({
     return (
         <div
             ref={ref}
-            className={cn(widthClasses[el.props.width], isDragging && "z-10 opacity-50")}
+            className={cn(widthClasses[vpStyles.width], isDragging && "z-10 opacity-50")}
         >
             <div
                 role="button"
