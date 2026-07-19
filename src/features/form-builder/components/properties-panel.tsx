@@ -17,7 +17,6 @@ import { useFormBuilderStore } from "../stores/form-builder-store"
 import { getToolboxItem, ICONS } from "../config/toolbox-items"
 import { InlineRow, PropRow, Segmented } from "./properties/property-controls"
 import { OptionsEditor } from "./properties/option-editor"
-import { ViewportSwitcher } from "./viewport-switcher"
 import { useViewportStyles } from "../hooks/use-viewport-styles"
 import { createDefaultProps } from "../config/default"
 
@@ -197,14 +196,6 @@ export function PropertiesPanel() {
                   value="appearance"
                   className="flex flex-col gap-4"
                 >
-                  {/* Viewport switcher */}
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium text-muted-foreground">
-                      {t("viewport.label")}
-                    </span>
-                    <ViewportSwitcher />
-                  </div>
-
                   {activeViewport !== "desktop" && (
                     <p className="rounded-md bg-muted px-3 py-2 text-xs text-muted-foreground">
                       {t("viewport.overrideHint")}
