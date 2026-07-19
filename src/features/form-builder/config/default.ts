@@ -50,14 +50,14 @@ export const initializeHistory = (): HistoryState => ({
     "multiple-choice",
   ]
 
-  export function createDefaultProps(type: ElementType): ElementProps {
+  export function createDefaultProps(type: ElementType | undefined): ElementProps {
     const base: ElementProps = {
-      label: LABELS[type],
-      placeholder: PLACEHOLDERS[type],
+      label: type ? LABELS[type] : "",
+      placeholder: type ? PLACEHOLDERS[type] : "",
       description: "",
       helpText: "",
       defaultValue: "",
-      options: CHOICE_TYPES.includes(type) ? defaultOptions() : undefined,
+      options: type && CHOICE_TYPES.includes(type) ? defaultOptions() : undefined,
   
       width: "full",
       labelPosition: type === "checkbox" ? "left" : "top",
