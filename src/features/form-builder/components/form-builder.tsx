@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useLocale, useTranslations } from "next-intl"
+import { ArrowLeft, Save, Loader2 } from "lucide-react"
 
 import { ActiveDrag } from "../types/general"
 import { DragDropManager, DragDropProvider, DragEndEvent, DragOverlay, DragStartEvent } from "@dnd-kit/react"
@@ -12,14 +13,41 @@ import { getToolboxItem, ICONS } from "../config/toolbox-items"
 import { PropertiesPanel } from "./properties-panel"
 import { Canvas } from "./canvas"
 import { FormPreview } from "./form-preview"
+import { useSaveForm } from "../hooks/use-save-form"
+import { useForm } from "../api/queries"
+import { Button } from "@/components/ui/button"
 
+interface FormBuilderProps {
+  /** When provided, the builder loads this form from the server on mount. null = new form. */
+  formId?: string | null
+  /** Called when the user wants to go back to the list. */
+  onBack?: () => void
+}
 
-export function FormBuilder() {
+export function FormBuilder({ formId: initialFormId, onBack }: FormBuilderProps = {}) {
     const locale = useLocale()
     const dir = locale === "fa" ? "rtl" : "ltr"
     const t = useTranslations("form_builder")
     const [active, setActive] = useState<ActiveDrag>(null)
     const activeMode = useFormBuilderStore((s) => s.activeMode)
+    const loadForm = useFormBuilderStore((s) => s.loadForm)
+    const clearAll = useFormBuilderStore((s) => s.clearAll)
+    const formTitle = useFormBuilderStore((s) => s.formTitle)
+    const { save, isPending: isSaving } = useSaveForm()
+
+    // Load form from server when an id is passed
+    const { data: serverForm } = useForm(initialFormId ?? null)
+
+    useEffect(() => {
+        if (serverForm) {
+            loadForm(serverForm)
+        } else if (!initialFormId) {
+            // New form — reset to blank slate
+            clearAll()
+        }
+        // Only re-run when the fetched server data changes
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [serverForm])
 
     function handleDragStart(
         event: DragStartEvent,
@@ -116,6 +144,37 @@ export function FormBuilder() {
             onDragEnd={handleDragEnd}
         >
             <div dir={dir} className="flex h-svh flex-col bg-background font-sans">
+                {/* Top toolbar: back + title + save */}
+                <header className="flex h-12 shrink-0 items-center gap-3 border-b border-border px-4">
+                    {onBack && (
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={onBack}
+                            className="gap-1.5 text-muted-foreground"
+                        >
+                            <ArrowLeft className="size-4" aria-hidden />
+                            {t("toolbar.back")}
+                        </Button>
+                    )}
+                    <span className="min-w-0 flex-1 truncate text-sm font-medium text-foreground">
+                        {formTitle}
+                    </span>
+                    <Button
+                        size="sm"
+                        onClick={save}
+                        disabled={isSaving}
+                        className="gap-1.5"
+                    >
+                        {isSaving ? (
+                            <Loader2 className="size-4 animate-spin" aria-hidden />
+                        ) : (
+                            <Save className="size-4" aria-hidden />
+                        )}
+                        {isSaving ? t("toolbar.saving") : t("toolbar.save")}
+                    </Button>
+                </header>
+
                 <div className="flex min-h-0 flex-1">
                     <ToolboxSidebar />
                     {activeMode === "preview" ? (

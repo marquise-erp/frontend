@@ -4,6 +4,7 @@ import { createDefaultProps, initializeHistory } from "../config/default"
 import { ElementProps, ElementType, FormElement, ViewportAppearance } from "../types/element"
 import { HistorySnapshot, HistoryState } from "../types/history"
 import { Modes, Viewports } from "../types/general"
+import { Form } from "../schemas/responses"
 
 
 interface FormBuilderState {
@@ -29,6 +30,8 @@ interface FormBuilderState {
   setFormId: (id: string | null) => void
   setViewport: (viewport: Viewports) => void
   setMode: (mode: Modes) => void
+  /** Hydrate the builder from a server Form response, replacing all current state. */
+  loadForm: (form: Form) => void
   clearAll: () => void
 
   // History methods
@@ -191,6 +194,30 @@ export const useFormBuilderStore = create<FormBuilderState>((set, get) => ({
   setViewport: (viewport) => set({ activeViewport: viewport }),
 
   setMode: (mode) => set({ activeMode: mode }),
+
+  loadForm: (form) => {
+    const elements = (form.elements as FormElement[]) ?? []
+    const snapshot: HistorySnapshot = {
+      components: structuredClone(elements),
+      formTitle: form.title,
+      formDescription: form.description ?? "",
+      formId: String(form.id),
+      timestamp: Date.now(),
+    }
+    set({
+      elements,
+      formId: String(form.id),
+      formTitle: form.title,
+      formDescription: form.description ?? "",
+      selectedId: null,
+      activeMode: "editor",
+      history: {
+        snapshots: [snapshot],
+        currentIndex: 0,
+        maxHistorySize: 50,
+      },
+    })
+  },
 
   clearAll: () => {
     set({ elements: [], selectedId: null })
