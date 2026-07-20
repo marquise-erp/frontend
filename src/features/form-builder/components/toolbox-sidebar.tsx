@@ -10,6 +10,8 @@ import {
   Undo,
   Redo,
   History,
+  Eye,
+  EyeOff,
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -44,6 +46,10 @@ export function ToolboxSidebar() {
   const undo = useFormBuilderStore((s) => s.undo)
   const redo = useFormBuilderStore((s) => s.redo)
   const jumpToSnapshot = useFormBuilderStore((s) => s.jumpToSnapshot)
+  const activeMode = useFormBuilderStore((s) => s.activeMode)
+  const setMode = useFormBuilderStore((s) => s.setMode)
+
+  const isPreviewing = activeMode === "preview"
 
   const canUndo = history.currentIndex > 0;
   const canRedo = history.currentIndex < history.snapshots.length - 1;
@@ -118,7 +124,34 @@ export function ToolboxSidebar() {
               </TooltipContent>
             </Tooltip>
           ))}
-          
+
+          {/* Preview toggle */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                aria-label={t(isPreviewing ? "sidebar.exitPreview" : "sidebar.preview")}
+                aria-pressed={isPreviewing}
+                onClick={() => setMode(isPreviewing ? "editor" : "preview")}
+                className={cn(
+                  "flex size-10 items-center justify-center rounded-xl border transition-colors",
+                  isPreviewing
+                    ? "border-border bg-muted text-foreground"
+                    : "border-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
+                )}
+              >
+                {isPreviewing ? (
+                  <EyeOff className="size-5" />
+                ) : (
+                  <Eye className="size-5" />
+                )}
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side={tooltipSide}>
+              {t(isPreviewing ? "sidebar.exitPreview" : "sidebar.preview")}
+            </TooltipContent>
+          </Tooltip>
+
           <div className="my-1 h-px w-8 bg-border" />
 
           <HoverCard>
