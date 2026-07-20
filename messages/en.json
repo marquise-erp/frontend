@@ -291,8 +291,37 @@
     "cancel": "Cancel",
     "delete": "Delete"
   },
+  "forms_list": {
+    "title": "Forms",
+    "description": "Manage reusable form definitions used across the application.",
+    "newForm": "New form",
+    "noDescription": "No description",
+    "updatedAt": "Updated {time}",
+    "deleteConfirm": "Are you sure you want to delete \"{title}\"? This action cannot be undone.",
+    "loadError": "Failed to load forms",
+    "loadErrorHint": "Could not reach the server. Please try again.",
+    "empty": "No forms defined yet",
+    "emptyHint": "Create your first form to get started.",
+    "status": {
+      "draft": "Draft",
+      "published": "Published",
+      "archived": "Archived"
+    },
+    "actions": {
+      "edit": "Open Builder",
+      "preview": "Preview",
+      "versions": "Versions",
+      "delete": "Delete",
+      "more": "More actions"
+    }
+  },
   "form_builder": {
     "title": "Form Builder",
+    "toolbar": {
+      "back": "Forms",
+      "save": "Save",
+      "saving": "Saving..."
+    },
     "sidebar": {
       "structure": "Structure",
       "responses": "Responses",
