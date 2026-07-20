@@ -298,7 +298,15 @@
       "responses": "Responses",
       "activity": "Activity",
       "settings": "Settings",
-      "addElements": "Add Elements"
+      "addElements": "Add Elements",
+      "preview": "Preview form",
+      "exitPreview": "Exit preview"
+    },
+    "preview": {
+      "label": "Preview",
+      "exit": "Exit preview",
+      "empty": "No elements added yet. Go back to the editor and add some fields.",
+      "submit": "Submit"
     },
     "toolbox": {
       "title": "Add Elements",

@@ -11,6 +11,7 @@ import { ToolboxSidebar } from "./toolbox-sidebar"
 import { getToolboxItem, ICONS } from "../config/toolbox-items"
 import { PropertiesPanel } from "./properties-panel"
 import { Canvas } from "./canvas"
+import { FormPreview } from "./form-preview"
 
 
 export function FormBuilder() {
@@ -18,6 +19,7 @@ export function FormBuilder() {
     const dir = locale === "fa" ? "rtl" : "ltr"
     const t = useTranslations("form_builder")
     const [active, setActive] = useState<ActiveDrag>(null)
+    const activeMode = useFormBuilderStore((s) => s.activeMode)
 
     function handleDragStart(
         event: DragStartEvent,
@@ -116,10 +118,18 @@ export function FormBuilder() {
             <div dir={dir} className="flex h-svh flex-col bg-background font-sans">
                 <div className="flex min-h-0 flex-1">
                     <ToolboxSidebar />
-                    <div className="min-w-0 flex-1">
-                        <Canvas />
-                    </div>
-                    <PropertiesPanel />
+                    {activeMode === "preview" ? (
+                        <div className="min-w-0 flex-1">
+                            <FormPreview />
+                        </div>
+                    ) : (
+                        <>
+                            <div className="min-w-0 flex-1">
+                                <Canvas />
+                            </div>
+                            <PropertiesPanel />
+                        </>
+                    )}
                 </div>
             </div>
 

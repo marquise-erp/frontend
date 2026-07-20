@@ -3,7 +3,7 @@ import { create } from "zustand"
 import { createDefaultProps, initializeHistory } from "../config/default"
 import { ElementProps, ElementType, FormElement, ViewportAppearance } from "../types/element"
 import { HistorySnapshot, HistoryState } from "../types/history"
-import { Viewports } from "../types/general"
+import { Modes, Viewports } from "../types/general"
 
 
 interface FormBuilderState {
@@ -13,6 +13,7 @@ interface FormBuilderState {
   formTitle: string
   formDescription: string
   activeViewport: Viewports
+  activeMode: Modes
   history: HistoryState;
 
 
@@ -27,6 +28,7 @@ interface FormBuilderState {
   setFormMeta: (patch: { title?: string; description?: string }) => void
   setFormId: (id: string | null) => void
   setViewport: (viewport: Viewports) => void
+  setMode: (mode: Modes) => void
   clearAll: () => void
 
   // History methods
@@ -64,6 +66,7 @@ export const useFormBuilderStore = create<FormBuilderState>((set, get) => ({
   formTitle: "Untitled form",
   formDescription: "Build your form by dragging elements from the left panel.",
   activeViewport: "desktop",
+  activeMode: "editor",
   history: {
     snapshots: [
       {
@@ -186,6 +189,8 @@ export const useFormBuilderStore = create<FormBuilderState>((set, get) => ({
   setFormId: (id) => set({ formId: id }),
 
   setViewport: (viewport) => set({ activeViewport: viewport }),
+
+  setMode: (mode) => set({ activeMode: mode }),
 
   clearAll: () => {
     set({ elements: [], selectedId: null })
